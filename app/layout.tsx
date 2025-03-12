@@ -18,6 +18,7 @@ import {
 import { useState } from "react";
 import { Toaster } from "sonner";
 import GlobalLoading from "@/components/global-loading";
+import { Loader } from "lucide-react";
 
 export default function RootLayout({
   children,
@@ -40,7 +41,12 @@ export default function RootLayout({
                 <div className="mr-2 h-4">
                   <Separator orientation="vertical" />
                 </div>
-                {breadcrumb && (
+                {(!breadcrumb || !breadcrumb.length) && (
+                  <div>
+                    <Loader className="animate-spin" />
+                  </div>
+                )}
+                {breadcrumb && breadcrumb.length > 0 && (
                   <Breadcrumb>
                     <BreadcrumbList>
                       <BreadcrumbItem className="hidden md:block">

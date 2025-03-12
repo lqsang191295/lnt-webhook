@@ -49,7 +49,6 @@ export default function ZaloCallbackPag() {
           <Loader className="animate-spin mr-4" /> <span>Loading...</span>
         </div>
       }>
-      {" "}
       <ZaloCallback />
     </Suspense>
   );

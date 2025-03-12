@@ -21,7 +21,12 @@ import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 
 // Menu items.
-const items = [
+export const menuItems = [
+  {
+    title: "Home",
+    url: "/",
+    icon: Radio,
+  },
   {
     title: "Zalo",
     url: "#",
@@ -48,10 +53,15 @@ export function AppSidebar({
 }) {
   const pathname = usePathname();
   const pathSegments = pathname.split("/").filter((segment) => segment);
+
   const autoGetBreadcrumb = () => {
-    console.log("pathSegments === ", pathSegments);
-    const item = items.find((i) => {
-      return i.items.find((ii) => {
+    console.log("pathSegments ========== ", pathSegments);
+    if (!pathSegments || !pathSegments.length) {
+      return onSelect([menuItems[0].title]);
+    }
+
+    const item = menuItems.find((i) => {
+      return i.items?.find((ii) => {
         return ii.url === `/${pathSegments[0]}`;
       });
     });
@@ -68,30 +78,31 @@ export function AppSidebar({
   return (
     <Sidebar variant="sidebar" collapsible="icon">
       <SidebarContent className="gap-0">
-        {items.map((item) => (
+        {menuItems.map((item) => (
           <Collapsible
             key={item.title}
             title={item.title}
             defaultOpen
-            className="group/collapsible">
+            className="group/collapsible ">
             <SidebarGroup>
               <SidebarGroupLabel
                 asChild
                 className="group/label text-sm text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground">
                 <CollapsibleTrigger>
-                  <item.icon /> <span className="mx-2">{item.title}</span>
-                  <ChevronRight className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-90" />
+                  <item.icon />{" "}
+                  <a className="mx-2 cursor-pointer" href={item.url}>
+                    {item.title}
+                  </a>
+                  {item.items && (
+                    <ChevronRight className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-90" />
+                  )}
                 </CollapsibleTrigger>
               </SidebarGroupLabel>
               <CollapsibleContent>
                 <SidebarGroupContent>
                   <SidebarMenu>
-                    {item.items.map((it) => (
-                      <SidebarMenuItem
-                        key={it.title}
-                        onClick={() => {
-                          onSelect([item.title, it.title]);
-                        }}>
+                    {item.items?.map((it) => (
+                      <SidebarMenuItem key={it.title}>
                         <SidebarMenuButton asChild>
                           <a href={it.url}>
                             <it.icon />
@@ -107,25 +118,6 @@ export function AppSidebar({
           </Collapsible>
         ))}
       </SidebarContent>
-      {/* <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupLabel>Application</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {items.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <a href={item.url}>
-                      <item.icon />
-                      <span>{item.title}</span>
-                    </a>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-      </SidebarContent> */}
     </Sidebar>
   );
 }
