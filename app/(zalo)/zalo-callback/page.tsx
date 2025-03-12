@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { post } from "@/api/client";
 import { Loader } from "lucide-react";
@@ -34,9 +34,16 @@ export default function ZaloCallback() {
   }, [searchParams, router]);
 
   return (
-    <h2 className="flex">
-      <Loader className="animate-spin mr-4" />
-      <span>Đang xử lý đăng nhập Zalo...</span>
-    </h2>
+    <Suspense
+      fallback={
+        <div className="flex">
+          <Loader className="animate-spin mr-4" /> <span>Loading...</span>
+        </div>
+      }>
+      <h2 className="flex">
+        <Loader className="animate-spin mr-4" />
+        <span>Đang xử lý đăng nhập Zalo...</span>
+      </h2>
+    </Suspense>
   );
 }
