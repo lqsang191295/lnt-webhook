@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/breadcrumb";
 import { useState } from "react";
 import { Toaster } from "sonner";
+import GlobalLoading from "@/components/global-loading";
 
 export default function RootLayout({
   children,
@@ -67,6 +68,7 @@ export default function RootLayout({
         </SidebarProvider>
 
         <Toaster />
+        <GlobalLoading />
       </body>
     </html>
   );

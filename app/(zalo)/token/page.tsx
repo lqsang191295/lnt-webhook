@@ -9,6 +9,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useLoadingGlobalStore } from "@/store/loadingGlobalStore";
 import { Copy, Loader } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -30,7 +31,7 @@ const PageToken = () => {
   const [refreshTokenCopy, setRefreshTokenCopy] = useState<boolean>(false);
 
   const [loadingToken, setLoadingToken] = useState<boolean>(true);
-  const [loadingUpdateToken, setLoadingUpdateToken] = useState<boolean>(false);
+  const setLoadingGlobal = useLoadingGlobalStore((state) => state.setLoading);
 
   const copyAccessToken = () => {
     setAccessTokenCopy(true);
@@ -83,7 +84,7 @@ const PageToken = () => {
 
   const handleGrantNewToken = async () => {
     try {
-      setLoadingUpdateToken(true);
+      setLoadingGlobal(true);
       const newDataToken = await post("/webhook/refresh-token", {
         refresh_token: refreshToken,
       });
@@ -104,7 +105,7 @@ const PageToken = () => {
     } catch (ex) {
       console.log("ex", ex);
     } finally {
-      setLoadingUpdateToken(false);
+      setLoadingGlobal(false);
     }
   };
 
