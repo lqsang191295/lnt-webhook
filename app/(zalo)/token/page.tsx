@@ -14,15 +14,6 @@ import { Copy, Loader } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
-export async function getStaticProps() {
-  const data = await get(`/database/token`);
-
-  return {
-    props: { data },
-    revalidate: 10, // Cập nhật mỗi 10 giây
-  };
-}
-
 const PageToken = () => {
   const [accessToken, setAccessToken] = useState<string>("");
   const [refreshToken, setRefreshToken] = useState<string>("");
@@ -113,11 +104,11 @@ const PageToken = () => {
     try {
       setLoadingToken(true);
 
-      const { props } = await getStaticProps();
+      const data = await get(`/database/token`);
 
-      if (!props.data) return;
+      if (!data) return;
 
-      const { accessToken, refreshToken } = props.data;
+      const { accessToken, refreshToken } = data;
 
       setAccessToken(accessToken);
       setRefreshToken(refreshToken);
