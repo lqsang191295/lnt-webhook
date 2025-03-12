@@ -16,6 +16,7 @@ export default function ZaloCallback() {
     console.log("Zalo Authorization Code:", code);
 
     if (!code || !oaId) {
+      router.push("/token");
       return;
     }
 

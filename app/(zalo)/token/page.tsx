@@ -188,7 +188,7 @@ const PageToken = () => {
           className="cursor-pointer"
           variant={"outline"}
           onClick={handleGrantNewToken}>
-          Get & Save new token
+          Grant & save new token
         </Button>
       </div>
     </div>
