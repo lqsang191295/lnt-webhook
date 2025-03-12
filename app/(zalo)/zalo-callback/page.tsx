@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { post } from "@/api/client";
 import { Loader } from "lucide-react";
 
-export default function ZaloCallback() {
+const ZaloCallback = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -34,16 +34,23 @@ export default function ZaloCallback() {
   }, [searchParams, router]);
 
   return (
+    <h2 className="flex">
+      <Loader className="animate-spin mr-4" />
+      <span>Đang xử lý đăng nhập Zalo...</span>
+    </h2>
+  );
+};
+
+export default function ZaloCallbackPag() {
+  return (
     <Suspense
       fallback={
         <div className="flex">
           <Loader className="animate-spin mr-4" /> <span>Loading...</span>
         </div>
       }>
-      <h2 className="flex">
-        <Loader className="animate-spin mr-4" />
-        <span>Đang xử lý đăng nhập Zalo...</span>
-      </h2>
+      {" "}
+      <ZaloCallback />
     </Suspense>
   );
 }
