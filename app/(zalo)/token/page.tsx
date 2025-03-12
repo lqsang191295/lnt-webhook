@@ -55,15 +55,13 @@ const PageToken = () => {
   const handleAuthenticationZalo = () => {
     console.log(
       "process.env.NEXT_PUBLIC_ZALO_APP_ID ==",
-      process.env.NEXT_PUBLIC_ZALO_APP_ID,
-      process.env.NEXT_PUBLIC_REDIRECT_URI
+      process.env.ZALO_APP_ID,
+      process.env.REDIRECT_URI
     );
     // Phải expose biến môi trường trong Next.js
     const URI_AUTH_ZALO = `https://oauth.zaloapp.com/v4/oa/permission?app_id=${
-      process.env.NEXT_PUBLIC_ZALO_APP_ID
-    }&redirect_uri=${encodeURIComponent(
-      process.env.NEXT_PUBLIC_REDIRECT_URI || ""
-    )}`;
+      process.env.ZALO_APP_ID
+    }&redirect_uri=${encodeURIComponent(process.env.REDIRECT_URI || "")}`;
 
     console.log("URI_AUTH_ZALO === ", URI_AUTH_ZALO);
     window.open(
