@@ -14,7 +14,7 @@ import { Copy, Loader } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
-export async function getTokenProps() {
+export async function getStaticProps() {
   const data = await get(`/database/token`);
 
   return {
@@ -113,7 +113,7 @@ const PageToken = () => {
     try {
       setLoadingToken(true);
 
-      const { props } = await getTokenProps();
+      const { props } = await getStaticProps();
 
       if (!props.data) return;
 
