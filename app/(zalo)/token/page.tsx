@@ -1,6 +1,7 @@
 "use client"; // Nếu dùng Next.js 13+ (app router)
 
 import { get, post } from "@/api/client";
+import { useAlertDialog } from "@/components/global-alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import {
@@ -23,6 +24,8 @@ const PageToken = () => {
 
   const [loadingToken, setLoadingToken] = useState<boolean>(true);
   const setLoadingGlobal = useLoadingGlobalStore((state) => state.setLoading);
+
+  const { showAlert } = useAlertDialog();
 
   const copyAccessToken = () => {
     setAccessTokenCopy(true);
@@ -93,8 +96,16 @@ const PageToken = () => {
 
       setAccessToken(newDataToken.access_token);
       setRefreshToken(newDataToken.refresh_token);
+      toast.success("Tạo mới token không thành công");
     } catch (ex) {
       console.log("ex", ex);
+      toast.error("Tạo mới token không thành công", {
+        style: {
+          background: "#dc2626", // 🔥 Màu đỏ đậm
+          color: "#fff", // Chữ trắng
+          border: "1px solid #b91c1c", // Viền đỏ đậm hơn
+        },
+      });
     } finally {
       setLoadingGlobal(false);
     }
@@ -187,7 +198,13 @@ const PageToken = () => {
         <Button
           className="cursor-pointer"
           variant={"outline"}
-          onClick={handleGrantNewToken}>
+          onClick={() =>
+            showAlert(
+              "Xác nhận",
+              "Bạn có chắc chắn muốn tạo lại token mới không?",
+              handleGrantNewToken
+            )
+          }>
           Grant & save new token
         </Button>
       </div>
