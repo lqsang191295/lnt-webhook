@@ -1,3 +1,5 @@
+"use client";
+
 import { createContext, useContext, useState, ReactNode } from "react";
 import {
   AlertDialog,
@@ -72,7 +74,8 @@ export const GloabalAlertDialogProvider = ({
               onClick={() => {
                 onConfirm?.();
                 setIsOpen(false);
-              }}>
+              }}
+            >
               Confirm
             </AlertDialogAction>
           </AlertDialogFooter>

@@ -1,123 +1,170 @@
 "use client";
 
-import { ChevronRight, LifeBuoy, Radio, Webhook } from "lucide-react";
+import * as React from "react";
+import {
+  AudioWaveform,
+  BookOpen,
+  Bot,
+  Command,
+  Frame,
+  GalleryVerticalEnd,
+  Map,
+  PieChart,
+  Settings2,
+  SquareTerminal,
+} from "lucide-react";
 
+import { NavMain } from "@/components/nav-main";
+import { NavProjects } from "@/components/nav-projects";
+import { NavUser } from "@/components/nav-user";
+import { TeamSwitcher } from "@/components/team-switcher";
 import {
   Sidebar,
   SidebarContent,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarGroupLabel,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
+  SidebarFooter,
+  SidebarHeader,
+  SidebarRail,
 } from "@/components/ui/sidebar";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
-import { usePathname } from "next/navigation";
-import { useEffect } from "react";
 
-// Menu items.
-export const menuItems = [
-  {
-    title: "Home",
-    url: "/",
-    icon: Radio,
-  },
-  {
-    title: "Zalo",
-    url: "#",
-    icon: Radio,
-    items: [
-      {
-        title: "Webhook",
-        url: "/webhook",
-        icon: Webhook,
-      },
-      {
-        title: "Token",
-        url: "/token",
-        icon: LifeBuoy,
-      },
-    ],
-  },
-];
+// This is sample data.
+const data = {
+  teams: [
+    {
+      name: "Bv LNT",
+      logo: GalleryVerticalEnd,
+      plan: "Enterprise",
+    },
+    {
+      name: "Acme Corp.",
+      logo: AudioWaveform,
+      plan: "Startup",
+    },
+    {
+      name: "Evil Corp.",
+      logo: Command,
+      plan: "Free",
+    },
+  ],
+  navMain: [
+    {
+      title: "Zalo",
+      url: "#",
+      icon: SquareTerminal,
+      isActive: true,
+      items: [
+        {
+          title: "Token",
+          url: "/token",
+        },
+        {
+          title: "Webhook",
+          url: "/webhook",
+        },
+        {
+          title: "Settings",
+          url: "#",
+        },
+      ],
+    },
+    {
+      title: "Models",
+      url: "#",
+      icon: Bot,
+      items: [
+        {
+          title: "Genesis",
+          url: "/model",
+        },
+        {
+          title: "Explorer",
+          url: "#",
+        },
+        {
+          title: "Quantum",
+          url: "#",
+        },
+      ],
+    },
+    {
+      title: "Documentation",
+      url: "#",
+      icon: BookOpen,
+      items: [
+        {
+          title: "Introduction",
+          url: "#",
+        },
+        {
+          title: "Get Started",
+          url: "#",
+        },
+        {
+          title: "Tutorials",
+          url: "#",
+        },
+        {
+          title: "Changelog",
+          url: "#",
+        },
+      ],
+    },
+    {
+      title: "Settings",
+      url: "#",
+      icon: Settings2,
+      items: [
+        {
+          title: "General",
+          url: "#",
+        },
+        {
+          title: "Team",
+          url: "#",
+        },
+        {
+          title: "Billing",
+          url: "#",
+        },
+        {
+          title: "Limits",
+          url: "#",
+        },
+      ],
+    },
+  ],
+  projects: [
+    {
+      name: "Design Engineering",
+      url: "#",
+      icon: Frame,
+    },
+    {
+      name: "Sales & Marketing",
+      url: "#",
+      icon: PieChart,
+    },
+    {
+      name: "Travel",
+      url: "#",
+      icon: Map,
+    },
+  ],
+};
 
-export function AppSidebar({
-  onSelect,
-}: {
-  onSelect: (items: string[]) => void;
-}) {
-  const pathname = usePathname();
-  const pathSegments = pathname.split("/").filter((segment) => segment);
-
-  const autoGetBreadcrumb = () => {
-    console.log("pathSegments ========== ", pathSegments);
-    if (!pathSegments || !pathSegments.length) {
-      return onSelect([menuItems[0].title]);
-    }
-
-    const item = menuItems.find((i) => {
-      return i.items?.find((ii) => {
-        return ii.url === `/${pathSegments[0]}`;
-      });
-    });
-
-    if (!item) return;
-
-    onSelect([item.title, pathSegments[0]]);
-  };
-
-  useEffect(() => {
-    autoGetBreadcrumb();
-  }, []);
-
+export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
-    <Sidebar variant="sidebar" collapsible="icon">
-      <SidebarContent className="gap-0">
-        {menuItems.map((item) => (
-          <Collapsible
-            key={item.title}
-            title={item.title}
-            defaultOpen
-            className="group/collapsible ">
-            <SidebarGroup>
-              <SidebarGroupLabel
-                asChild
-                className="group/label text-sm text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground">
-                <CollapsibleTrigger>
-                  <item.icon />{" "}
-                  <a className="mx-2 cursor-pointer" href={item.url}>
-                    {item.title}
-                  </a>
-                  {item.items && (
-                    <ChevronRight className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-90" />
-                  )}
-                </CollapsibleTrigger>
-              </SidebarGroupLabel>
-              <CollapsibleContent>
-                <SidebarGroupContent>
-                  <SidebarMenu>
-                    {item.items?.map((it) => (
-                      <SidebarMenuItem key={it.title}>
-                        <SidebarMenuButton asChild>
-                          <a href={it.url}>
-                            <it.icon />
-                            <span>{it.title}</span>
-                          </a>
-                        </SidebarMenuButton>
-                      </SidebarMenuItem>
-                    ))}
-                  </SidebarMenu>
-                </SidebarGroupContent>
-              </CollapsibleContent>
-            </SidebarGroup>
-          </Collapsible>
-        ))}
+    <Sidebar collapsible="icon" {...props}>
+      <SidebarHeader>
+        <TeamSwitcher />
+      </SidebarHeader>
+      <SidebarContent>
+        <NavMain items={data.navMain} />
+        <NavProjects projects={data.projects} />
       </SidebarContent>
+      <SidebarFooter>
+        <NavUser />
+      </SidebarFooter>
+      <SidebarRail />
     </Sidebar>
   );
 }

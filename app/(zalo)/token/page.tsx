@@ -135,7 +135,7 @@ const PageToken = () => {
   }, []);
 
   return (
-    <div className="">
+    <div className="mx-4">
       <div className="mb-4">
         <Button
           className="bg-blue-500 cursor-pointer"
@@ -165,7 +165,11 @@ const PageToken = () => {
         </Label>
 
         <Label className="max-w-3xs font-normal">
-          {loadingToken ? <Loader className="animate-spin" /> : accessToken}
+          {loadingToken ? (
+            <Loader className="animate-spin" />
+          ) : (
+            accessToken || "Không có dữ liệu"
+          )}
         </Label>
 
         <Label className="font-semibold">
@@ -190,7 +194,11 @@ const PageToken = () => {
         </Label>
 
         <Label className="max-w-3xs font-normal">
-          {loadingToken ? <Loader className="animate-spin" /> : refreshToken}
+          {loadingToken ? (
+            <Loader className="animate-spin" />
+          ) : (
+            refreshToken || "Không có dữ liệu"
+          )}
         </Label>
       </div>
 

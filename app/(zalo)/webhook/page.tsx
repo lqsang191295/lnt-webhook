@@ -1,5 +1,5 @@
-const PageWebHook = () => {
-  return <div>Webhook</div>;
+const PageWebhook = () => {
+  return <div>Page webhook</div>;
 };
 
-export default PageWebHook;
+export default PageWebhook;
