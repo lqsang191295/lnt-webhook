@@ -6,7 +6,8 @@
     "dev": "node server.js",
     "build": "next build",
     "start": "node server.js",
-    "lint": "next lint"
+    "lint": "next lint",
+    "dev:local": "next dev"
   },
   "dependencies": {
     "@radix-ui/react-alert-dialog": "^1.1.6",
