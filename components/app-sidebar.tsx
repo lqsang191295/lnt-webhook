@@ -2,12 +2,9 @@
 
 import * as React from "react";
 import {
-  AudioWaveform,
   BookOpen,
   Bot,
-  Command,
   Frame,
-  GalleryVerticalEnd,
   Map,
   PieChart,
   Settings2,
@@ -28,23 +25,6 @@ import {
 
 // This is sample data.
 const data = {
-  teams: [
-    {
-      name: "Bv LNT",
-      logo: GalleryVerticalEnd,
-      plan: "Enterprise",
-    },
-    {
-      name: "Acme Corp.",
-      logo: AudioWaveform,
-      plan: "Startup",
-    },
-    {
-      name: "Evil Corp.",
-      logo: Command,
-      plan: "Free",
-    },
-  ],
   navMain: [
     {
       title: "Zalo",
@@ -67,13 +47,18 @@ const data = {
       ],
     },
     {
-      title: "Models",
+      title: "Component",
       url: "#",
       icon: Bot,
+      isActive: true,
       items: [
         {
-          title: "Genesis",
-          url: "/model",
+          title: "Editor",
+          url: "/editor",
+        },
+        {
+          title: "Dnd Kit",
+          url: "/dnd-kit",
         },
         {
           title: "Explorer",
