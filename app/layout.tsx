@@ -42,7 +42,10 @@ export default function RootLayout({
   if (pathnameNotUseLayout.includes(pathname)) {
     return (
       <html lang="en">
-        <body>{children}</body>
+        <body>
+          {children}
+          <Toaster />
+        </body>
       </html>
     );
   }
@@ -50,7 +53,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
         <StoreProvider>
           <GloabalAlertDialogProvider>
             <MainLayout>{children}</MainLayout>

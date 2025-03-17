@@ -12,11 +12,19 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import Image from "next/image";
+import { useState } from "react";
+import { post } from "@/api/client";
+import { ToastError, ToastSuccess } from "@/lib/toast";
+import { useRouter } from "next/navigation";
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
+  const router = useRouter();
+  const [username, setUsername] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+
   const handleAuthenticationZalo = () => {
     console.log(
       "process.env.NEXT_PUBLIC_ZALO_APP_ID ==",
@@ -38,6 +46,38 @@ export function LoginForm({
     );
   };
 
+  const handleLogin = async () => {
+    const api = process.env.NEXT_PUBLIC_API || "http://localhost:3999";
+    console.log(" aaaaaaaaaa ", username, password, api);
+    try {
+      const data = await post(
+        `${api}/auth/sign-in`,
+        {
+          username,
+          password,
+        },
+        {
+          headers: {
+            credentials: "include",
+          },
+        }
+      );
+      console.log(data);
+      if (data.error) {
+        return ToastError("Đăng nhập không thành công");
+      }
+
+      ToastSuccess("Đăng nhập thành công");
+
+      setTimeout(() => {
+        router.push("/");
+      }, 1500);
+    } catch (ex) {
+      console.log("ex ", ex);
+      ToastError("Đăng nhập không thành công");
+    }
+  };
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
@@ -48,12 +88,13 @@ export function LoginForm({
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form>
+          <form onSubmit={(e) => e.preventDefault()}>
             <div className="grid gap-6">
               <div className="flex flex-col gap-4">
                 <Button
                   className="bg-blue-500 cursor-pointer w-full"
-                  onClick={handleAuthenticationZalo}>
+                  onClick={handleAuthenticationZalo}
+                >
                   <Image
                     src={"/icons/zalo.svg"}
                     width={24}
@@ -92,9 +133,10 @@ export function LoginForm({
                   <Label htmlFor="email">Email</Label>
                   <Input
                     id="email"
-                    type="email"
+                    type="text"
                     placeholder="m@example.com"
-                    required
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
                   />
                 </div>
                 <div className="grid gap-2">
@@ -102,13 +144,23 @@ export function LoginForm({
                     <Label htmlFor="password">Password</Label>
                     <a
                       href="#"
-                      className="ml-auto text-sm underline-offset-4 hover:underline">
+                      className="ml-auto text-sm underline-offset-4 hover:underline"
+                    >
                       Forgot your password?
                     </a>
                   </div>
-                  <Input id="password" type="password" required />
+                  <Input
+                    id="password"
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
                 </div>
-                <Button type="submit" className="w-full">
+                <Button
+                  type="submit"
+                  className="w-full cursor-pointer"
+                  onClick={handleLogin}
+                >
                   Login
                 </Button>
               </div>
