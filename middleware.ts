@@ -2,7 +2,10 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 // Danh sách các route cần kiểm tra login
-const protectedRoutes = ["/", "/dashboard", "/token"];
+const protectedRoutes = [
+  // "/", "/dashboard", "/token"
+  "*",
+];
 
 export function middleware(request: NextRequest) {
   const token = request.cookies.get("jwt"); // Lấy token từ cookie

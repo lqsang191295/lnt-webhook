@@ -1,6 +1,6 @@
 export interface RequestOptions {
   token?: string; // Token để xác thực
-  headers?: Record<string, any>; // Thêm header nếu cần
+  headers?: Record<string, unknown>; // Thêm header nếu cần
   params?: Record<string, unknown>; // Query params cho GET
 }
 

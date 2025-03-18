@@ -47,11 +47,15 @@ const data = {
       ],
     },
     {
-      title: "Component",
+      title: "Manager",
       url: "#",
       icon: Bot,
       isActive: true,
       items: [
+        {
+          title: "Cron Jobs",
+          url: "/cron-jobs",
+        },
         {
           title: "Editor",
           url: "/editor",

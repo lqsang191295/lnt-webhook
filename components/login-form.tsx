@@ -47,11 +47,10 @@ export function LoginForm({
   };
 
   const handleLogin = async () => {
-    const api = process.env.NEXT_PUBLIC_API || "http://localhost:3999";
-    console.log(" aaaaaaaaaa ", username, password, api);
+    console.log(" aaaaaaaaaa ", username, password);
     try {
       const data = await post(
-        `${api}/auth/sign-in`,
+        `/auth/sign-in`,
         {
           username,
           password,
@@ -93,8 +92,7 @@ export function LoginForm({
               <div className="flex flex-col gap-4">
                 <Button
                   className="bg-blue-500 cursor-pointer w-full"
-                  onClick={handleAuthenticationZalo}
-                >
+                  onClick={handleAuthenticationZalo}>
                   <Image
                     src={"/icons/zalo.svg"}
                     width={24}
@@ -144,8 +142,7 @@ export function LoginForm({
                     <Label htmlFor="password">Password</Label>
                     <a
                       href="#"
-                      className="ml-auto text-sm underline-offset-4 hover:underline"
-                    >
+                      className="ml-auto text-sm underline-offset-4 hover:underline">
                       Forgot your password?
                     </a>
                   </div>
@@ -159,8 +156,7 @@ export function LoginForm({
                 <Button
                   type="submit"
                   className="w-full cursor-pointer"
-                  onClick={handleLogin}
-                >
+                  onClick={handleLogin}>
                   Login
                 </Button>
               </div>
