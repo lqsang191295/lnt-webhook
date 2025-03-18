@@ -16,6 +16,7 @@ import {
 import {
   ArrowUpDown,
   ChevronDown,
+  CirclePlus,
   MoreHorizontal,
   RefreshCw,
 } from "lucide-react";
@@ -45,6 +46,7 @@ import { get, post } from "@/api/client";
 import { TypeJob } from "@/store/types/task";
 import { ToastError, ToastSuccess } from "@/lib/toast";
 import { DialogAdd } from "./_components/dialog-add";
+import { useDialogStore } from "@/store/states/dialog";
 
 export function PageCronJobs() {
   const [sorting, setSorting] = React.useState<SortingState>([]);
@@ -55,6 +57,7 @@ export function PageCronJobs() {
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
   const [data, setData] = React.useState<TypeJob[]>([]);
+  const openDialog = useDialogStore((state) => state.openDialog);
 
   const getColumns = (): ColumnDef<TypeJob>[] => {
     if (!data || !data.length) return [];
@@ -97,7 +100,8 @@ export function PageCronJobs() {
               variant="ghost"
               onClick={() =>
                 column.toggleSorting(column.getIsSorted() === "asc")
-              }>
+              }
+            >
               {key}
               <ArrowUpDown />
             </Button>
@@ -131,15 +135,23 @@ export function PageCronJobs() {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuItem
+                className="cursor-pointer"
+                onClick={() => openDialog("edit", data)}
+              >
+                Edit
+              </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 className="cursor-pointer"
-                onClick={() => actionCronJob("start", data)}>
+                onClick={() => actionCronJob("start", data)}
+              >
                 Start
               </DropdownMenuItem>
               <DropdownMenuItem
                 className="cursor-pointer"
-                onClick={() => actionCronJob("stop", data)}>
+                onClick={() => actionCronJob("stop", data)}
+              >
                 Stop
               </DropdownMenuItem>
             </DropdownMenuContent>
@@ -234,10 +246,10 @@ export function PageCronJobs() {
       <div className="flex items-center py-4">
         <Input
           placeholder="Filter name..."
-          value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("name")?.setFilterValue(event.target.value)
-          }
+          // value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+          // onChange={(event) =>
+          //   table.getColumn("name")?.setFilterValue(event.target.value)
+          // }
           className="max-w-sm"
         />
 
@@ -259,7 +271,8 @@ export function PageCronJobs() {
                     checked={column.getIsVisible()}
                     onCheckedChange={(value) =>
                       column.toggleVisibility(!!value)
-                    }>
+                    }
+                  >
                     {column.id}
                   </DropdownMenuCheckboxItem>
                 );
@@ -270,7 +283,15 @@ export function PageCronJobs() {
         <Button
           variant="outline"
           className="ml-2 cursor-pointer"
-          onClick={reloadCronJob}>
+          onClick={() => openDialog("add")}
+        >
+          <CirclePlus />
+        </Button>
+        <Button
+          variant="outline"
+          className="ml-2 cursor-pointer"
+          onClick={reloadCronJob}
+        >
           <RefreshCw />
         </Button>
       </div>
@@ -299,7 +320,8 @@ export function PageCronJobs() {
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
-                  data-state={row.getIsSelected() && "selected"}>
+                  data-state={row.getIsSelected() && "selected"}
+                >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
                       {flexRender(
@@ -314,7 +336,8 @@ export function PageCronJobs() {
               <TableRow>
                 <TableCell
                   colSpan={getColumns().length}
-                  className="h-24 text-center">
+                  className="h-24 text-center"
+                >
                   No results.
                 </TableCell>
               </TableRow>
@@ -332,14 +355,16 @@ export function PageCronJobs() {
             variant="outline"
             size="sm"
             onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}>
+            disabled={!table.getCanPreviousPage()}
+          >
             Previous
           </Button>
           <Button
             variant="outline"
             size="sm"
             onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}>
+            disabled={!table.getCanNextPage()}
+          >
             Next
           </Button>
         </div>

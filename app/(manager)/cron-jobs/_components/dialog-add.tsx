@@ -1,14 +1,5 @@
 import { Button } from "@/components/ui/button";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import {
   Command,
   CommandEmpty,
   CommandGroup,
@@ -27,6 +18,8 @@ import {
 } from "@/components/ui/popover";
 import { ToastError, ToastSuccess } from "@/lib/toast";
 import { post } from "@/api/client";
+import DialogCommon from "@/components/dialog-common";
+import { useDialogStore } from "@/store/states/dialog";
 
 const valueStatus = [
   {
@@ -40,29 +33,34 @@ const valueStatus = [
 ];
 
 export function DialogAdd({ onRefresh }: { onRefresh: () => void }) {
-  const [open, setOpen] = useState(false);
-  const [model, setModel] = useState<TypeJob>({
-    name: "",
-    func: "",
-    status: false,
-    time: "",
-  });
+  const data = useDialogStore((state) => state.data);
+  const mode = useDialogStore((state) => state.mode);
+  const [model, setModel] = useState<TypeJob>(data);
 
   const save = async () => {
+    let endpoint: string = "";
+
+    switch (mode) {
+      case "add":
+        endpoint = "/module/HT_CronJobs/add";
+        break;
+      case "edit":
+        endpoint = "/module/HT_CronJobs/update";
+        break;
+    }
+
     try {
       console.log("aaaaaaaaa ", model);
-      const result = await post("/module/HT_CronJobs/add", {
+      const result = await post(endpoint, {
         ...model,
       });
 
       if (result.status === "success") {
-        ToastSuccess("Thêm cron job thành công");
-
-        setOpen(false);
+        ToastSuccess(result.message);
 
         if (onRefresh) onRefresh();
       } else if (result.status === "error") {
-        ToastError("Thêm cron job thất bại");
+        ToastError(result.message);
       }
     } catch (ex) {
       console.log("ex = ", ex);
@@ -71,108 +69,92 @@ export function DialogAdd({ onRefresh }: { onRefresh: () => void }) {
   };
 
   return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button variant="outline" className="ml-2 cursor-pointer">
-          <CirclePlus />
-        </Button>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>Add</DialogTitle>
-          <DialogDescription>Add Cron Job</DialogDescription>
-        </DialogHeader>
-        <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="name" className="text-right">
-              Name
-            </Label>
-            <Input
-              id="name"
-              value={model?.name}
-              className="col-span-3"
-              onChange={(e) =>
-                setModel((prev) => ({ ...prev, name: e.target.value }))
-              }
-            />
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="func" className="text-right">
-              Func
-            </Label>
-            <Input
-              id="func"
-              value={model?.func}
-              className="col-span-3"
-              onChange={(e) =>
-                setModel((prev) => ({ ...prev, func: e.target.value }))
-              }
-            />
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="time" className="text-right">
-              Time
-            </Label>
-            <Input
-              id="time"
-              value={model?.time}
-              className="col-span-3"
-              onChange={(e) =>
-                setModel((prev) => ({ ...prev, time: e.target.value }))
-              }
-            />
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="status" className="text-right">
-              Status
-            </Label>
-            <Popover open={open} onOpenChange={setOpen}>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  role="combobox"
-                  aria-expanded={open}
-                  className="w-full justify-between">
-                  {
-                    valueStatus.find(
-                      (v) => v.value === (model.status ? "1" : "0")
-                    )?.label
-                  }
-                  <ChevronsUpDown className="opacity-50" />
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-full p-0">
-                <Command>
-                  <CommandList>
-                    <CommandEmpty>No framework found.</CommandEmpty>
-                    <CommandGroup>
-                      {valueStatus.map((v) => (
-                        <CommandItem
-                          key={v.value}
-                          value={v.value}
-                          onSelect={(currentValue) => {
-                            setModel((prev) => ({
-                              ...prev,
-                              status: currentValue === "0" ? false : true,
-                            }));
-                            setOpen(false);
-                          }}>
-                          {v.label}
-                        </CommandItem>
-                      ))}
-                    </CommandGroup>
-                  </CommandList>
-                </Command>
-              </PopoverContent>
-            </Popover>
-          </div>
+    <DialogCommon onSave={save}>
+      <div className="grid gap-4 py-4">
+        <div className="grid grid-cols-4 items-center gap-4">
+          <Label htmlFor="name" className="text-right">
+            Name
+          </Label>
+          <Input
+            id="name"
+            value={model?.name}
+            className="col-span-3"
+            onChange={(e) =>
+              setModel((prev) => ({ ...prev, name: e.target.value }))
+            }
+          />
         </div>
-        <DialogFooter>
-          <Button type="submit" onClick={save}>
-            Save changes
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+        <div className="grid grid-cols-4 items-center gap-4">
+          <Label htmlFor="func" className="text-right">
+            Func
+          </Label>
+          <Input
+            id="func"
+            value={model?.func}
+            className="col-span-3"
+            onChange={(e) =>
+              setModel((prev) => ({ ...prev, func: e.target.value }))
+            }
+          />
+        </div>
+        <div className="grid grid-cols-4 items-center gap-4">
+          <Label htmlFor="time" className="text-right">
+            Time
+          </Label>
+          <Input
+            id="time"
+            value={model?.time}
+            className="col-span-3"
+            onChange={(e) =>
+              setModel((prev) => ({ ...prev, time: e.target.value }))
+            }
+          />
+        </div>
+        <div className="grid grid-cols-4 items-center gap-4">
+          <Label htmlFor="status" className="text-right">
+            Status
+          </Label>
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                role="combobox"
+                className="w-full justify-between"
+              >
+                {
+                  valueStatus.find(
+                    (v) => v.value === (model?.status ? "1" : "0")
+                  )?.label
+                }
+                <ChevronsUpDown className="opacity-50" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-full p-0">
+              <Command>
+                <CommandList>
+                  <CommandEmpty>No framework found.</CommandEmpty>
+                  <CommandGroup>
+                    {valueStatus.map((v) => (
+                      <CommandItem
+                        key={v.value}
+                        value={v.value}
+                        onSelect={(currentValue) => {
+                          setModel((prev) => ({
+                            ...prev,
+                            status: currentValue === "0" ? false : true,
+                          }));
+                        }}
+                      >
+                        {v.label}
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                </CommandList>
+              </Command>
+            </PopoverContent>
+          </Popover>
+        </div>
+      </div>
+    </DialogCommon>
   );
 }
