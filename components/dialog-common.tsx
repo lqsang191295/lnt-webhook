@@ -16,7 +16,7 @@ interface DialogCommonProps {
 }
 
 const DialogCommon = ({ children, onSave }: DialogCommonProps) => {
-  const { open, mode, data, closeDialog } = useDialogStore();
+  const { open, closeDialog } = useDialogStore();
 
   return (
     <Dialog open={open} onOpenChange={closeDialog}>

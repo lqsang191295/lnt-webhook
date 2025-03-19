@@ -9,8 +9,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { TypeJob } from "@/store/types/task";
-import { ChevronsUpDown, CirclePlus } from "lucide-react";
-import { useState } from "react";
+import { ChevronsUpDown } from "lucide-react";
 import {
   Popover,
   PopoverContent,
@@ -33,9 +32,24 @@ const valueStatus = [
 ];
 
 export function DialogAdd({ onRefresh }: { onRefresh: () => void }) {
-  const data = useDialogStore((state) => state.data);
+  const model = (useDialogStore((state) => state.data) || {
+    name: "",
+    func: "",
+    status: false,
+    time: "",
+  }) as TypeJob;
   const mode = useDialogStore((state) => state.mode);
-  const [model, setModel] = useState<TypeJob>(data);
+  const setModel = useDialogStore((state) => state.setData);
+  // const [model, setModel] = useState<TypeJob>(
+  //   data || {
+  //     name: "",
+  //     func: "",
+  //     status: false,
+  //     time: "",
+  //   }
+  // );
+
+  console.log("data ============ ", model);
 
   const save = async () => {
     let endpoint: string = "";
@@ -79,9 +93,7 @@ export function DialogAdd({ onRefresh }: { onRefresh: () => void }) {
             id="name"
             value={model?.name}
             className="col-span-3"
-            onChange={(e) =>
-              setModel((prev) => ({ ...prev, name: e.target.value }))
-            }
+            onChange={(e) => setModel({ name: e.target.value })}
           />
         </div>
         <div className="grid grid-cols-4 items-center gap-4">
@@ -92,9 +104,7 @@ export function DialogAdd({ onRefresh }: { onRefresh: () => void }) {
             id="func"
             value={model?.func}
             className="col-span-3"
-            onChange={(e) =>
-              setModel((prev) => ({ ...prev, func: e.target.value }))
-            }
+            onChange={(e) => setModel({ func: e.target.value })}
           />
         </div>
         <div className="grid grid-cols-4 items-center gap-4">
@@ -105,9 +115,7 @@ export function DialogAdd({ onRefresh }: { onRefresh: () => void }) {
             id="time"
             value={model?.time}
             className="col-span-3"
-            onChange={(e) =>
-              setModel((prev) => ({ ...prev, time: e.target.value }))
-            }
+            onChange={(e) => setModel({ time: e.target.value })}
           />
         </div>
         <div className="grid grid-cols-4 items-center gap-4">
@@ -119,8 +127,7 @@ export function DialogAdd({ onRefresh }: { onRefresh: () => void }) {
               <Button
                 variant="outline"
                 role="combobox"
-                className="w-full justify-between"
-              >
+                className="w-full justify-between">
                 {
                   valueStatus.find(
                     (v) => v.value === (model?.status ? "1" : "0")
@@ -139,12 +146,10 @@ export function DialogAdd({ onRefresh }: { onRefresh: () => void }) {
                         key={v.value}
                         value={v.value}
                         onSelect={(currentValue) => {
-                          setModel((prev) => ({
-                            ...prev,
+                          setModel({
                             status: currentValue === "0" ? false : true,
-                          }));
-                        }}
-                      >
+                          });
+                        }}>
                         {v.label}
                       </CommandItem>
                     ))}
