@@ -10,6 +10,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { ToastError, ToastSuccess } from "@/lib/toast";
 import { useLoadingGlobalStore } from "@/store/loadingGlobalStore";
 import { Copy, Loader } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -79,33 +80,20 @@ const PageToken = () => {
   const handleGrantNewToken = async () => {
     try {
       setLoadingGlobal(true);
-      const newDataToken = await post("/webhook/refresh-token", {
+      const result = await post("/webhook/refresh-token", {
         refresh_token: refreshToken,
       });
 
-      if (!newDataToken) return;
-
-      console.log("newDataToken ===== ", newDataToken);
-
-      const dataUpdate = await post("/database/update-token", {
-        access_token: newDataToken.access_token || "xxx",
-        refresh_token: newDataToken.refresh_token || "xxx",
-      });
-
-      console.log("dataUpdate === ", dataUpdate);
-
-      setAccessToken(newDataToken.access_token);
-      setRefreshToken(newDataToken.refresh_token);
-      toast.success("Tạo mới token không thành công");
+      if (!result || result.error || !result.data) {
+        ToastError("Tạo mới token không thành công");
+        return;
+      }
+      setAccessToken(result.data.accessToken);
+      setRefreshToken(result.data.refreshToken);
+      ToastSuccess("Tạo mới token thành công");
     } catch (ex) {
       console.log("ex", ex);
-      toast.error("Tạo mới token không thành công", {
-        style: {
-          background: "#dc2626", // 🔥 Màu đỏ đậm
-          color: "#fff", // Chữ trắng
-          border: "1px solid #b91c1c", // Viền đỏ đậm hơn
-        },
-      });
+      ToastError("Tạo mới token không thành công");
     } finally {
       setLoadingGlobal(false);
     }
@@ -115,16 +103,17 @@ const PageToken = () => {
     try {
       setLoadingToken(true);
 
-      const data = await get(`/database/token`);
+      const result = await get(`/module/HT_Thamso/zalo-token`);
 
-      if (!data) return;
+      if (!result || result.error) return;
 
-      const { accessToken, refreshToken } = data;
+      const { accessToken, refreshToken } = result.data;
 
       setAccessToken(accessToken);
       setRefreshToken(refreshToken);
     } catch (ex) {
       console.log("ex", ex);
+      ToastError(ex.message);
     } finally {
       setLoadingToken(false);
     }
