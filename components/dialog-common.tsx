@@ -1,4 +1,3 @@
-import { useDialogStore } from "@/store/states/dialog";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -8,6 +7,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { useDialogStore } from "@/store/DialogStore";
 import { ReactNode } from "react";
 
 interface DialogCommonProps {

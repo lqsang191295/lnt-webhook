@@ -46,8 +46,8 @@ import { get, post } from "@/api/client";
 import { TypeJob } from "@/store/types/task";
 import { ToastError, ToastSuccess } from "@/lib/toast";
 import { DialogAdd } from "./_components/dialog-add";
-import { useDialogStore } from "@/store/states/dialog";
 import { useAlertDialog } from "@/components/global-alert-dialog";
+import { useDialogStore } from "@/store/DialogStore";
 
 export function PageCronJobs() {
   const [sorting, setSorting] = React.useState<SortingState>([]);

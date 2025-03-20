@@ -11,7 +11,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { ToastError, ToastSuccess } from "@/lib/toast";
-import { useLoadingGlobalStore } from "@/store/loadingGlobalStore";
+import { useLoadingGlobalStore } from "@/store/LoadingGlobalStore";
 import { Copy, Loader } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";

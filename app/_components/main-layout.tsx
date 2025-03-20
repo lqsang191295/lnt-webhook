@@ -15,7 +15,7 @@ const MainLayout = ({ children }: MainLayoutProps) => {
       <AppSidebar />
       <SidebarInset>
         <HeaderLayout />
-        <main>{children}</main>
+        <main className="w-full h-full">{children}</main>
       </SidebarInset>
     </SidebarProvider>
   );

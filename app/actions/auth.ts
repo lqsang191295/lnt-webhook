@@ -1,6 +1,5 @@
 "use server";
 import { cookies } from "next/headers";
-import { encrypt } from "../_lib/session";
 import { post } from "@/api/client";
 
 export async function login(username: string, password: string) {
@@ -16,14 +15,10 @@ export async function login(username: string, password: string) {
       }
     );
 
-    console.log("res === ", res);
-
     if (res.error) {
       throw new Error("Login failed");
     }
 
-    console.log("res1111111 === ", res.data.jwt);
-    // const session = await encrypt({ jwt: res.data.jwt });
     const cookieStore = await cookies();
 
     cookieStore.set("authToken", res.data.jwt, {

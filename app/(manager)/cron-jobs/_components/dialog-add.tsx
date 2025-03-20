@@ -18,7 +18,7 @@ import {
 import { ToastError, ToastSuccess } from "@/lib/toast";
 import { post } from "@/api/client";
 import DialogCommon from "@/components/dialog-common";
-import { useDialogStore } from "@/store/states/dialog";
+import { useDialogStore } from "@/store/DialogStore";
 
 const valueStatus = [
   {

@@ -65,8 +65,8 @@ const data = {
           url: "/dnd-kit",
         },
         {
-          title: "Explorer",
-          url: "#",
+          title: "AI GPT",
+          url: "/ai-gpt",
         },
         {
           title: "Quantum",
