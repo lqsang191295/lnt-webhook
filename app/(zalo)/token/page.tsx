@@ -103,7 +103,9 @@ const PageToken = () => {
     try {
       setLoadingToken(true);
 
-      const result = await get(`/module/HT_Thamso/zalo-token`);
+      const result = await get(`/module/HT_Thamso/zalo-token`, {
+        credentials: "include",
+      });
 
       if (!result || result.error) return;
 
@@ -113,7 +115,7 @@ const PageToken = () => {
       setRefreshToken(refreshToken);
     } catch (ex) {
       console.log("ex", ex);
-      ToastError(ex.message);
+      ToastError("ex.message");
     } finally {
       setLoadingToken(false);
     }

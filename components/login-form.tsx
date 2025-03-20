@@ -13,9 +13,9 @@ import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
-import { post } from "@/api/client";
 import { ToastError, ToastSuccess } from "@/lib/toast";
 import { useRouter } from "next/navigation";
+import { login } from "@/app/actions/auth";
 
 export function LoginForm({
   className,
@@ -47,30 +47,14 @@ export function LoginForm({
   };
 
   const handleLogin = async () => {
-    console.log(" aaaaaaaaaa ", username, password);
     try {
-      const data = await post(
-        `/auth/sign-in`,
-        {
-          username,
-          password,
-        },
-        {
-          headers: {
-            credentials: "include",
-          },
-        }
-      );
-      console.log(data);
-      if (data.error) {
-        return ToastError("Đăng nhập không thành công");
-      }
+      await login(username, password);
 
       ToastSuccess("Đăng nhập thành công");
 
       setTimeout(() => {
         router.push("/");
-      }, 1500);
+      }, 1000);
     } catch (ex) {
       console.log("ex ", ex);
       ToastError("Đăng nhập không thành công");

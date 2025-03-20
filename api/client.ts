@@ -2,6 +2,7 @@ export interface RequestOptions {
   token?: string; // Token để xác thực
   headers?: Record<string, unknown>; // Thêm header nếu cần
   params?: Record<string, unknown>; // Query params cho GET
+  credentials?: string;
 }
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API || "";
@@ -16,9 +17,19 @@ export async function get(endpoint: string, options: RequestOptions = {}) {
   const queryString = params
     ? "?" + new URLSearchParams(params as Record<string, string>).toString()
     : "";
+  console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa ", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      ...headers,
+      ...(options.credentials ? { credentials: options.credentials } : {}),
+    },
+  });
 
   const res = await fetch(`${API_BASE_URL}${endpoint}${queryString}`, {
     method: "GET",
+    ...(options.credentials ? { credentials: "include" } : {}),
     headers: {
       "Content-Type": "application/json",
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
@@ -45,6 +56,7 @@ export async function post(
 
   const res = await fetch(`${API_BASE_URL}${endpoint}`, {
     method: "POST",
+    ...(options.credentials ? { credentials: "include" } : {}),
     headers: {
       "Content-Type": "application/json",
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
