@@ -62,7 +62,8 @@ export function SidebarRight() {
               variant="outline"
               role="combobox"
               aria-expanded={open}
-              className="w-[200px] justify-between">
+              className="w-[200px] justify-between"
+            >
               {selectedValue ? (selectedValue.value as string) : "Chọn model"}
               <ChevronsUpDown className="opacity-50" />
             </Button>
@@ -116,7 +117,35 @@ export function SidebarRight() {
           Generate questions
         </Button>
       </header>
-      <main className="w-full flex-1">Main</main>
+      <main className="w-full flex-1 mx-2">
+        {[
+          {
+            question:
+              "Trong xử trí bệnh nhân ngừng tim tại khoa cấp cứu, phương pháp nào được ưu tiên hàng đầu?",
+            options: [
+              "A. Sốc điện ngay lập tức",
+              "B. Thực hiện ép ngực CPR và sử dụng AED nếu có",
+              "C. Dùng thuốc Epinephrine trước khi ép ngực",
+              "D. Đưa bệnh nhân đi chụp CT não khẩn cấp",
+            ],
+            correctAnswer: "B. Thực hiện ép ngực CPR và sử dụng AED nếu có",
+            explanation:
+              "Trong trường hợp ngừng tim, thực hiện ép ngực CPR sớm và sử dụng máy khử rung tim tự động (AED) nếu có là biện pháp ưu tiên hàng đầu để tăng cơ hội sống sót cho bệnh nhân.",
+          },
+        ].map((q) => {
+          return (
+            <div className="">
+              <div>
+                <span>Câu 1:</span> <span>{q.question}</span>
+              </div>
+              {q.options.map((op) => {
+                return <div>{op}</div>;
+              })}
+              <div>Explanation: {q.explanation}</div>
+            </div>
+          );
+        })}
+      </main>
     </div>
   );
 }

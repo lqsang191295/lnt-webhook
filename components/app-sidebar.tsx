@@ -69,8 +69,8 @@ const data = {
           url: "/ai-gpt",
         },
         {
-          title: "Quantum",
-          url: "#",
+          title: "Quiz",
+          url: "/quiz",
         },
       ],
     },
