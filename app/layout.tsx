@@ -9,6 +9,9 @@ import { GloabalAlertDialogProvider } from "@/components/global-alert-dialog";
 import { Toaster } from "sonner";
 import GlobalLoading from "@/components/global-loading";
 import { usePathname } from "next/navigation";
+import { getZaloDsTemplate, getZaloToken } from "@/store/action/zalo";
+import { useZaloData } from "@/store/ZaloDataStore";
+import { useEffect } from "react";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -38,6 +41,28 @@ export default function RootLayout({
     "/terms-of-service",
     "/privacy-policy",
   ];
+  const { setAccessToken, setDsTempalte, setRefreshToken } = useZaloData();
+  const loadZaloDataAsync = () => {
+    getZaloToken().then((resZalo) => {
+      console.log("resZalo --------------------- ", resZalo);
+      if (!resZalo) return;
+
+      const { access_token, refresh_token } = resZalo;
+
+      setAccessToken(access_token);
+      setRefreshToken(refresh_token);
+
+      getZaloDsTemplate({ access_token, offset: 0, limit: 100 }).then(
+        (data) => {
+          setDsTempalte(data);
+        }
+      );
+    });
+  };
+
+  useEffect(() => {
+    loadZaloDataAsync();
+  }, []);
 
   if (pathnameNotUseLayout.includes(pathname)) {
     return (
@@ -53,8 +78,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <StoreProvider>
           <GloabalAlertDialogProvider>
             <MainLayout>{children}</MainLayout>

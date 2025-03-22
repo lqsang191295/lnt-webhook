@@ -7,13 +7,13 @@ import { useEffect } from "react";
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
+import { useZaloData } from "@/store/ZaloDataStore";
 
 export function DanhSachTemplate() {
   const {
@@ -21,13 +21,12 @@ export function DanhSachTemplate() {
     fn: tGetData,
     data: tData,
   } = useFetch(layDanhSachTemplate);
+  const { access_token } = useZaloData();
 
   useEffect(() => {
     if (tLoading) return;
 
-    const token =
-      "c6nJ2f440YsVRrKDa084AvjdKmYL57Df-HCfCu8BEnJIDsfig2DRBDCNR52727jnppfo8w4FH7NiA6i9karNBDyfV6s302W9ynaOGOrr7HVqKHzMks4s3ka96M-I32qTdYO3D9ea9LFJ8tTqtozj4O0BTaJORYnYYLiQ7S0m0q6NA2myt2yRSerAD2tTTY1FabCc3vfA5d_uGIGQW5uiVyHH01QnHoX3eI80OyWcEW2vJYvfq69r79b8HZ_B849FmpOPA8SqDMdTNM0nitHWSy9vMYEOSNTwwtjcFFjqQrMdNq0ir7jjHBXMP6R9Ua0qpKHyL9WqS72MMN89ycvmOfLB82oR9YLvy0aqHRGEC3t7QtvBYM9yAkrwPccWLN8dzZ5JSwmdN1UdFM1Dhb9QBQ8sK6mqGprTOn6H7m4f";
-    tGetData({ access_token: token, offset: 0, limit: 100 });
+    tGetData({ access_token, offset: 0, limit: 100 });
   }, []);
 
   if (!tData || tLoading) {
