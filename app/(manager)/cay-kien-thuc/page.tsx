@@ -8,6 +8,7 @@ import {
   useNodesState,
   Background,
   Controls,
+  Connection,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { Button } from "@/components/ui/button";
@@ -41,7 +42,7 @@ const PageCayKienThuc = () => {
   const [selectedNodes, setSelectedNodes] = useState([]);
 
   const onConnect = useCallback(
-    (connection) => setEdges((eds) => addEdge(connection, eds)),
+    (connection: Connection) => setEdges((eds) => addEdge(connection, eds)),
     [setEdges]
   );
 

@@ -1,14 +1,15 @@
 "use client";
 import { getQuizs } from "@/actions/quiz";
-import Timer from "@/components/timer";
+import Timer, { TimerHandle } from "@/components/timer";
 import { Button } from "@/components/ui/button";
 import { TypeQuestion } from "@/store/types/question";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const PageQuiz = () => {
   const [quizs, setQuizs] = useState<TypeQuestion[]>([]);
   const [idxQuiz, setIdxQuiz] = useState<number>(0);
   const [completed, setCompleted] = useState<boolean>(false);
+  const timerRef = useRef<TimerHandle>(null);
 
   const getQuizData = async () => {
     const data = await getQuizs();
@@ -30,6 +31,7 @@ const PageQuiz = () => {
   };
 
   useEffect(() => {
+    timerRef.current?.start();
     getQuizData();
   }, []);
 
@@ -42,14 +44,14 @@ const PageQuiz = () => {
   return (
     <div className="">
       <div>
-        <Timer duration={20} onTimeout={handleComplete} />
+        <Timer duration={20} onTimeout={handleComplete} ref={timerRef} />
       </div>
       <div>
         <div>
           <span>Câu {idxQuiz}:</span> <span>{quizs[idxQuiz].question}</span>
         </div>
-        {quizs[idxQuiz].options.map((op) => {
-          return <div>{op}</div>;
+        {quizs[idxQuiz].options.map((op, idx) => {
+          return <div key={`quiz-${idxQuiz}-${idx}`}>{op}</div>;
         })}
         <div>Explanation: {quizs[idxQuiz].explanation}</div>
       </div>
