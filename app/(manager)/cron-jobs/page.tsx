@@ -15,10 +15,14 @@ import {
 } from "@tanstack/react-table";
 import {
   ArrowUpDown,
+  CheckCircle2Icon,
   ChevronDown,
   CirclePlus,
+  Loader,
+  LoaderIcon,
   MoreHorizontal,
   RefreshCw,
+  StopCircleIcon,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -42,12 +46,14 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useEffect } from "react";
-import { get, post } from "@/api/client";
-import { TypeJob } from "@/store/types/task";
+import { post } from "@/api/client";
 import { ToastError, ToastSuccess } from "@/lib/toast";
 import { DialogAdd } from "./_components/dialog-add";
 import { useAlertDialog } from "@/components/global-alert-dialog";
 import { useDialogStore } from "@/store/DialogStore";
+import { a_GetDataCronJobs } from "./_actions";
+import { TypeJob } from "./_types";
+import { Badge } from "@/components/ui/badge";
 
 export function PageCronJobs() {
   const [sorting, setSorting] = React.useState<SortingState>([]);
@@ -58,6 +64,8 @@ export function PageCronJobs() {
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
   const [data, setData] = React.useState<TypeJob[]>([]);
+  const [dataLoading, setDataLoading] = React.useState<boolean>(true);
+
   const openDialog = useDialogStore((state) => state.openDialog);
   const { showAlert } = useAlertDialog();
 
@@ -108,15 +116,29 @@ export function PageCronJobs() {
             </Button>
           );
         },
-        cell: ({ row }) => (
-          <div>
-            {key === "status"
-              ? row.original.status
-                ? "Running"
-                : "Stopped"
-              : row.getValue(key)}
-          </div>
-        ),
+        cell: ({ row }) => {
+          if (key === "status") {
+            return (
+              <Badge
+                variant="outline"
+                className="flex gap-1 px-1.5 text-muted-foreground [&_svg]:size-3">
+                {row.original.status ? (
+                  <>
+                    <LoaderIcon className="text-green-500 dark:text-green-400" />
+                    <span className="text-green-500">Running</span>
+                  </>
+                ) : (
+                  <>
+                    <StopCircleIcon className="text-red-500 dark:text-red-400" />
+                    <span className="text-red-500">Stopped</span>
+                  </>
+                )}
+              </Badge>
+            );
+          }
+
+          return <div>{row.getValue(key)}</div>;
+        },
       });
     });
 
@@ -190,15 +212,7 @@ export function PageCronJobs() {
   });
 
   const getDataCronJobs = async () => {
-    let result: TypeJob[] = [];
-    try {
-      const tasks = await get(`/module/HT_CronJobs/all`);
-      result = tasks.data;
-    } catch (ex) {
-      console.log("ex", ex);
-      // Mocks
-      result = [];
-    }
+    const result: TypeJob[] = await a_GetDataCronJobs();
 
     setData(result);
   };
@@ -261,7 +275,9 @@ export function PageCronJobs() {
   };
 
   useEffect(() => {
+    setDataLoading(true);
     getDataCronJobs();
+    setDataLoading(false);
   }, []);
 
   return (
@@ -336,7 +352,7 @@ export function PageCronJobs() {
             ))}
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows?.length ? (
+            {!dataLoading && table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
@@ -351,12 +367,23 @@ export function PageCronJobs() {
                   ))}
                 </TableRow>
               ))
+            ) : dataLoading ? (
+              <TableRow>
+                <TableCell
+                  colSpan={getColumns().length}
+                  className="h-24 text-center">
+                  <div className="flex p-4 w-full justify-center items-center gap-2">
+                    <Loader className="animate-spin" />
+                    <span>Loading data</span>
+                  </div>
+                </TableCell>
+              </TableRow>
             ) : (
               <TableRow>
                 <TableCell
                   colSpan={getColumns().length}
                   className="h-24 text-center">
-                  No results.
+                  No data.
                 </TableCell>
               </TableRow>
             )}

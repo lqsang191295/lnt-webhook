@@ -53,22 +53,24 @@ export function DanhSachTemplate() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {tData.map((tD: Record<string, unknown>, idx: number) => {
-            return (
-              <TableRow key={tD["templateId"] || `ktd-${idx}`}>
-                <TableCell className="font-medium">
-                  {tD["templateId"] as string}
-                </TableCell>
-                <TableCell>{tD["templateName"] as string}</TableCell>
-                <TableCell>{tD["status"] as string}</TableCell>
-                <TableCell>{tD["templateQuality"] as string}</TableCell>
-                <TableCell>{tD["createdTime"] as string}</TableCell>
-                <TableCell>
-                  <Button variant={"outline"}>View</Button>
-                </TableCell>
-              </TableRow>
-            );
-          })}
+          {tData &&
+            tData.map((tD: Record<string, unknown>, idx: number) => {
+              return (
+                <TableRow
+                  key={tD ? (tD["templateId"] as string) : `ktd-${idx}`}>
+                  <TableCell className="font-medium">
+                    {tD["templateId"] as string}
+                  </TableCell>
+                  <TableCell>{tD["templateName"] as string}</TableCell>
+                  <TableCell>{tD["status"] as string}</TableCell>
+                  <TableCell>{tD["templateQuality"] as string}</TableCell>
+                  <TableCell>{tD["createdTime"] as string}</TableCell>
+                  <TableCell>
+                    <Button variant={"outline"}>View</Button>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
         </TableBody>
       </Table>
     </div>

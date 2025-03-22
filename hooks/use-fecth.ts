@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 const useFetch = <T, A extends unknown[]>(cb: (...args: A) => Promise<T>) => {
-  const [data, setData] = useState<unknown>(undefined);
+  const [data, setData] = useState<T>();
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<Error | null>(null);
 
