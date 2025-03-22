@@ -9,7 +9,7 @@ import { useModelAIStore } from "@/store/ModelAIStore";
 import CommonCombobox from "@/components/common-combobox";
 import { ChevronsUpDown } from "lucide-react";
 import { useComboboxStore } from "@/store/ComboboxStore";
-import { generateQuiz } from "@/app/actions/generate-question";
+import { generateQuiz } from "@/actions/generate-question";
 import { useState } from "react";
 
 type TypeInputVal = {
@@ -62,8 +62,7 @@ export function SidebarRight() {
               variant="outline"
               role="combobox"
               aria-expanded={open}
-              className="w-[200px] justify-between"
-            >
+              className="w-[200px] justify-between">
               {selectedValue ? (selectedValue.value as string) : "Chọn model"}
               <ChevronsUpDown className="opacity-50" />
             </Button>

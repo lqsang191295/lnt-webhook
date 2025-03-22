@@ -122,6 +122,7 @@ const PageToken = () => {
   };
 
   useEffect(() => {
+    console.log("Vao day 2 lan????");
     getToken();
   }, []);
 

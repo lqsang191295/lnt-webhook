@@ -15,7 +15,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { ToastError, ToastSuccess } from "@/lib/toast";
 import { useRouter } from "next/navigation";
-import { login } from "@/app/actions/auth";
+import { login } from "@/actions/auth";
 
 export function LoginForm({
   className,

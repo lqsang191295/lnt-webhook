@@ -1,5 +1,5 @@
 "use client";
-import { getQuizs } from "@/app/actions/quiz";
+import { getQuizs } from "@/actions/quiz";
 import Timer from "@/components/timer";
 import { Button } from "@/components/ui/button";
 import { TypeQuestion } from "@/store/types/question";
@@ -58,8 +58,7 @@ const PageQuiz = () => {
           className="cursor-pointer"
           variant="outline"
           size="sm"
-          onClick={handleNext}
-        >
+          onClick={handleNext}>
           {idxQuiz < quizs.length - 1 ? "Next" : "Complete"}
         </Button>
       </div>
