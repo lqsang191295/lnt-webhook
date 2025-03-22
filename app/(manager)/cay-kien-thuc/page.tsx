@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   ReactFlow,
   addEdge,
@@ -38,6 +38,7 @@ const initialEdges = [
 const PageCayKienThuc = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+  const [selectedNodes, setSelectedNodes] = useState([]);
 
   const onConnect = useCallback(
     (connection) => setEdges((eds) => addEdge(connection, eds)),
@@ -53,9 +54,39 @@ const PageCayKienThuc = () => {
     setNodes((prev) => [...prev, newNode]);
   };
 
+  const onSelectionChange = (selection) => {
+    setSelectedNodes(selection.nodes);
+  };
+
+  const deleteSelectedNodes = useCallback(() => {
+    const selectedNodeIds = selectedNodes.map((node) => node.id);
+    setNodes((nds) => nds.filter((node) => !selectedNodeIds.includes(node.id)));
+    setEdges((eds) =>
+      eds.filter(
+        (edge) =>
+          !selectedNodeIds.includes(edge.source) &&
+          !selectedNodeIds.includes(edge.target)
+      )
+    );
+  }, [selectedNodes, setNodes, setEdges]);
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === "Delete") {
+        deleteSelectedNodes();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [deleteSelectedNodes]);
+
   return (
     <div className="w-full h-full">
-      <Button onClick={addNode} variant={"outline"}>
+      <Button
+        className="absolute left-0 top-12 z-50"
+        onClick={addNode}
+        variant={"outline"}>
         Add node
       </Button>
 
@@ -64,7 +95,8 @@ const PageCayKienThuc = () => {
         edges={edges}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
-        onConnect={onConnect}>
+        onConnect={onConnect}
+        onSelectionChange={onSelectionChange}>
         <Background />
         <Controls />
       </ReactFlow>
