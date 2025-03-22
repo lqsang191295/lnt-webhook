@@ -37,6 +37,14 @@ const data = {
           url: "/token",
         },
         {
+          title: "Gửi ZNS",
+          url: "/gui-zns",
+        },
+        {
+          title: "Truy xuất thông tin",
+          url: "/truy-xuat-thong-tin",
+        },
+        {
           title: "Webhook",
           url: "/webhook",
         },

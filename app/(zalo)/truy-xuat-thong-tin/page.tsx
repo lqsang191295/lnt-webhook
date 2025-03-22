@@ -2,7 +2,7 @@
 
 import { SidebarPanel } from "./_components/side-bar-panel";
 
-const PageWebhook = () => {
+const PageTruyXuatThongTin = () => {
   return (
     <div className="p-4 w-full h-full">
       <SidebarPanel />
@@ -10,4 +10,4 @@ const PageWebhook = () => {
   );
 };
 
-export default PageWebhook;
+export default PageTruyXuatThongTin;

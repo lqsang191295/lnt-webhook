@@ -17,17 +17,12 @@ export async function get(endpoint: string, options: RequestOptions = {}) {
   const queryString = params
     ? "?" + new URLSearchParams(params as Record<string, string>).toString()
     : "";
-  console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa ", {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      ...headers,
-      ...(options.credentials ? { credentials: options.credentials } : {}),
-    },
-  });
 
-  const res = await fetch(`${API_BASE_URL}${endpoint}${queryString}`, {
+  let URL = `${API_BASE_URL}${endpoint}${queryString}`;
+
+  if (endpoint.includes("http")) URL = `${endpoint}${queryString}`;
+
+  const res = await fetch(URL, {
     method: "GET",
     ...(options.credentials ? { credentials: "include" } : {}),
     headers: {
@@ -54,7 +49,11 @@ export async function post(
 ) {
   const { token, headers } = options;
 
-  const res = await fetch(`${API_BASE_URL}${endpoint}`, {
+  let URL = `${API_BASE_URL}${endpoint}`;
+
+  if (endpoint.includes("http")) URL = `${endpoint}`;
+
+  const res = await fetch(URL, {
     method: "POST",
     ...(options.credentials ? { credentials: "include" } : {}),
     headers: {
