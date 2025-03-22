@@ -1,3 +1,4 @@
+import { TimerIcon } from "lucide-react";
 import React, {
   useState,
   useRef,
@@ -16,14 +17,30 @@ export interface TimerHandle {
 }
 
 const Timer = forwardRef<TimerHandle, TimerProps>(
-  ({ duration = 10, onTimeout }: TimerProps, ref) => {
+  ({ duration = 10, onTimeout }, ref) => {
     const [timeLeft, setTimeLeft] = useState(duration);
+    const [isStarted, setIsStarted] = useState(false);
     const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
     const start = () => {
-      if (!timerRef || timerRef.current) return; // Tránh chạy nhiều lần
+      if (timerRef.current) return;
+
+      setIsStarted(true);
+    };
+
+    // Expose start method using ref
+    useImperativeHandle(ref, () => ({
+      start,
+    }));
+
+    useEffect(() => {
+      if (!isStarted) return;
+
+      if (timerRef.current) return;
 
       timerRef.current = setInterval(() => {
+        console.log("run inter val", isStarted);
+
         setTimeLeft((prev) => {
           if (prev <= 1) {
             clearInterval(timerRef.current!);
@@ -34,21 +51,20 @@ const Timer = forwardRef<TimerHandle, TimerProps>(
           return prev - 1;
         });
       }, 1000);
-    };
-
-    useImperativeHandle(ref, () => ({
-      start,
-    }));
+    }, [isStarted]);
 
     useEffect(() => {
       return () => {
-        return clearInterval(timerRef.current!);
+        if (timerRef.current) {
+          clearInterval(timerRef.current);
+          timerRef.current = null;
+        }
       };
     }, []);
 
     return (
-      <div>
-        <h1>Time Left: {timeLeft}s</h1>
+      <div className="flex">
+        <TimerIcon /> {timeLeft}s
       </div>
     );
   }

@@ -44,7 +44,6 @@ export default function RootLayout({
   const { setAccessToken, setDsTempalte, setRefreshToken } = useZaloData();
   const loadZaloDataAsync = () => {
     getZaloToken().then((resZalo) => {
-      console.log("resZalo --------------------- ", resZalo);
       if (!resZalo) return;
 
       const { access_token, refresh_token } = resZalo;

@@ -31,9 +31,16 @@ const PageQuiz = () => {
   };
 
   useEffect(() => {
-    timerRef.current?.start();
     getQuizData();
   }, []);
+
+  useEffect(() => {
+    if (quizs.length === 0) return;
+
+    if (!timerRef.current) return;
+
+    timerRef.current.start();
+  }, [quizs]);
 
   if (!quizs.length) return;
 
@@ -43,7 +50,7 @@ const PageQuiz = () => {
 
   return (
     <div className="">
-      <div>
+      <div className="flex">
         <Timer duration={20} onTimeout={handleComplete} ref={timerRef} />
       </div>
       <div>
