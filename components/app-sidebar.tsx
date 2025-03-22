@@ -72,6 +72,10 @@ const data = {
           title: "Quiz",
           url: "/quiz",
         },
+        {
+          title: "Cây kiến thức",
+          url: "/cay-kien-thuc",
+        },
       ],
     },
     {
