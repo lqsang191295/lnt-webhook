@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 const useFetch = <T, A extends unknown[]>(cb: (...args: A) => Promise<T>) => {
   const [data, setData] = useState<T>();
@@ -25,7 +25,7 @@ const useFetch = <T, A extends unknown[]>(cb: (...args: A) => Promise<T>) => {
     }
   };
 
-  return { data, loading, error, fn, setData };
+  return { data, loading, error, fn: useCallback(fn, []), setData };
 };
 
 export default useFetch;
