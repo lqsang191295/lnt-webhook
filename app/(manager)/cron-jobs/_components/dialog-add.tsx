@@ -8,7 +8,6 @@ import {
 } from "@/components/ui/command";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { TypeJob } from "@/store/types/task";
 import { ChevronsUpDown } from "lucide-react";
 import {
   Popover,
@@ -19,6 +18,7 @@ import { ToastError, ToastSuccess } from "@/lib/toast";
 import { post } from "@/api/client";
 import DialogCommon from "@/components/dialog-common";
 import { useDialogStore } from "@/store/DialogStore";
+import { TypeJob } from "../_types";
 
 const valueStatus = [
   {

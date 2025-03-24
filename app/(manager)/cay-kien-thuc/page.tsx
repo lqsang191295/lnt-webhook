@@ -9,6 +9,8 @@ import {
   Background,
   Controls,
   Connection,
+  Edge,
+  Node,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { Button } from "@/components/ui/button";
@@ -39,7 +41,7 @@ const initialEdges = [
 const PageCayKienThuc = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
-  const [selectedNodes, setSelectedNodes] = useState([]);
+  const [selectedNodes, setSelectedNodes] = useState<Node[]>([]);
 
   const onConnect = useCallback(
     (connection: Connection) => setEdges((eds) => addEdge(connection, eds)),
@@ -55,7 +57,7 @@ const PageCayKienThuc = () => {
     setNodes((prev) => [...prev, newNode]);
   };
 
-  const onSelectionChange = (selection) => {
+  const onSelectionChange = (selection: { nodes: Node[]; edges: Edge[] }) => {
     setSelectedNodes(selection.nodes);
   };
 
@@ -72,7 +74,7 @@ const PageCayKienThuc = () => {
   }, [selectedNodes, setNodes, setEdges]);
 
   useEffect(() => {
-    const handleKeyDown = (e) => {
+    const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Delete") {
         deleteSelectedNodes();
       }
