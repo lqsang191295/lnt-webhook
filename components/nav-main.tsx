@@ -45,9 +45,14 @@ export function NavMain({ items }: { items: Item[] }) {
       return;
     }
 
+    let subItem: { title: string; url: string } = { title: "", url: "" };
+
     const item = items.find((i) => {
       return i.items?.find((si) => {
-        return si.url === `/${pathSegments[0]}`;
+        if (si.url === `/${pathSegments[0]}`) {
+          subItem = si;
+          return si;
+        }
       });
     });
 
@@ -59,7 +64,7 @@ export function NavMain({ items }: { items: Item[] }) {
       setSelectedMenu({
         title: item.title,
         url: item.url,
-        items: item.items,
+        items: [subItem],
       })
     );
   }, [dispatch, items, pathSegments]);
