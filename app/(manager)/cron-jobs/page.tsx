@@ -15,7 +15,6 @@ import {
 } from "@tanstack/react-table";
 import {
   ArrowUpDown,
-  CheckCircle2Icon,
   ChevronDown,
   CirclePlus,
   Loader,

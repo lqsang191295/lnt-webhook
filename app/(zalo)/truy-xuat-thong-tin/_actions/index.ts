@@ -1,3 +1,5 @@
 import { layDanhSachTemplate } from "./danh-sach-template";
 
-export default { layDanhSachTemplate };
+const func = { layDanhSachTemplate };
+
+export default func;

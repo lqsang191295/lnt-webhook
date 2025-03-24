@@ -51,7 +51,7 @@ const Timer = forwardRef<TimerHandle, TimerProps>(
           return prev - 1;
         });
       }, 1000);
-    }, [isStarted]);
+    }, [isStarted, onTimeout]);
 
     useEffect(() => {
       return () => {

@@ -43,7 +43,7 @@ const ZaloCallback = () => {
     }, 1000);
 
     return () => clearTimeout(timer);
-  }, [status, time]);
+  }, [status, time, router]);
 
   useEffect(() => {
     const code = searchParams.get("code");
@@ -70,7 +70,7 @@ const ZaloCallback = () => {
         setStatus(Status.ProcessFail);
         console.error("Lỗi khi lấy token:", err);
       });
-  }, [searchParams, router]);
+  }, [searchParams]);
 
   return (
     <h2 className="flex">

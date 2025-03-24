@@ -131,14 +131,14 @@ export function SidebarRight() {
             explanation:
               "Trong trường hợp ngừng tim, thực hiện ép ngực CPR sớm và sử dụng máy khử rung tim tự động (AED) nếu có là biện pháp ưu tiên hàng đầu để tăng cơ hội sống sót cho bệnh nhân.",
           },
-        ].map((q) => {
+        ].map((q, idx) => {
           return (
-            <div className="">
+            <div className="" key={`ques-${idx}`}>
               <div>
                 <span>Câu 1:</span> <span>{q.question}</span>
               </div>
-              {q.options.map((op) => {
-                return <div>{op}</div>;
+              {q.options.map((op, i) => {
+                return <div key={`ops-${i}`}>{op}</div>;
               })}
               <div>Explanation: {q.explanation}</div>
             </div>
