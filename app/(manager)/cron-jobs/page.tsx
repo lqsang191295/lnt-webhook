@@ -54,7 +54,7 @@ import { a_GetDataCronJobs } from "./_actions";
 import { TypeJob } from "./_types";
 import { Badge } from "@/components/ui/badge";
 
-export function PageCronJobs() {
+export default function PageCronJobs() {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -414,5 +414,3 @@ export function PageCronJobs() {
     </div>
   );
 }
-
-export default PageCronJobs;
