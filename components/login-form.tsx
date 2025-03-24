@@ -12,11 +12,19 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import Image from "next/image";
+import { useState } from "react";
+import { ToastError, ToastSuccess } from "@/lib/toast";
+import { useRouter } from "next/navigation";
+import { login } from "@/actions/auth";
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
+  const router = useRouter();
+  const [username, setUsername] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+
   const handleAuthenticationZalo = () => {
     console.log(
       "process.env.NEXT_PUBLIC_ZALO_APP_ID ==",
@@ -38,6 +46,21 @@ export function LoginForm({
     );
   };
 
+  const handleLogin = async () => {
+    try {
+      await login(username, password);
+
+      ToastSuccess("Đăng nhập thành công");
+
+      setTimeout(() => {
+        router.push("/");
+      }, 1000);
+    } catch (ex) {
+      console.log("ex ", ex);
+      ToastError("Đăng nhập không thành công");
+    }
+  };
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
@@ -48,7 +71,7 @@ export function LoginForm({
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form>
+          <form onSubmit={(e) => e.preventDefault()}>
             <div className="grid gap-6">
               <div className="flex flex-col gap-4">
                 <Button
@@ -92,9 +115,10 @@ export function LoginForm({
                   <Label htmlFor="email">Email</Label>
                   <Input
                     id="email"
-                    type="email"
+                    type="text"
                     placeholder="m@example.com"
-                    required
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
                   />
                 </div>
                 <div className="grid gap-2">
@@ -106,9 +130,17 @@ export function LoginForm({
                       Forgot your password?
                     </a>
                   </div>
-                  <Input id="password" type="password" required />
+                  <Input
+                    id="password"
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
                 </div>
-                <Button type="submit" className="w-full">
+                <Button
+                  type="submit"
+                  className="w-full cursor-pointer"
+                  onClick={handleLogin}>
                   Login
                 </Button>
               </div>

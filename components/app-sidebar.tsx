@@ -2,12 +2,9 @@
 
 import * as React from "react";
 import {
-  AudioWaveform,
   BookOpen,
   Bot,
-  Command,
   Frame,
-  GalleryVerticalEnd,
   Map,
   PieChart,
   Settings2,
@@ -28,23 +25,6 @@ import {
 
 // This is sample data.
 const data = {
-  teams: [
-    {
-      name: "Bv LNT",
-      logo: GalleryVerticalEnd,
-      plan: "Enterprise",
-    },
-    {
-      name: "Acme Corp.",
-      logo: AudioWaveform,
-      plan: "Startup",
-    },
-    {
-      name: "Evil Corp.",
-      logo: Command,
-      plan: "Free",
-    },
-  ],
   navMain: [
     {
       title: "Zalo",
@@ -57,6 +37,14 @@ const data = {
           url: "/token",
         },
         {
+          title: "Gửi ZNS",
+          url: "/gui-zns",
+        },
+        {
+          title: "Truy xuất thông tin",
+          url: "/truy-xuat-thong-tin",
+        },
+        {
           title: "Webhook",
           url: "/webhook",
         },
@@ -67,21 +55,34 @@ const data = {
       ],
     },
     {
-      title: "Models",
+      title: "Manager",
       url: "#",
       icon: Bot,
+      isActive: true,
       items: [
         {
-          title: "Genesis",
-          url: "/model",
+          title: "Cron Jobs",
+          url: "/cron-jobs",
         },
         {
-          title: "Explorer",
-          url: "#",
+          title: "Editor",
+          url: "/editor",
         },
         {
-          title: "Quantum",
-          url: "#",
+          title: "Dnd Kit",
+          url: "/dnd-kit",
+        },
+        {
+          title: "AI GPT",
+          url: "/ai-gpt",
+        },
+        {
+          title: "Quiz",
+          url: "/quiz",
+        },
+        {
+          title: "Cây kiến thức",
+          url: "/cay-kien-thuc",
         },
       ],
     },

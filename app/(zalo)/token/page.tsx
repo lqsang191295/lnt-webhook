@@ -1,6 +1,6 @@
 "use client"; // Nếu dùng Next.js 13+ (app router)
 
-import { get, post } from "@/api/client";
+import { post } from "@/api/client";
 import { useAlertDialog } from "@/components/global-alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -10,14 +10,17 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useLoadingGlobalStore } from "@/store/loadingGlobalStore";
+import { ToastError, ToastSuccess } from "@/lib/toast";
+import { getZaloToken } from "@/store/action/zalo";
+import { useLoadingGlobalStore } from "@/store/LoadingGlobalStore";
+import { useZaloData } from "@/store/ZaloDataStore";
 import { Copy, Loader } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 const PageToken = () => {
-  const [accessToken, setAccessToken] = useState<string>("");
-  const [refreshToken, setRefreshToken] = useState<string>("");
+  // const [accessToken, setAccessToken] = useState<string>("");
+  // const [refreshToken, setRefreshToken] = useState<string>("");
 
   const [accessTokenCopy, setAccessTokenCopy] = useState<boolean>(false);
   const [refreshTokenCopy, setRefreshTokenCopy] = useState<boolean>(false);
@@ -25,11 +28,14 @@ const PageToken = () => {
   const [loadingToken, setLoadingToken] = useState<boolean>(true);
   const setLoadingGlobal = useLoadingGlobalStore((state) => state.setLoading);
 
+  const { access_token, refresh_token, setAccessToken, setRefreshToken } =
+    useZaloData();
+
   const { showAlert } = useAlertDialog();
 
   const copyAccessToken = () => {
     setAccessTokenCopy(true);
-    copyValueToTempMemory(accessToken);
+    copyValueToTempMemory(access_token);
 
     setTimeout(() => {
       setAccessTokenCopy(false);
@@ -38,7 +44,7 @@ const PageToken = () => {
 
   const copyRefreshToken = () => {
     setRefreshTokenCopy(true);
-    copyValueToTempMemory(refreshToken);
+    copyValueToTempMemory(refresh_token);
 
     setTimeout(() => {
       setRefreshTokenCopy(false);
@@ -55,57 +61,50 @@ const PageToken = () => {
     }
   };
 
-  const handleAuthenticationZalo = () => {
-    console.log(
-      "process.env.NEXT_PUBLIC_ZALO_APP_ID ==",
-      process.env.NEXT_PUBLIC_ZALO_APP_ID,
-      process.env.NEXT_PUBLIC_REDIRECT_URI
-    );
-    // Phải expose biến môi trường trong Next.js
-    const URI_AUTH_ZALO = `https://oauth.zaloapp.com/v4/oa/permission?app_id=${
-      process.env.NEXT_PUBLIC_ZALO_APP_ID
-    }&redirect_uri=${encodeURIComponent(
-      process.env.NEXT_PUBLIC_REDIRECT_URI || ""
-    )}`;
+  // const handleAuthenticationZalo = () => {
+  //   console.log(
+  //     "process.env.NEXT_PUBLIC_ZALO_APP_ID ==",
+  //     process.env.NEXT_PUBLIC_ZALO_APP_ID,
+  //     process.env.NEXT_PUBLIC_REDIRECT_URI
+  //   );
+  //   // Phải expose biến môi trường trong Next.js
+  //   const URI_AUTH_ZALO = `https://oauth.zaloapp.com/v4/oa/permission?app_id=${
+  //     process.env.NEXT_PUBLIC_ZALO_APP_ID
+  //   }&redirect_uri=${encodeURIComponent(
+  //     process.env.NEXT_PUBLIC_REDIRECT_URI || ""
+  //   )}`;
 
-    console.log("URI_AUTH_ZALO === ", URI_AUTH_ZALO);
-    window.open(
-      URI_AUTH_ZALO,
-      "_blank",
-      "width=500,height=600,noopener,noreferrer"
-    );
-  };
+  //   console.log("URI_AUTH_ZALO === ", URI_AUTH_ZALO);
+  //   window.open(
+  //     URI_AUTH_ZALO,
+  //     "_blank",
+  //     "width=500,height=600,noopener,noreferrer"
+  //   );
+  // };
 
   const handleGrantNewToken = async () => {
     try {
       setLoadingGlobal(true);
-      const newDataToken = await post("/webhook/refresh-token", {
-        refresh_token: refreshToken,
-      });
+      const result = await post(
+        "/webhook/refresh-token",
+        {
+          refresh_token,
+        },
+        {
+          credentials: "include",
+        }
+      );
 
-      if (!newDataToken) return;
-
-      console.log("newDataToken ===== ", newDataToken);
-
-      const dataUpdate = await post("/database/update-token", {
-        access_token: newDataToken.access_token || "xxx",
-        refresh_token: newDataToken.refresh_token || "xxx",
-      });
-
-      console.log("dataUpdate === ", dataUpdate);
-
-      setAccessToken(newDataToken.access_token);
-      setRefreshToken(newDataToken.refresh_token);
-      toast.success("Tạo mới token không thành công");
+      if (!result || result.error || !result.data) {
+        ToastError("Tạo mới token không thành công");
+        return;
+      }
+      setAccessToken(result.data.accessToken);
+      setRefreshToken(result.data.refreshToken);
+      ToastSuccess("Tạo mới token thành công");
     } catch (ex) {
       console.log("ex", ex);
-      toast.error("Tạo mới token không thành công", {
-        style: {
-          background: "#dc2626", // 🔥 Màu đỏ đậm
-          color: "#fff", // Chữ trắng
-          border: "1px solid #b91c1c", // Viền đỏ đậm hơn
-        },
-      });
+      ToastError("Tạo mới token không thành công");
     } finally {
       setLoadingGlobal(false);
     }
@@ -113,18 +112,24 @@ const PageToken = () => {
 
   const getToken = async () => {
     try {
+      if (access_token && refresh_token) return;
+
       setLoadingToken(true);
 
-      const data = await get(`/database/token`);
+      const result = await getZaloToken();
 
-      if (!data) return;
+      if (!result) return;
 
-      const { accessToken, refreshToken } = data;
+      const {
+        access_token: res_access_token,
+        refresh_token: res_refresh_token,
+      } = result;
 
-      setAccessToken(accessToken);
-      setRefreshToken(refreshToken);
+      setAccessToken(res_access_token);
+      setRefreshToken(res_refresh_token);
     } catch (ex) {
       console.log("ex", ex);
+      ToastError("ex.message");
     } finally {
       setLoadingToken(false);
     }
@@ -136,13 +141,13 @@ const PageToken = () => {
 
   return (
     <div className="mx-4">
-      <div className="mb-4">
+      {/* <div className="mb-4">
         <Button
           className="bg-blue-500 cursor-pointer"
           onClick={handleAuthenticationZalo}>
           Authentication Zalo
         </Button>
-      </div>
+      </div> */}
 
       <div className="flex flex-col gap-4 overflow-hidden">
         <Label className="font-semibold">
@@ -168,7 +173,7 @@ const PageToken = () => {
           {loadingToken ? (
             <Loader className="animate-spin" />
           ) : (
-            accessToken || "Không có dữ liệu"
+            access_token || "Không có dữ liệu"
           )}
         </Label>
 
@@ -197,7 +202,7 @@ const PageToken = () => {
           {loadingToken ? (
             <Loader className="animate-spin" />
           ) : (
-            refreshToken || "Không có dữ liệu"
+            refresh_token || "Không có dữ liệu"
           )}
         </Label>
       </div>
