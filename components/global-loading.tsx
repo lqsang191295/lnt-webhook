@@ -1,10 +1,10 @@
 "use client";
 
-import { useLoadingGlobalStore } from "@/store/LoadingGlobalStore";
+import { useGlobalLoadingStore } from "@/store/GlobalStoreLoading";
 import { HashLoader } from "react-spinners";
 
 export default function GlobalLoading() {
-  const loading = useLoadingGlobalStore((state) => state.loading);
+  const loading = useGlobalLoadingStore((state) => state.loading);
 
   if (!loading) return null;
 

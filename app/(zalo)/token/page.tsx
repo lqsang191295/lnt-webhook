@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/tooltip";
 import { ToastError, ToastSuccess } from "@/lib/toast";
 import { getZaloToken } from "@/store/action/zalo";
-import { useLoadingGlobalStore } from "@/store/LoadingGlobalStore";
+import { useGlobalLoadingStore } from "@/store/GlobalStoreLoading";
 import { useZaloData } from "@/store/ZaloDataStore";
 import { Copy, Loader } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
@@ -26,7 +26,7 @@ const PageToken = () => {
   const [refreshTokenCopy, setRefreshTokenCopy] = useState<boolean>(false);
 
   const [loadingToken, setLoadingToken] = useState<boolean>(true);
-  const setLoadingGlobal = useLoadingGlobalStore((state) => state.setLoading);
+  const setLoadingGlobal = useGlobalLoadingStore((state) => state.setLoading);
 
   const { access_token, refresh_token, setAccessToken, setRefreshToken } =
     useZaloData();

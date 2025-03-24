@@ -1,11 +1,11 @@
 import { create } from "zustand";
 
-interface LoadingGlbalState {
+interface GlobalLoadingState {
   loading: boolean;
   setLoading: (state: boolean) => void;
 }
 
-export const useLoadingGlobalStore = create<LoadingGlbalState>((set) => ({
+export const useGlobalLoadingStore = create<GlobalLoadingState>((set) => ({
   loading: false,
   setLoading: (state) => set({ loading: state }),
 }));
