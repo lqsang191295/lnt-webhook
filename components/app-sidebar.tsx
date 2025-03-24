@@ -44,14 +44,14 @@ const data = {
           title: "Truy xuất thông tin",
           url: "/truy-xuat-thong-tin",
         },
-        {
-          title: "Webhook",
-          url: "/webhook",
-        },
-        {
-          title: "Settings",
-          url: "#",
-        },
+        // {
+        //   title: "Webhook",
+        //   url: "/webhook",
+        // },
+        // {
+        //   title: "Settings",
+        //   url: "#",
+        // },
       ],
     },
     {

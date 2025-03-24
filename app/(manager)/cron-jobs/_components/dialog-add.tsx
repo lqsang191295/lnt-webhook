@@ -15,10 +15,10 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { ToastError, ToastSuccess } from "@/lib/toast";
-import { post } from "@/api/client";
 import DialogCommon from "@/components/dialog-common";
 import { useDialogStore } from "@/store/DialogStore";
 import { TypeJob } from "../_types";
+import { a_CreateCronJob, a_UpdateCronJob } from "../_actions";
 
 const valueStatus = [
   {
@@ -32,6 +32,7 @@ const valueStatus = [
 ];
 
 export function DialogAdd({ onRefresh }: { onRefresh: () => void }) {
+  const { closeDialog } = useDialogStore();
   const model = (useDialogStore((state) => state.data) || {
     name: "",
     func: "",
@@ -40,44 +41,30 @@ export function DialogAdd({ onRefresh }: { onRefresh: () => void }) {
   }) as TypeJob;
   const mode = useDialogStore((state) => state.mode);
   const setModel = useDialogStore((state) => state.setData);
-  // const [model, setModel] = useState<TypeJob>(
-  //   data || {
-  //     name: "",
-  //     func: "",
-  //     status: false,
-  //     time: "",
-  //   }
-  // );
-
-  console.log("data ============ ", model);
 
   const save = async () => {
-    let endpoint: string = "";
-
-    switch (mode) {
-      case "add":
-        endpoint = "/module/HT_CronJobs/add";
-        break;
-      case "edit":
-        endpoint = "/module/HT_CronJobs/update";
-        break;
-    }
-
     try {
-      console.log("aaaaaaaaa ", model);
-      const result = await post(endpoint, {
-        ...model,
-      });
+      let result;
+
+      switch (mode) {
+        case "add":
+          result = await a_CreateCronJob(model);
+          break;
+        case "edit":
+          result = await a_UpdateCronJob(model);
+          break;
+      }
 
       if (result.status === "success") {
         ToastSuccess(result.message);
 
         if (onRefresh) onRefresh();
+
+        closeDialog();
       } else if (result.status === "error") {
         ToastError(result.message);
       }
-    } catch (ex) {
-      console.log("ex = ", ex);
+    } catch {
       ToastError("Có lỗi xảy ra!");
     }
   };
@@ -91,7 +78,7 @@ export function DialogAdd({ onRefresh }: { onRefresh: () => void }) {
           </Label>
           <Input
             id="name"
-            value={model?.name}
+            value={model.name ?? ""}
             className="col-span-3"
             onChange={(e) => setModel({ name: e.target.value })}
           />
@@ -102,7 +89,7 @@ export function DialogAdd({ onRefresh }: { onRefresh: () => void }) {
           </Label>
           <Input
             id="func"
-            value={model?.func}
+            value={model.func ?? ""}
             className="col-span-3"
             onChange={(e) => setModel({ func: e.target.value })}
           />
@@ -113,7 +100,7 @@ export function DialogAdd({ onRefresh }: { onRefresh: () => void }) {
           </Label>
           <Input
             id="time"
-            value={model?.time}
+            value={model.time ?? ""}
             className="col-span-3"
             onChange={(e) => setModel({ time: e.target.value })}
           />

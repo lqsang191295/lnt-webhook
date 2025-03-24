@@ -27,7 +27,7 @@ export function DanhSachTemplate() {
     if (tLoading) return;
 
     tGetData({ access_token, offset: 0, limit: 100 });
-  }, [access_token, tGetData, tLoading]);
+  }, [access_token]);
 
   if (!tData || tLoading) {
     return (
@@ -36,8 +36,6 @@ export function DanhSachTemplate() {
       </div>
     );
   }
-
-  console.log("tData ==== ", tData);
 
   return (
     <div className="flex flex-col">
