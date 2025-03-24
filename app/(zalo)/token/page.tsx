@@ -15,7 +15,7 @@ import { getZaloToken } from "@/store/action/zalo";
 import { useLoadingGlobalStore } from "@/store/LoadingGlobalStore";
 import { useZaloData } from "@/store/ZaloDataStore";
 import { Copy, Loader } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 
 const PageToken = () => {
@@ -110,7 +110,7 @@ const PageToken = () => {
     }
   };
 
-  const getToken = async () => {
+  const getToken = useCallback(async () => {
     try {
       if (access_token && refresh_token) return;
 
@@ -133,11 +133,11 @@ const PageToken = () => {
     } finally {
       setLoadingToken(false);
     }
-  };
+  }, [access_token, refresh_token, setAccessToken, setRefreshToken]);
 
   useEffect(() => {
     getToken();
-  }, []);
+  }, [getToken]);
 
   return (
     <div className="mx-4">

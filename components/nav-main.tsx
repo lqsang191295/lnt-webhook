@@ -21,7 +21,7 @@ import Link from "next/link";
 import { Item } from "@/store/types/menu";
 import { useDispatch } from "react-redux";
 import { setSelectedMenu } from "@/store/action/menu";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { usePathname } from "next/navigation";
 
 export function NavMain({ items }: { items: Item[] }) {
@@ -38,7 +38,7 @@ export function NavMain({ items }: { items: Item[] }) {
     );
   };
 
-  const handleDetectBreadcum = () => {
+  const handleDetectBreadcum = useCallback(() => {
     if (!pathSegments || !pathSegments.length) {
       dispatch(setSelectedMenu({ title: " Trang chủ", url: "" }));
 
@@ -62,11 +62,11 @@ export function NavMain({ items }: { items: Item[] }) {
         items: item.items,
       })
     );
-  };
+  }, [dispatch, items, pathSegments]);
 
   useEffect(() => {
     handleDetectBreadcum();
-  }, []);
+  }, [handleDetectBreadcum]);
 
   return (
     <SidebarGroup>

@@ -27,7 +27,7 @@ export function DanhSachTemplate() {
     if (tLoading) return;
 
     tGetData({ access_token, offset: 0, limit: 100 });
-  }, []);
+  }, [access_token, tGetData, tLoading]);
 
   if (!tData || tLoading) {
     return (

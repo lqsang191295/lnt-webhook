@@ -11,7 +11,7 @@ import GlobalLoading from "@/components/global-loading";
 import { usePathname } from "next/navigation";
 import { getZaloDsTemplate, getZaloToken } from "@/store/action/zalo";
 import { useZaloData } from "@/store/ZaloDataStore";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -42,7 +42,7 @@ export default function RootLayout({
     "/privacy-policy",
   ];
   const { setAccessToken, setDsTempalte, setRefreshToken } = useZaloData();
-  const loadZaloDataAsync = () => {
+  const loadZaloDataAsync = useCallback(() => {
     getZaloToken().then((resZalo) => {
       if (!resZalo) return;
 
@@ -57,11 +57,11 @@ export default function RootLayout({
         }
       );
     });
-  };
+  }, [setAccessToken, setDsTempalte, setRefreshToken]);
 
   useEffect(() => {
     loadZaloDataAsync();
-  }, []);
+  }, [loadZaloDataAsync]);
 
   if (pathnameNotUseLayout.includes(pathname)) {
     return (
