@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import dayjs from "dayjs";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -133,6 +134,32 @@ export default function PageCronJobs() {
                   </>
                 )}
               </Badge>
+            );
+          }
+
+          if (key === "action_status") {
+            return (
+              <Badge
+                variant="outline"
+                className="flex gap-1 px-1.5 text-muted-foreground [&_svg]:size-3">
+                {row.original.action_status === "success" ? (
+                  <>
+                    <span className="text-green-500">{row.getValue(key)}</span>
+                  </>
+                ) : (
+                  <>
+                    <span className="text-red-500">{row.getValue(key)}</span>
+                  </>
+                )}
+              </Badge>
+            );
+          }
+
+          if (key === "updated_at") {
+            return (
+              <div>
+                {dayjs(row.getValue(key)).format("DD-MM-YYYY HH:mm:ss")}
+              </div>
             );
           }
 
