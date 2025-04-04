@@ -54,13 +54,13 @@ const Home = () => {
     }
   };
   return (
-    <div className="items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
+    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
       <div>
         <h1>Device Approval Demo</h1>
         <Button onClick={handleSendToken}>Gửi Thông Báo Test</Button>
+        <Label>Token: </Label>
+        <Label>{token}</Label>
       </div>
-      <Label>Token: </Label>
-      <Label>{token}</Label>
     </div>
   );
 };
