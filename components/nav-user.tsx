@@ -25,28 +25,53 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { Button } from "./ui/button";
-import { useSelector } from "react-redux";
-import { userData } from "@/store/selector/user";
-import { useRouter } from "next/navigation";
+import { tUser } from "@/store/user-store";
+import { jwtVerify } from "jose";
+import { GetServerSideProps } from "next";
+import { useEffect, useState } from "react";
+import { verifyUser } from "@/actions/auth";
 
-export function NavUser() {
-  const { isMobile } = useSidebar();
-  const router = useRouter();
-  const user = useSelector(userData);
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const token = context.req.cookies.authToken; // Lấy token từ cookie
 
-  if (!user.email) {
-    return (
-      <div>
-        <Button
-          className="w-full cursor-pointer"
-          variant="outline"
-          onClick={() => router.push("/login")}>
-          Login
-        </Button>
-      </div>
-    );
+  console.log("aaaaaaaaaa 123123123", token);
+
+  if (!token) {
+    return { redirect: { destination: "/login", permanent: false } };
   }
+
+  try {
+    const { payload } = await jwtVerify(
+      token,
+      new TextEncoder().encode(process.env.JWT_SECRET!)
+    );
+    return { props: { user: payload } }; // Trả về dữ liệu người dùng vào props
+  } catch (error) {
+    console.log("error ", error);
+    return { redirect: { destination: "/login", permanent: false } };
+  }
+};
+
+export default function NavUser() {
+  const [user, setUser] = useState<tUser | undefined>();
+
+  const { isMobile } = useSidebar();
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const result = await verifyUser(); // Gọi action từ server
+
+        if (result) {
+          setUser(result as tUser);
+        }
+      } catch (error) {
+        console.error("Error fetching user:", error);
+      }
+    };
+
+    fetchUser();
+  }, []);
 
   return (
     <SidebarMenu>
@@ -57,12 +82,14 @@ export function NavUser() {
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground">
               <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarImage src={user.avatar} alt={user.name} />
-                <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                <AvatarImage src={""} alt={user?.username} />
+                <AvatarFallback className="rounded-lg uppercase">
+                  {user?.username.substring(0, 2)}
+                </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold">{user.name}</span>
-                <span className="truncate text-xs">{user.email}</span>
+                <span className="truncate font-semibold">{user?.username}</span>
+                <span className="truncate text-xs">{user?.userId}</span>
               </div>
               <ChevronsUpDown className="ml-auto size-4" />
             </SidebarMenuButton>
@@ -75,12 +102,16 @@ export function NavUser() {
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={user.avatar} alt={user.name} />
-                  <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                  <AvatarImage src={""} alt={user?.username} />
+                  <AvatarFallback className="rounded-lg uppercase">
+                    {user?.username.substring(0, 2)}
+                  </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">{user.name}</span>
-                  <span className="truncate text-xs">{user.email}</span>
+                  <span className="truncate font-semibold">
+                    {user?.username}
+                  </span>
+                  <span className="truncate text-xs">{user?.userId}</span>
                 </div>
               </div>
             </DropdownMenuLabel>

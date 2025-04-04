@@ -85,15 +85,9 @@ const PageToken = () => {
   const handleGrantNewToken = async () => {
     try {
       setLoadingGlobal(true);
-      const result = await post(
-        "/webhook/refresh-token",
-        {
-          refresh_token,
-        },
-        {
-          credentials: "include",
-        }
-      );
+      const result = await post("/webhook/refresh-token", {
+        refresh_token,
+      });
 
       if (!result || result.error || !result.data) {
         ToastError("Tạo mới token không thành công");

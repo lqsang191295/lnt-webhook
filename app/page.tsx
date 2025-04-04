@@ -79,7 +79,6 @@ const Home = () => {
           <Copy />
         </Button>
         <Label>isSupported: {isSupport}</Label>
-        <Label>Window: {typeof window}</Label>
       </div>
     </div>
   );

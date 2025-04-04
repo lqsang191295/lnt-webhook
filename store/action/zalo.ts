@@ -6,9 +6,7 @@ export const getZaloToken = async () => {
   try {
     const url = "/module/HT_Thamso/zalo-token";
 
-    const response = await get(url, {
-      credentials: "include",
-    });
+    const response = await get(url);
 
     if (response.error) {
       return;
