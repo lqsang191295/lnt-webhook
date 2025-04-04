@@ -3,10 +3,10 @@ import type { NextRequest } from "next/server";
 
 // Danh sách các route cần kiểm tra login
 const protectedRoutes = [
-  // "/",
-  // "/dashboard",
-  // "/token",
-  "*",
+  "/",
+  "/dashboard",
+  "/token",
+  // "*",
 ];
 
 export async function middleware(request: NextRequest) {
