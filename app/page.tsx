@@ -11,11 +11,12 @@ import { memo, useEffect, useState } from "react";
 
 const Home = () => {
   const [token, setToken] = useState<string>("");
-  const [isSupport, setIsSupport] = useState<boolean>();
+  const [isSupport, setIsSupport] = useState<string>("");
 
   const getIsSuported = async () => {
-    const isSupport = await isSupported();
-    setIsSupport(isSupport);
+    const isss = await isSupported();
+    console.log("isSupport ==== ", isss);
+    setIsSupport(String(isss));
   };
 
   useEffect(() => {
