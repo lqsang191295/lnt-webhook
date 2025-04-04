@@ -41,7 +41,7 @@ export async function verifyUser() {
 
   if (!token) {
     // Trả về lỗi nếu không có token
-    return NextResponse.redirect(new URL("/login", window.location.href));
+    return NextResponse.redirect(new URL("/login"));
   }
 
   try {
@@ -56,6 +56,6 @@ export async function verifyUser() {
   } catch (error) {
     console.error("JWT Verification Error:", error);
     // Redirect nếu JWT không hợp lệ
-    return NextResponse.redirect(new URL("/login", window.location.href));
+    return NextResponse.redirect(new URL("/login"));
   }
 }
