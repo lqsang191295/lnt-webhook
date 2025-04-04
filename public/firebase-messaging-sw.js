@@ -39,7 +39,7 @@ messaging.onMessage(function (payload) {
   self.registration.showNotification(notificationTitle, notificationOptions);
 });
 
-self.addEventListener("notificationclick", function (event) {
+self?.addEventListener("notificationclick", function (event) {
   const clickAction = event.notification.data.click_action;
 
   if (clickAction) {
