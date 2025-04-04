@@ -2,6 +2,7 @@
 
 import { post } from "@/api/client";
 import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 import { ToastSuccess } from "@/lib/toast";
 import { getMessagingClient, getToken } from "@/utils/firebase";
 import { registerServiceWorker } from "@/utils/service-worker";
@@ -53,11 +54,13 @@ const Home = () => {
     }
   };
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
+    <div className="items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
       <div>
         <h1>Device Approval Demo</h1>
         <Button onClick={handleSendToken}>Gửi Thông Báo Test</Button>
       </div>
+      <Label>Token: </Label>
+      <Label>{token}</Label>
     </div>
   );
 };
