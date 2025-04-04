@@ -3,7 +3,7 @@
 import { post } from "@/api/client";
 import { Button } from "@/components/ui/button";
 import { ToastSuccess } from "@/lib/toast";
-import { messaging, getToken } from "@/utils/firebase";
+import { getMessagingClient, getToken } from "@/utils/firebase";
 import { registerServiceWorker } from "@/utils/service-worker";
 import { memo, useEffect, useState } from "react";
 
@@ -17,6 +17,12 @@ const Home = () => {
       console.log("permission === ", permission);
       if (permission === "granted") {
         try {
+          const messaging = await getMessagingClient();
+
+          if (!messaging) {
+            return;
+          }
+
           const token = await getToken(messaging, {
             vapidKey:
               "BJRnJOsD5C6hxbK3DAVdzKFwebsi2sh36UakE4qRHALicyQ6mm_5t4npYD1TvzAjSGaRZNxvvkhlNlfEhHaeJPo",
