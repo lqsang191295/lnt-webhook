@@ -41,4 +41,10 @@ const getAnalyticsClient = () => {
   return null;
 };
 
-export { getMessagingClient, getAnalyticsClient, getToken, onMessage };
+export {
+  getMessagingClient,
+  getAnalyticsClient,
+  getToken,
+  onMessage,
+  isSupported,
+};

@@ -4,13 +4,17 @@ import { post } from "@/api/client";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { ToastSuccess } from "@/lib/toast";
-import { getMessagingClient, getToken } from "@/utils/firebase";
+import { getMessagingClient, getToken, isSupported } from "@/utils/firebase";
 import { registerServiceWorker } from "@/utils/service-worker";
 import { Copy } from "lucide-react";
 import { memo, useEffect, useState } from "react";
 
 const Home = () => {
   const [token, setToken] = useState<string>("");
+
+  const getIsSuported = async () => {
+    return await isSupported();
+  };
 
   useEffect(() => {
     registerServiceWorker();
@@ -70,6 +74,8 @@ const Home = () => {
         <Button variant={"outline"} onClick={handleCopy}>
           <Copy />
         </Button>
+        <Label>isSupported: {getIsSuported()}</Label>
+        <Label>Window: {typeof window}</Label>
       </div>
     </div>
   );
