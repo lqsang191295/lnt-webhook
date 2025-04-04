@@ -11,13 +11,16 @@ import { memo, useEffect, useState } from "react";
 
 const Home = () => {
   const [token, setToken] = useState<string>("");
+  const [isSupport, setIsSupport] = useState<boolean>();
 
   const getIsSuported = async () => {
-    return await isSupported();
+    const isSupport = await isSupported();
+    setIsSupport(isSupport);
   };
 
   useEffect(() => {
     registerServiceWorker();
+    getIsSuported();
 
     Notification.requestPermission().then(async (permission) => {
       console.log("permission === ", permission);
@@ -74,7 +77,7 @@ const Home = () => {
         <Button variant={"outline"} onClick={handleCopy}>
           <Copy />
         </Button>
-        <Label>isSupported: {getIsSuported()}</Label>
+        <Label>isSupported: {isSupport}</Label>
         <Label>Window: {typeof window}</Label>
       </div>
     </div>
