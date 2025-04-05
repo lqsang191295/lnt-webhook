@@ -5,7 +5,7 @@ export interface RequestOptions {
   credentials?: boolean;
 }
 
-const API_BASE_URL = process.env.API || "";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API || "";
 
 /**
  * Hàm GET request
