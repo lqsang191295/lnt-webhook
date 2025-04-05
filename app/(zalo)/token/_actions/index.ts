@@ -1,6 +1,6 @@
 "use server";
 
-import { get } from "@/api/client";
+import { get, post } from "@/api/client";
 
 export const getZaloToken = async () => {
   try {
@@ -15,6 +15,20 @@ export const getZaloToken = async () => {
     return response.data;
   } catch {
     return;
+  }
+};
+
+export const refreshToken = async (refresh_token: string) => {
+  try {
+    const url = "/webhook/refresh-token";
+
+    const response = await post(url, {
+      refresh_token,
+    });
+
+    return response;
+  } catch (error) {
+    throw error;
   }
 };
 

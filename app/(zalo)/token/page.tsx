@@ -1,6 +1,5 @@
-"use client"; // Nếu dùng Next.js 13+ (app router)
+"use client";
 
-import { post } from "@/api/client";
 import { useAlertDialog } from "@/components/global-alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -11,17 +10,14 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { ToastError, ToastSuccess } from "@/lib/toast";
-import { getZaloToken } from "@/store/action/zalo";
 import { useGlobalLoadingStore } from "@/store/GlobalStoreLoading";
 import { useZaloData } from "@/store/ZaloDataStore";
 import { Copy, Loader } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
+import { getZaloToken, refreshToken } from "./_actions";
 
 const PageToken = () => {
-  // const [accessToken, setAccessToken] = useState<string>("");
-  // const [refreshToken, setRefreshToken] = useState<string>("");
-
   const [accessTokenCopy, setAccessTokenCopy] = useState<boolean>(false);
   const [refreshTokenCopy, setRefreshTokenCopy] = useState<boolean>(false);
 
@@ -85,9 +81,7 @@ const PageToken = () => {
   const handleGrantNewToken = async () => {
     try {
       setLoadingGlobal(true);
-      const result = await post("/webhook/refresh-token", {
-        refresh_token,
-      });
+      const result = await refreshToken(refresh_token);
 
       if (!result || result.error || !result.data) {
         ToastError("Tạo mới token không thành công");
@@ -135,14 +129,6 @@ const PageToken = () => {
 
   return (
     <div className="mx-4">
-      {/* <div className="mb-4">
-        <Button
-          className="bg-blue-500 cursor-pointer"
-          onClick={handleAuthenticationZalo}>
-          Authentication Zalo
-        </Button>
-      </div> */}
-
       <div className="flex flex-col gap-4 overflow-hidden">
         <Label className="font-semibold">
           Access Token

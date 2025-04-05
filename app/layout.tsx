@@ -9,9 +9,9 @@ import { GloabalAlertDialogProvider } from "@/components/global-alert-dialog";
 import { Toaster } from "sonner";
 import GlobalLoading from "@/components/global-loading";
 import { usePathname } from "next/navigation";
-import { getZaloDsTemplate, getZaloToken } from "@/store/action/zalo";
 import { useZaloData } from "@/store/ZaloDataStore";
 import { memo, useCallback, useEffect } from "react";
+import { getZaloDsTemplate, getZaloToken } from "./(zalo)/token/_actions";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
