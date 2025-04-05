@@ -27,5 +27,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/", "/dashboard/:path*", "/profile/:path*"], // protect these routes
+  matcher: ["/((?!api|_next|static|icons|imgs|favicon.ico|login).*)"],
 };

@@ -12,15 +12,17 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import Image from "next/image";
-import { useState } from "react";
+import { memo, useState } from "react";
 import { ToastError, ToastSuccess } from "@/lib/toast";
 import { useRouter } from "next/navigation";
 import { login } from "@/actions/auth";
+import { useGlobalLoadingStore } from "@/store/GlobalStoreLoading";
 
-export function LoginForm({
+const LoginForm = ({
   className,
   ...props
-}: React.ComponentPropsWithoutRef<"div">) {
+}: React.ComponentPropsWithoutRef<"div">) => {
+  const setLoadingGlobal = useGlobalLoadingStore((state) => state.setLoading);
   const router = useRouter();
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -47,6 +49,7 @@ export function LoginForm({
   };
 
   const handleLogin = async () => {
+    setLoadingGlobal(true);
     try {
       await login(username, password);
 
@@ -54,10 +57,12 @@ export function LoginForm({
 
       setTimeout(() => {
         router.push("/");
-      }, 1000);
+      }, 500);
     } catch (ex) {
       console.log("ex ", ex);
       ToastError("Đăng nhập không thành công");
+    } finally {
+      setLoadingGlobal(false);
     }
   };
 
@@ -161,4 +166,6 @@ export function LoginForm({
       </div>
     </div>
   );
-}
+};
+
+export default memo(LoginForm);
