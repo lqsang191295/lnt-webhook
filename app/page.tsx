@@ -1,17 +1,18 @@
 "use client";
 
 import { post } from "@/api/client";
+import { useGlobalVariables } from "@/components/global-variables";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { ToastSuccess } from "@/lib/toast";
-import { getMessagingClient, getToken, isSupported } from "@/utils/firebase";
+import { isSupported } from "@/utils/firebase";
 import { registerServiceWorker } from "@/utils/service-worker";
 import { Copy } from "lucide-react";
 import { memo, useEffect, useState } from "react";
 
 const Home = () => {
-  const [token, setToken] = useState<string>("");
   const [isSupport, setIsSupport] = useState<string>("");
+  const { deviceToken } = useGlobalVariables();
 
   const getIsSuported = async () => {
     const isss = await isSupported();
@@ -22,36 +23,12 @@ const Home = () => {
   useEffect(() => {
     registerServiceWorker();
     getIsSuported();
-
-    Notification.requestPermission().then(async (permission) => {
-      console.log("permission === ", permission);
-      if (permission === "granted") {
-        try {
-          const messaging = await getMessagingClient();
-
-          if (!messaging) {
-            return;
-          }
-
-          const token = await getToken(messaging, {
-            vapidKey:
-              "BJRnJOsD5C6hxbK3DAVdzKFwebsi2sh36UakE4qRHALicyQ6mm_5t4npYD1TvzAjSGaRZNxvvkhlNlfEhHaeJPo",
-          });
-          console.log("FCM Token:", token);
-
-          // Lưu token này về backend (NestJS) để sau này gửi
-          setToken(token);
-        } catch (ex) {
-          console.log("aaaaaaa ", ex);
-        }
-      }
-    });
   }, []);
 
   const handleSendToken = async () => {
     try {
       const res = await post("/push-notification/subscribe", {
-        token,
+        token: deviceToken,
       });
 
       if (res) {
@@ -65,7 +42,7 @@ const Home = () => {
 
   const handleCopy = async () => {
     try {
-      await navigator.clipboard.writeText(token);
+      await navigator.clipboard.writeText(deviceToken);
     } catch {}
   };
   return (
@@ -74,7 +51,7 @@ const Home = () => {
         <h1>Device Approval Demo</h1>
         <Button onClick={handleSendToken}>Gửi Thông Báo Test</Button>
         <Label>Token: </Label>
-        <Label>{token}</Label>
+        <Label>{deviceToken}</Label>
         <Button variant={"outline"} onClick={handleCopy}>
           <Copy />
         </Button>

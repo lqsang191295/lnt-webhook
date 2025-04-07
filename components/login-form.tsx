@@ -1,6 +1,7 @@
 "use client";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import Bowser from "bowser";
 import {
   Card,
   CardContent,
@@ -16,31 +17,28 @@ import { memo, useState } from "react";
 import { ToastError, ToastSuccess } from "@/lib/toast";
 import { useRouter } from "next/navigation";
 import { login } from "@/actions/auth";
-import { useGlobalLoadingStore } from "@/store/GlobalStoreLoading";
+import { getToken } from "firebase/messaging";
+import { getMessagingClient } from "@/utils/firebase";
+import { sleeAsync } from "@/utils/timer";
+import Spinner from "./spinner";
+import { saveDeviceLogged } from "@/actions/AD_UserLogged";
 
 const LoginForm = ({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) => {
-  const setLoadingGlobal = useGlobalLoadingStore((state) => state.setLoading);
   const router = useRouter();
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [signInLoading, setSignInLoading] = useState<boolean>(false);
 
   const handleAuthenticationZalo = () => {
-    console.log(
-      "process.env.NEXT_PUBLIC_ZALO_APP_ID ==",
-      process.env.NEXT_PUBLIC_ZALO_APP_ID,
-      process.env.NEXT_PUBLIC_REDIRECT_URI
-    );
-    // Phải expose biến môi trường trong Next.js
     const URI_AUTH_ZALO = `https://oauth.zaloapp.com/v4/oa/permission?app_id=${
       process.env.NEXT_PUBLIC_ZALO_APP_ID
     }&redirect_uri=${encodeURIComponent(
       process.env.NEXT_PUBLIC_REDIRECT_URI || ""
     )}`;
 
-    console.log("URI_AUTH_ZALO === ", URI_AUTH_ZALO);
     window.open(
       URI_AUTH_ZALO,
       "_blank",
@@ -49,21 +47,52 @@ const LoginForm = ({
   };
 
   const handleLogin = async () => {
-    setLoadingGlobal(true);
+    setSignInLoading(true);
     try {
       await login(username, password);
+      await sleeAsync(500);
 
       ToastSuccess("Đăng nhập thành công");
 
-      setTimeout(() => {
-        router.push("/");
-      }, 500);
+      await handleSaveDeviceLogged();
+
+      router.push("/");
     } catch (ex) {
       console.log("ex ", ex);
       ToastError("Đăng nhập không thành công");
     } finally {
-      setLoadingGlobal(false);
+      setSignInLoading(false);
     }
+  };
+
+  const handleSaveDeviceLogged = async () => {
+    try {
+      const messaging = await getMessagingClient();
+
+      if (!messaging) {
+        return;
+      }
+
+      const tokenDevice = await getToken(messaging, {
+        vapidKey: process.env.NEXT_PUBLIC_VAPID_KEY,
+      });
+      const device = getDevice();
+
+      await saveDeviceLogged(username, tokenDevice, device);
+    } catch (error) {
+      console.log("error ", error);
+    }
+  };
+
+  const getDevice = () => {
+    const browser = Bowser.getParser(window.navigator.userAgent);
+    const result = browser.getResult();
+
+    return JSON.stringify({
+      os: result.os.name, // Windows, iOS, Android, macOS,...
+      browser: result.browser.name, // Chrome, Safari, Firefox, ...
+      platform: result.platform.type, // desktop, mobile, tablet,...
+    });
   };
 
   return (
@@ -146,7 +175,13 @@ const LoginForm = ({
                   type="submit"
                   className="w-full cursor-pointer"
                   onClick={handleLogin}>
-                  Login
+                  {!signInLoading && "Login"}
+                  {signInLoading && (
+                    <>
+                      <Spinner />
+                      <span>Processing...</span>
+                    </>
+                  )}
                 </Button>
               </div>
               <div className="text-center text-sm">

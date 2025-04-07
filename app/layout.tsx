@@ -5,6 +5,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import MainLayout from "./_components/main-layout";
 import StoreProvider from "@/store/provider";
+import GlobalVariablesProvider from "@/components/global-variables";
 import { GloabalAlertDialogProvider } from "@/components/global-alert-dialog";
 import { Toaster } from "sonner";
 import GlobalLoading from "@/components/global-loading";
@@ -79,9 +80,11 @@ const RootLayout = ({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <StoreProvider>
-          <GloabalAlertDialogProvider>
-            <MainLayout>{children}</MainLayout>
-          </GloabalAlertDialogProvider>
+          <GlobalVariablesProvider>
+            <GloabalAlertDialogProvider>
+              <MainLayout>{children}</MainLayout>
+            </GloabalAlertDialogProvider>
+          </GlobalVariablesProvider>
         </StoreProvider>
 
         <Toaster />

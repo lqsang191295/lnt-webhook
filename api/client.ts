@@ -1,3 +1,7 @@
+"use server";
+
+import { cookies } from "next/headers";
+
 export interface RequestOptions {
   token?: string; // Token để xác thực
   headers?: Record<string, unknown>; // Thêm header nếu cần
@@ -11,7 +15,9 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API || "";
  * Hàm GET request
  */
 export async function get(endpoint: string, options: RequestOptions = {}) {
-  const { token, headers, params, credentials = true } = options;
+  const cookieStore = await cookies();
+  const token = cookieStore.get("authToken")?.value;
+  const { headers, params, credentials = true } = options;
 
   // Convert object params thành query string (nếu có)
   const queryString = params
@@ -47,11 +53,24 @@ export async function post(
   body: unknown,
   options: RequestOptions = {}
 ) {
-  const { token, headers, credentials = true } = options;
+  const { headers, credentials = true } = options;
+  const cookieStore = await cookies();
+  const token = cookieStore.get("authToken")?.value;
 
   let URL = `${API_BASE_URL}${endpoint}`;
 
   if (endpoint.includes("http")) URL = `${endpoint}`;
+
+  console.log("Post header", {
+    method: "POST",
+    ...(credentials ? { credentials: "include" } : {}),
+    headers: {
+      "Content-Type": "application/json",
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      ...headers,
+    },
+    body: JSON.stringify(body),
+  });
 
   const res = await fetch(URL, {
     method: "POST",
@@ -63,6 +82,8 @@ export async function post(
     },
     body: JSON.stringify(body),
   });
+
+  console.log("res ==== ", res);
 
   if (!res.ok) {
     throw new Error(`POST ${endpoint} failed: ${res.statusText}`);

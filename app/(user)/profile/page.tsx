@@ -6,36 +6,34 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Eye, EyeOff } from "lucide-react";
 import { useUserStore } from "@/store/user-store";
-import { getMessagingClient, getToken } from "@/utils/firebase";
 import { toast } from "sonner";
+import { useAlertDialog } from "@/components/global-alert-dialog";
+import { ToastError, ToastSuccess } from "@/lib/toast";
+import { setMainDevice } from "@/actions/AD_UserLogged";
+import { useGlobalVariables } from "@/components/global-variables";
 
 const PageProfile = () => {
   const { user } = useUserStore();
+  const { showAlert } = useAlertDialog();
   const [showPassword, setShowPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showRenewPassword, setShowRenewPassword] = useState(false);
+  const { deviceToken } = useGlobalVariables();
 
   const handle2FactorAuthentication = () => {
     Notification.requestPermission().then(async (permission) => {
-      console.log("permission === ", permission);
+      console.log("permission === ", permission, deviceToken);
       if (permission !== "granted") {
         toast("Cho phép gửi tin nhắn nếu có đăng nhập từ máy khác");
         return;
       }
+
       try {
-        const messaging = await getMessagingClient();
-
-        if (!messaging) {
-          return;
-        }
-
-        const token = await getToken(messaging, {
-          vapidKey:
-            "BJRnJOsD5C6hxbK3DAVdzKFwebsi2sh36UakE4qRHALicyQ6mm_5t4npYD1TvzAjSGaRZNxvvkhlNlfEhHaeJPo",
-        });
-        console.log("FCM Token:", token);
+        await setMainDevice(user?.username || "", deviceToken);
+        ToastSuccess("Thành công!");
       } catch (ex) {
         console.log("aaaaaaa ", ex);
+        ToastError("Có lỗi xảy ra!");
       }
     });
   };
@@ -81,8 +79,7 @@ const PageProfile = () => {
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground"
-            >
+              className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground">
               {showPassword ? <Eye size={18} /> : <EyeOff size={18} />}
             </button>
           </div>
@@ -100,8 +97,7 @@ const PageProfile = () => {
             <button
               type="button"
               onClick={() => setShowNewPassword(!showPassword)}
-              className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground"
-            >
+              className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground">
               {showNewPassword ? <Eye size={18} /> : <EyeOff size={18} />}
             </button>
           </div>
@@ -119,8 +115,7 @@ const PageProfile = () => {
             <button
               type="button"
               onClick={() => setShowRenewPassword(!showPassword)}
-              className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground"
-            >
+              className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground">
               {showRenewPassword ? <Eye size={18} /> : <EyeOff size={18} />}
             </button>
           </div>
@@ -131,8 +126,13 @@ const PageProfile = () => {
         <Button
           variant="outline"
           className="w-full cursor-pointer"
-          onClick={handle2FactorAuthentication}
-        >
+          onClick={() =>
+            showAlert(
+              "Xác nhận",
+              "Bạn có chắc Bật Xác thực 2 lớp?",
+              handle2FactorAuthentication
+            )
+          }>
           Enable 2-Factor Authentication
         </Button>
       </div>
@@ -141,8 +141,7 @@ const PageProfile = () => {
         <Button
           variant="outline"
           className="w-full cursor-pointer"
-          onClick={handleUpdateInfo}
-        >
+          onClick={handleUpdateInfo}>
           Update info
         </Button>
       </div>

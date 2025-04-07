@@ -26,34 +26,14 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { tUser, useUserStore } from "@/store/user-store";
-import { jwtVerify } from "jose";
-import { GetServerSideProps } from "next";
-import { useEffect } from "react";
-import { verifyUser } from "@/actions/auth";
+import { memo, useEffect } from "react";
+import { logout, verifyUser } from "@/actions/auth";
 import Link from "next/link";
+import { ToastError, ToastSuccess } from "@/lib/toast";
+import { useRouter } from "next/navigation";
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const token = context.req.cookies.authToken; // Lấy token từ cookie
-
-  console.log("aaaaaaaaaa 123123123", token);
-
-  if (!token) {
-    return { redirect: { destination: "/login", permanent: false } };
-  }
-
-  try {
-    const { payload } = await jwtVerify(
-      token,
-      new TextEncoder().encode(process.env.JWT_SECRET!)
-    );
-    return { props: { user: payload } }; // Trả về dữ liệu người dùng vào props
-  } catch (error) {
-    console.log("error ", error);
-    return { redirect: { destination: "/login", permanent: false } };
-  }
-};
-
-export default function NavUser() {
+const NavUser = () => {
+  const router = useRouter();
   const { user, setUser } = useUserStore();
   const { isMobile } = useSidebar();
 
@@ -71,7 +51,19 @@ export default function NavUser() {
     };
 
     fetchUser();
-  }, []);
+  }, [setUser]);
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+
+      router.push("/login");
+      ToastSuccess("Logout success!");
+    } catch (ex) {
+      console.log("ex === ", ex);
+      ToastError("Logout fail!");
+    }
+  };
 
   return (
     <SidebarMenu>
@@ -138,7 +130,7 @@ export default function NavUser() {
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={handleLogout}>
               <LogOut />
               Log out
             </DropdownMenuItem>
@@ -147,4 +139,6 @@ export default function NavUser() {
       </SidebarMenuItem>
     </SidebarMenu>
   );
-}
+};
+
+export default memo(NavUser);

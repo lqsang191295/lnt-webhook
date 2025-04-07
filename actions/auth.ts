@@ -4,10 +4,28 @@ import { post } from "@/api/client";
 import { jwtVerify } from "jose"; // để xác thực JWT
 import { NextResponse } from "next/server";
 
+export async function logout() {
+  try {
+    const url = `/auth/log-out`;
+    const res = await post(url, {});
+
+    if (res.error) {
+      throw new Error("Logout failed");
+    }
+
+    const cookieStore = await cookies();
+
+    cookieStore.delete("authToken");
+  } catch (ex) {
+    throw ex;
+  }
+}
+
 export async function login(username: string, password: string) {
   try {
+    const url = `/auth/sign-in`;
     const res = await post(
-      `/auth/sign-in`,
+      url,
       {
         username,
         password,

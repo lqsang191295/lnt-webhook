@@ -19,8 +19,6 @@ export async function middleware(request: NextRequest) {
     );
     console.log("payload ==== ", payload);
 
-    request.headers.set("x-user-id", payload.sub || "");
-
     return NextResponse.next();
   } catch (error) {
     console.log("error", error);
