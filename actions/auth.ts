@@ -39,18 +39,26 @@ export async function login(username: string, password: string) {
       throw new Error("Login failed");
     }
 
-    const cookieStore = await cookies();
+    if (res.data.waitAcceptDevice) {
+      return res.data;
+    }
 
-    cookieStore.set("authToken", res.data.jwt, {
-      httpOnly: true,
-      secure: false,
-      sameSite: "lax",
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-    });
+    await setCookieToken(res.data.jwt);
   } catch (ex) {
     throw ex;
   }
 }
+
+export const setCookieToken = async (token: string) => {
+  const cookieStore = await cookies();
+
+  cookieStore.set("authToken", token, {
+    httpOnly: true,
+    secure: false,
+    sameSite: "lax",
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+  });
+};
 
 export async function verifyUser() {
   // Lấy token từ cookie
@@ -59,7 +67,9 @@ export async function verifyUser() {
 
   if (!token) {
     // Trả về lỗi nếu không có token
-    return NextResponse.redirect(new URL("/login"));
+    return NextResponse.redirect(
+      new URL(`${process.env.NEXT_PUBLIC_BASE_URL}/login`)
+    );
   }
 
   try {
@@ -74,6 +84,8 @@ export async function verifyUser() {
   } catch (error) {
     console.error("JWT Verification Error:", error);
     // Redirect nếu JWT không hợp lệ
-    return NextResponse.redirect(new URL("/login"));
+    return NextResponse.redirect(
+      new URL(`${process.env.NEXT_PUBLIC_BASE_URL}/login`)
+    );
   }
 }

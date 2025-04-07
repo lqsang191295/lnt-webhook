@@ -39,6 +39,8 @@ const RootLayout = ({
   const pathname = usePathname();
   const pathnameNotUseLayout = [
     "/login",
+    "/access-device",
+    "/wait-access-device",
     "/terms-of-service",
     "/privacy-policy",
   ];

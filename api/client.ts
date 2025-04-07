@@ -61,17 +61,6 @@ export async function post(
 
   if (endpoint.includes("http")) URL = `${endpoint}`;
 
-  console.log("Post header", {
-    method: "POST",
-    ...(credentials ? { credentials: "include" } : {}),
-    headers: {
-      "Content-Type": "application/json",
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      ...headers,
-    },
-    body: JSON.stringify(body),
-  });
-
   const res = await fetch(URL, {
     method: "POST",
     ...(credentials ? { credentials: "include" } : {}),
@@ -82,8 +71,6 @@ export async function post(
     },
     body: JSON.stringify(body),
   });
-
-  console.log("res ==== ", res);
 
   if (!res.ok) {
     throw new Error(`POST ${endpoint} failed: ${res.statusText}`);

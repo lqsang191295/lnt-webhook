@@ -1,23 +1,20 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { jwtVerify } from "jose";
+// import { jwtVerify } from "jose";
 
 export async function middleware(request: NextRequest) {
-  const token = request.cookies.get("authToken")?.value;
-
-  console.log("token === ", token);
-
-  if (!token) {
-    return NextResponse.redirect(new URL("/login", request.url));
-  }
-
   try {
+    const token = request.cookies.get("authToken")?.value;
+
+    if (!token) {
+      return NextResponse.redirect(new URL("/login", request.url));
+    }
     // Verify JWT
-    const { payload } = await jwtVerify(
-      token,
-      new TextEncoder().encode(process.env.JWT_SECRET!)
-    );
-    console.log("payload ==== ", payload);
+    // const { payload } = await jwtVerify(
+    //   token,
+    //   new TextEncoder().encode(process.env.JWT_SECRET!)
+    // );
+    // console.log("payload ==== ", payload);
 
     return NextResponse.next();
   } catch (error) {
@@ -27,5 +24,7 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!api|_next|static|icons|imgs|favicon.ico|login).*)"],
+  matcher: [
+    "/((?!api|_next|static|icons|imgs|favicon.ico|login|access-device|wait-access-device).*)",
+  ],
 };

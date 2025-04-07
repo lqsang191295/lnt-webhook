@@ -38,3 +38,27 @@ export const setMainDevice = async (UserID: string, TokenDevice: string) => {
     throw error;
   }
 };
+
+export const getLoggedDeviceById = async (
+  UserID: string,
+  TokenDevice: string
+) => {
+  try {
+    const url = `/module/AD_UserLogged/get-by-id`;
+    const res = await post(url, {
+      UserID,
+      TokenDevice,
+    });
+
+    console.log("res=----------------------- ", res);
+
+    if (res.error) {
+      throw new Error("Save device logged fail");
+    }
+
+    return res.data;
+  } catch (error) {
+    console.log("error ", error);
+    throw error;
+  }
+};

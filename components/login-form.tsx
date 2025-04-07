@@ -19,7 +19,6 @@ import { useRouter } from "next/navigation";
 import { login } from "@/actions/auth";
 import { getToken } from "firebase/messaging";
 import { getMessagingClient } from "@/utils/firebase";
-import { sleeAsync } from "@/utils/timer";
 import Spinner from "./spinner";
 import { saveDeviceLogged } from "@/actions/AD_UserLogged";
 
@@ -49,12 +48,16 @@ const LoginForm = ({
   const handleLogin = async () => {
     setSignInLoading(true);
     try {
-      await login(username, password);
-      await sleeAsync(500);
+      const data = await login(username, password);
+      await handleSaveDeviceLogged();
+
+      if (data.waitAcceptDevice) {
+        return router.push(
+          `/wait-access-device?token=${data.jwt}&username=${username}`
+        );
+      }
 
       ToastSuccess("Đăng nhập thành công");
-
-      await handleSaveDeviceLogged();
 
       router.push("/");
     } catch (ex) {
