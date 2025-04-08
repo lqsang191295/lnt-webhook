@@ -10,7 +10,6 @@ export interface RequestOptions {
 }
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API || "";
-
 /**
  * Hàm GET request
  */
