@@ -50,8 +50,6 @@ export const getLoggedDeviceById = async (
       TokenDevice,
     });
 
-    console.log("res=----------------------- ", res);
-
     if (res.error) {
       throw new Error("Save device logged fail");
     }
