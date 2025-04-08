@@ -46,12 +46,16 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useEffect } from "react";
-import { post } from "@/api/client";
 import { ToastError, ToastSuccess } from "@/lib/toast";
 import { DialogAdd } from "./_components/dialog-add";
 import { useAlertDialog } from "@/components/global-alert-dialog";
 import { useDialogStore } from "@/store/DialogStore";
-import { a_GetDataCronJobs } from "./_actions";
+import {
+  a_DeleteCronJob,
+  a_GetDataCronJobs,
+  a_StartCronJob,
+  a_StopCronJob,
+} from "./_actions";
 import { TypeJob } from "./_types";
 import { Badge } from "@/components/ui/badge";
 
@@ -251,25 +255,19 @@ export default function PageCronJobs() {
     }
 
     try {
-      let endpoint = "";
-
-      switch (action) {
-        case "start":
-          endpoint = "/tasks/start";
-          break;
-        case "stop":
-          endpoint = "/tasks/stop";
-          break;
-      }
-
-      if (!endpoint) {
+      if (!action) {
         ToastError("Không có hành động");
         return;
       }
 
-      await post(endpoint, {
-        ...data,
-      });
+      switch (action) {
+        case "start":
+          await a_StartCronJob(data);
+          break;
+        case "stop":
+          await a_StopCronJob(data);
+          break;
+      }
 
       ToastSuccess(`${action.toLowerCase()} thành công!`);
 
@@ -284,9 +282,7 @@ export default function PageCronJobs() {
     if (!data) return;
 
     try {
-      const result = await post("/module/HT_CronJobs/delete", {
-        ...data,
-      });
+      const result = await a_DeleteCronJob(data);
 
       ToastSuccess(`${result.message}`);
 

@@ -32,3 +32,27 @@ export const a_UpdateCronJob = async (model: TypeJob) => {
 
   return result;
 };
+
+export const a_DeleteCronJob = async (model: TypeJob) => {
+  const result = await post("/module/HT_CronJobs/delete", {
+    ...model,
+  });
+
+  return result;
+};
+
+export const a_StartCronJob = async (model: TypeJob) => {
+  const result = await post("/tasks/start", {
+    ...model,
+  });
+
+  return result;
+};
+
+export const a_StopCronJob = async (model: TypeJob) => {
+  const result = await post("/tasks/stop", {
+    ...model,
+  });
+
+  return result;
+};
