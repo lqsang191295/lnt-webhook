@@ -11,16 +11,23 @@ const PageWaitAccessDevice = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
+  const deviceToken = searchParams.get("deviceToken");
   const username = searchParams.get("username");
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const handleCheckAcceptDevice = useCallback(async () => {
-    if (!token || !username) return router.push("/login");
+    if (!token || !username || !deviceToken) return router.push("/login");
 
     try {
-      const data = await getLoggedDeviceById(username, token);
+      const data = await getLoggedDeviceById(username, deviceToken);
 
-      if (!data || !data.Accepted) {
+      console.log("data === ", data);
+
+      if (!data || data.Accepted === null) {
+        return;
+      }
+
+      if (!data || data.Accepted === false) {
         return router.push("/login");
       }
 
@@ -31,7 +38,7 @@ const PageWaitAccessDevice = () => {
       console.log("Error wait access device ", ex);
       return router.push("/");
     }
-  }, [router, token, username]);
+  }, [router, token, username, deviceToken]);
 
   useEffect(() => {
     if (intervalRef.current) clearInterval(intervalRef.current);

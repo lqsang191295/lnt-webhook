@@ -70,7 +70,7 @@ const RootLayout = ({
     return (
       <html lang="en">
         <body>
-          {children}
+          <GlobalVariablesProvider>{children}</GlobalVariablesProvider>
           <Toaster />
         </body>
       </html>

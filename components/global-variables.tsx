@@ -28,8 +28,10 @@ export const useGlobalVariables = (): VariablesContextType => {
   return context;
 };
 
+const defaultTokenValue = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+
 const GlobalVariablesProvider = ({ children }: { children: ReactNode }) => {
-  const [deviceToken, setDeviceToken] = useState<string>("");
+  const [deviceToken, setDeviceToken] = useState<string>(defaultTokenValue);
 
   const getDeviceToken = async () => {
     try {

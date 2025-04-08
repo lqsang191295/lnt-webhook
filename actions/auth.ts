@@ -21,7 +21,11 @@ export async function logout() {
   }
 }
 
-export async function login(username: string, password: string) {
+export async function login(
+  username: string,
+  password: string,
+  deviceToken: string
+) {
   try {
     const url = `/auth/sign-in`;
     const res = await post(
@@ -29,21 +33,24 @@ export async function login(username: string, password: string) {
       {
         username,
         password,
+        deviceToken,
       },
       {
         credentials: false,
       }
     );
 
+    console.log("res ==== ", res);
+
     if (res.error) {
       throw new Error("Login failed");
     }
 
-    if (res.data.waitAcceptDevice) {
-      return res.data;
+    if (!res.data.waitAcceptDevice) {
+      await setCookieToken(res.data.jwt);
     }
 
-    await setCookieToken(res.data.jwt);
+    return res.data;
   } catch (ex) {
     throw ex;
   }
@@ -89,3 +96,55 @@ export async function verifyUser() {
     );
   }
 }
+
+export const approveDevice = async (
+  username: string,
+  token: string,
+  deviceToken: string
+) => {
+  try {
+    const url = `/auth/approve-device`;
+    const res = await post(url, {
+      username,
+      token,
+      deviceToken,
+    });
+
+    console.log("res=----------------------- ", res);
+
+    if (res.error) {
+      throw new Error("Approve device fail");
+    }
+
+    return res.data;
+  } catch (error) {
+    console.log("error ", error);
+    throw error;
+  }
+};
+
+export const rejectDevice = async (
+  username: string,
+  token: string,
+  deviceToken: string
+) => {
+  try {
+    const url = `/auth/reject-device`;
+    const res = await post(url, {
+      username,
+      token,
+      deviceToken,
+    });
+
+    console.log("res=----------------------- ", res);
+
+    if (res.error) {
+      throw new Error("Reject device fail");
+    }
+
+    return res.data;
+  } catch (error) {
+    console.log("error ", error);
+    throw error;
+  }
+};

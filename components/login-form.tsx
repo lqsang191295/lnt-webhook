@@ -17,16 +17,16 @@ import { memo, useState } from "react";
 import { ToastError, ToastSuccess } from "@/lib/toast";
 import { useRouter } from "next/navigation";
 import { login } from "@/actions/auth";
-import { getToken } from "firebase/messaging";
-import { getMessagingClient } from "@/utils/firebase";
 import Spinner from "./spinner";
 import { saveDeviceLogged } from "@/actions/AD_UserLogged";
+import { useGlobalVariables } from "./global-variables";
 
 const LoginForm = ({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) => {
   const router = useRouter();
+  const { deviceToken } = useGlobalVariables();
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [signInLoading, setSignInLoading] = useState<boolean>(false);
@@ -48,12 +48,12 @@ const LoginForm = ({
   const handleLogin = async () => {
     setSignInLoading(true);
     try {
-      const data = await login(username, password);
+      const data = await login(username, password, deviceToken);
       await handleSaveDeviceLogged();
 
       if (data.waitAcceptDevice) {
         return router.push(
-          `/wait-access-device?token=${data.jwt}&username=${username}`
+          `/wait-access-device?token=${data.jwt}&username=${username}&deviceToken=${deviceToken}`
         );
       }
 
@@ -61,7 +61,7 @@ const LoginForm = ({
 
       router.push("/");
     } catch (ex) {
-      console.log("ex ", ex);
+      console.log("ex handleLogin", ex);
       ToastError("Đăng nhập không thành công");
     } finally {
       setSignInLoading(false);
@@ -70,20 +70,11 @@ const LoginForm = ({
 
   const handleSaveDeviceLogged = async () => {
     try {
-      const messaging = await getMessagingClient();
-
-      if (!messaging) {
-        return;
-      }
-
-      const tokenDevice = await getToken(messaging, {
-        vapidKey: process.env.NEXT_PUBLIC_VAPID_KEY,
-      });
       const device = getDevice();
 
-      await saveDeviceLogged(username, tokenDevice, device);
+      await saveDeviceLogged(username, deviceToken, device);
     } catch (error) {
-      console.log("error ", error);
+      console.log("error  handleSaveDeviceLogged === ", error);
     }
   };
 
