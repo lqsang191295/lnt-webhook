@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode } from "react";
+import { memo, ReactNode } from "react";
 import { AppSidebar } from "@/components/app-sidebar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import HeaderLayout from "./header";
@@ -21,4 +21,4 @@ const MainLayout = ({ children }: MainLayoutProps) => {
   );
 };
 
-export default MainLayout;
+export default memo(MainLayout);

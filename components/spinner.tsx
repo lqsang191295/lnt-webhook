@@ -1,7 +1,7 @@
-import React, { memo } from 'react';
+import React, { memo } from "react";
 
 const Spinner = () => {
-  const frames = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'];
+  const frames = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"];
   const [frameIndex, setFrameIndex] = React.useState(0);
 
   React.useEffect(() => {
@@ -9,7 +9,7 @@ const Spinner = () => {
       setFrameIndex((prev) => (prev + 1) % frames.length);
     }, 80);
     return () => clearInterval(interval);
-  }, []);
+  }, [frames.length]);
 
   return <div className="">{frames[frameIndex]}</div>;
 };
