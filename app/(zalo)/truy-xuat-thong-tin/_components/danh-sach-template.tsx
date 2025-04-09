@@ -13,7 +13,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { useZaloData } from "@/store/ZaloDataStore";
+import { useZaloData } from "@/store/zalo-data-store";
 
 export function DanhSachTemplate() {
   const {

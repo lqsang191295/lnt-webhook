@@ -2,9 +2,9 @@
 
 import * as React from "react";
 import {
+  BellRing,
   BookOpen,
   Bot,
-  Frame,
   Map,
   PieChart,
   Settings2,
@@ -44,14 +44,6 @@ const data = {
           title: "Truy xuất thông tin",
           url: "/truy-xuat-thong-tin",
         },
-        // {
-        //   title: "Webhook",
-        //   url: "/webhook",
-        // },
-        // {
-        //   title: "Settings",
-        //   url: "#",
-        // },
       ],
     },
     {
@@ -135,9 +127,9 @@ const data = {
   ],
   projects: [
     {
-      name: "Design Engineering",
+      name: "Notifications",
       url: "#",
-      icon: Frame,
+      icon: BellRing,
     },
     {
       name: "Sales & Marketing",

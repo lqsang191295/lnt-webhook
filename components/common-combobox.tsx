@@ -7,7 +7,7 @@ import {
   CommandItem,
   CommandList,
 } from "./ui/command";
-import { useComboboxStore } from "@/store/ComboboxStore";
+import { useComboboxStore } from "@/store/combobox-store";
 import { Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 

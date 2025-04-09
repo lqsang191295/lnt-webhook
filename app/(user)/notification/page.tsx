@@ -3,7 +3,7 @@
 import { EventSourcePolyfill } from "event-source-polyfill";
 import { useCallback, useEffect, useState } from "react";
 
-const getCookie = (name: string) => {
+const getCookie = () => {
   return "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InF1YW5nc2FuZyIsInVzZXJJZCI6InF1YW5nc2FuZyIsInJvbGVzIjoiUXXhuqNuX1Ry4buLIiwiZW1wSWQiOiJOVjI1XzAwNyIsImlhdCI6MTc0NDAxODQ4NywiZXhwIjoxNzQ0NjIzMjg3fQ.rcgMp5Ud6SXNpp6ec-DEP7VQdgjCAXUBmDFocskrEuM";
   //   const match = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
   //   if (match) return match[2];
@@ -17,7 +17,7 @@ export default function NotificationListener() {
   const handleNotificationSse = useCallback(async () => {
     if (eventSource) return;
 
-    const token = getCookie("authToken");
+    const token = getCookie();
 
     console.log("token= ===== ", token);
 

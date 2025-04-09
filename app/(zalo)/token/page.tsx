@@ -10,7 +10,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { ToastError, ToastSuccess } from "@/lib/toast";
-import { useZaloData } from "@/store/ZaloDataStore";
+import { useZaloData } from "@/store/zalo-data-store";
 import { Copy } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";

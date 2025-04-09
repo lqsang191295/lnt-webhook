@@ -49,7 +49,7 @@ import { useEffect } from "react";
 import { ToastError, ToastSuccess } from "@/lib/toast";
 import { DialogAdd } from "./_components/dialog-add";
 import { useAlertDialog } from "@/components/global-alert-dialog";
-import { useDialogStore } from "@/store/DialogStore";
+import { useDialogStore } from "@/store/dialog-store";
 import {
   a_DeleteCronJob,
   a_GetDataCronJobs,

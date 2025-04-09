@@ -10,7 +10,7 @@ import { GloabalAlertDialogProvider } from "@/components/global-alert-dialog";
 import { Toaster } from "sonner";
 import GlobalLoading from "@/components/global-loading";
 import { usePathname } from "next/navigation";
-import { useZaloData } from "@/store/ZaloDataStore";
+import { useZaloData } from "@/store/zalo-data-store";
 import { memo, useCallback, useEffect } from "react";
 import { getZaloDsTemplate, getZaloToken } from "./(zalo)/token/_actions";
 
