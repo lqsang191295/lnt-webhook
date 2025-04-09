@@ -7,16 +7,16 @@ import { useNotificationStore } from "@/store/notification-store";
 import NotificationItem from "./notification-item";
 import { cn } from "@/lib/utils";
 import { getNotifications } from "@/actions/notificatiton";
-import { EventSourcePolyfill } from "event-source-polyfill";
-import { getCookieToken } from "@/actions/auth";
+// import { EventSourcePolyfill } from "event-source-polyfill";
+// import { getCookieToken } from "@/actions/auth";
 
-const getCookie = async (name: string) => {
-  const token = await getCookieToken(name);
+// const getCookie = async (name: string) => {
+//   const token = await getCookieToken(name);
 
-  if (!token) return null;
+//   if (!token) return null;
 
-  return token.value;
-};
+//   return token.value;
+// };
 
 interface iSidebarNotificationProps {
   icon: React.ElementType;
@@ -32,7 +32,7 @@ const SidebarNotification = ({
   const id = useId();
   const [open, setOpen] = useState<boolean>(false);
   const { data, setData } = useNotificationStore();
-  const [eventSource, setEventSource] = useState<EventSourcePolyfill>();
+  const [eventSource, setEventSource] = useState<EventSource>();
 
   const handleOpen = () => {
     setOpen(!open);
@@ -52,38 +52,40 @@ const SidebarNotification = ({
     console.log("eventSource ==== ", eventSource);
     if (eventSource) return;
 
-    const token = await getCookie("authToken");
+    // const token = await getCookie("authToken");
 
-    const event = new EventSourcePolyfill(
-      `${process.env.NEXT_PUBLIC_API}/notification/sse`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        withCredentials: true,
-      }
+    const event = new EventSource(
+      `${process.env.NEXT_PUBLIC_API}/notification/sse`
     );
 
     event.onmessage = (e) => {
-      if (!e.data || e.data.startsWith(":")) {
-        // Nếu là ping (hoặc empty data) thì bỏ qua luôn
-        return;
-      }
-
-      try {
-        const res = JSON.parse(e.data);
-        console.log("Received notification:", res);
-
-        if (res.event === "create") {
-          setData(res.data);
-        }
-      } catch (error) {
-        console.error("Error parsing SSE message:", error);
-      }
+      console.log("Received:", JSON.parse(e.data));
     };
 
+    event.onerror = (e) => {
+      console.error("SSE error:", e);
+      event.close();
+    };
+    // event.onmessage = (e) => {
+    //   if (!e.data || e.data.startsWith(":")) {
+    //     // Nếu là ping (hoặc empty data) thì bỏ qua luôn
+    //     return;
+    //   }
+
+    //   try {
+    //     const res = JSON.parse(e.data);
+    //     console.log("Received notification:", res);
+
+    //     if (res.event === "create") {
+    //       setData(res.data);
+    //     }
+    //   } catch (error) {
+    //     console.error("Error parsing SSE message:", error);
+    //   }
+    // };
+
     setEventSource(event);
-  }, [eventSource, setData]);
+  }, [eventSource]);
 
   useEffect(() => {
     handleNotificationSse();
