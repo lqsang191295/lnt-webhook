@@ -64,11 +64,20 @@ const SidebarNotification = ({
     );
 
     event.onmessage = (e) => {
-      const res = JSON.parse(e.data);
-      console.log("Received notification:", res);
-      // TODO: Hiển thị thông báo trong UI
-      if (res.event === "create") {
-        setData(res.data);
+      if (!e.data || e.data.startsWith(":")) {
+        // Nếu là ping (hoặc empty data) thì bỏ qua luôn
+        return;
+      }
+
+      try {
+        const res = JSON.parse(e.data);
+        console.log("Received notification:", res);
+
+        if (res.event === "create") {
+          setData(res.data);
+        }
+      } catch (error) {
+        console.error("Error parsing SSE message:", error);
       }
     };
 
