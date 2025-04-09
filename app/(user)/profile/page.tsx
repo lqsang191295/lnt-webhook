@@ -9,7 +9,7 @@ import { useUserStore } from "@/store/user-store";
 import { toast } from "sonner";
 import { useAlertDialog } from "@/components/global-alert-dialog";
 import { ToastError, ToastSuccess } from "@/lib/toast";
-import { setMainDevice } from "@/actions/AD_UserLogged";
+import { setMainDevice } from "@/actions/ad-user-logged";
 import { useGlobalVariables } from "@/components/global-variables";
 
 const PageProfile = () => {

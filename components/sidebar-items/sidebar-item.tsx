@@ -5,7 +5,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "../ui/sidebar";
-import React from "react";
+import React, { memo } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -62,4 +62,4 @@ const SidebarItem = ({ icon: Icon, url, name }: iSidebarItemProps) => {
   );
 };
 
-export default SidebarItem;
+export default memo(SidebarItem);

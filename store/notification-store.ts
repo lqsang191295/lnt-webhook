@@ -1,16 +1,31 @@
 import { create } from "zustand";
 
+interface iNotificationData {
+  id: number;
+  title: string;
+  description: string;
+  readed: boolean;
+  created_at: Date;
+}
+
 interface NotificationState {
-  open: boolean;
-  setOpen: (v: boolean) => void;
-  selectedValue: Record<string, unknown> | null;
-  setSelectedValue: (s: Record<string, unknown>) => void;
+  data: iNotificationData[];
+  setData: (item: iNotificationData | iNotificationData[]) => void;
+  markAsRead: (id: number) => void;
 }
 
 export const useNotificationStore = create<NotificationState>((set) => ({
-  open: false,
-  setOpen: (v) => set(() => ({ open: v })),
-  selectedValue: null,
-  setSelectedValue: (s: Record<string, unknown>) =>
-    set(() => ({ selectedValue: s })),
+  data: [],
+  setData: (item) =>
+    set((state) => ({
+      data: Array.isArray(item)
+        ? [...item, ...state.data] // nếu item là array
+        : [item, ...state.data], // nếu item là 1 object
+    })),
+  markAsRead: (id) =>
+    set((state) => ({
+      data: state.data.map((item) =>
+        item.id === id ? { ...item, readed: true } : item
+      ),
+    })),
 }));

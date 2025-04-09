@@ -18,7 +18,7 @@ import { ToastError, ToastSuccess } from "@/lib/toast";
 import { useRouter } from "next/navigation";
 import { login } from "@/actions/auth";
 import Spinner from "./spinner";
-import { saveDeviceLogged } from "@/actions/AD_UserLogged";
+import { saveDeviceLogged } from "@/actions/ad-user-logged";
 import { useGlobalVariables } from "./global-variables";
 
 const LoginForm = ({

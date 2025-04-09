@@ -4,7 +4,7 @@ import { memo, useCallback, useEffect, useRef, useState } from "react";
 import { Label } from "@/components/ui/label";
 import Spinner from "@/components/spinner";
 import { useRouter, useSearchParams } from "next/navigation";
-import { getLoggedDeviceById } from "@/actions/AD_UserLogged";
+import { getLoggedDeviceById } from "@/actions/ad-user-logged";
 import { setCookieToken } from "@/actions/auth";
 import { Button } from "@/components/ui/button";
 
