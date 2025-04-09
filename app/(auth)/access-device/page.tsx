@@ -1,12 +1,13 @@
 "use client";
 
-import { memo, useCallback } from "react";
+import { memo, Suspense, useCallback } from "react";
 import { Check, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { useRouter, useSearchParams } from "next/navigation";
 import { approveDevice, rejectDevice } from "@/actions/auth";
 import { ToastSuccess } from "@/lib/toast";
+import Spinner from "@/components/spinner";
 
 const PageAccessDevice = () => {
   const router = useRouter();
@@ -66,4 +67,17 @@ const PageAccessDevice = () => {
   );
 };
 
-export default memo(PageAccessDevice);
+const PageAccessDeviceSuspense = () => {
+  return (
+    <Suspense
+      fallback={
+        <div className="w-screen h-screen flex items-center justify-center">
+          <Spinner /> Loading...
+        </div>
+      }>
+      <PageAccessDevice />
+    </Suspense>
+  );
+};
+
+export default memo(PageAccessDeviceSuspense);

@@ -1,6 +1,13 @@
 "use client";
 
-import { memo, useCallback, useEffect, useRef, useState } from "react";
+import {
+  memo,
+  Suspense,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { Label } from "@/components/ui/label";
 import Spinner from "@/components/spinner";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -113,4 +120,17 @@ const PageWaitAccessDevice = () => {
   );
 };
 
-export default memo(PageWaitAccessDevice);
+const PageWaitAccessDeviceSuspense = () => {
+  return (
+    <Suspense
+      fallback={
+        <div className="w-screen h-screen flex items-center justify-center">
+          <Spinner /> Loading...
+        </div>
+      }>
+      <PageWaitAccessDevice />
+    </Suspense>
+  );
+};
+
+export default memo(PageWaitAccessDeviceSuspense);
