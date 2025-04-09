@@ -67,6 +67,12 @@ export const setCookieToken = async (token: string) => {
   });
 };
 
+export const getCookieToken = async (key: string) => {
+  const cookieStore = await cookies();
+
+  return cookieStore.get(key);
+};
+
 export async function verifyUser() {
   // Lấy token từ cookie
   const cookieStore = await cookies();

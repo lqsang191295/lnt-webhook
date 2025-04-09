@@ -8,9 +8,14 @@ import NotificationItem from "./notification-item";
 import { cn } from "@/lib/utils";
 import { getNotifications } from "@/actions/notificatiton";
 import { EventSourcePolyfill } from "event-source-polyfill";
+import { getCookieToken } from "@/actions/auth";
 
-const getCookie = () => {
-  return "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InF1YW5nc2FuZyIsInVzZXJJZCI6InF1YW5nc2FuZyIsInJvbGVzIjoiUXXhuqNuX1Ry4buLIiwiZW1wSWQiOiJOVjI1XzAwNyIsImlhdCI6MTc0NDAxODQ4NywiZXhwIjoxNzQ0NjIzMjg3fQ.rcgMp5Ud6SXNpp6ec-DEP7VQdgjCAXUBmDFocskrEuM";
+const getCookie = async (name: string) => {
+  const token = await getCookieToken(name);
+
+  if (!token) return null;
+
+  return token.value;
 };
 
 interface iSidebarNotificationProps {
@@ -47,7 +52,7 @@ const SidebarNotification = ({
     console.log("eventSource ==== ", eventSource);
     if (eventSource) return;
 
-    const token = getCookie();
+    const token = await getCookie("authToken");
 
     const event = new EventSourcePolyfill(
       `${process.env.NEXT_PUBLIC_API}/notification/sse`,
