@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { SidebarMenuButton, SidebarMenuItem } from "../ui/sidebar";
-import React, { memo, useCallback, useEffect, useState } from "react";
+import React, { memo, useCallback, useEffect, useId, useState } from "react";
 import { useNotificationStore } from "@/store/notification-store";
 import NotificationItem from "./notification-item";
 import { cn } from "@/lib/utils";
@@ -24,6 +24,7 @@ const SidebarNotification = ({
   url,
   name,
 }: iSidebarNotificationProps) => {
+  const id = useId();
   const [open, setOpen] = useState<boolean>(false);
   const { data, setData } = useNotificationStore();
   const [eventSource, setEventSource] = useState<EventSourcePolyfill>();
@@ -98,7 +99,7 @@ const SidebarNotification = ({
           open ? "block" : "hidden"
         )}>
         {data.map((item) => {
-          return <NotificationItem key={item.id} item={item} />;
+          return <NotificationItem key={`${id}-${item.id}`} item={item} />;
         })}
       </div>
     </SidebarMenuItem>
