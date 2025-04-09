@@ -60,6 +60,7 @@ const SidebarNotification = ({
         headers: {
           Authorization: `Bearer ${token}`,
         },
+        withCredentials: true,
       }
     );
 
