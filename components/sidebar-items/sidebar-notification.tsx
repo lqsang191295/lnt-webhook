@@ -94,7 +94,7 @@ const SidebarNotification = ({
       </SidebarMenuButton>
       <div
         className={cn(
-          "fixed w-64 h-screen bg-gray-100 top-0 left-64",
+          "fixed w-64 h-screen bg-gray-100 top-0 left-64 overflow-y-scroll",
           open ? "block" : "hidden"
         )}>
         {data.map((item) => {
