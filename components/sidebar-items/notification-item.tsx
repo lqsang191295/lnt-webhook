@@ -4,6 +4,7 @@ import dayjs from "dayjs";
 import { Bell, BookmarkCheck } from "lucide-react";
 import { readNotifications } from "@/actions/notificatiton";
 import { useNotificationStore } from "@/store/notification-store";
+import { useAlertDialog } from "../global-alert-dialog";
 
 interface iNotificationItemProps {
   item: {
@@ -18,8 +19,9 @@ interface iNotificationItemProps {
 const NotificationItem = ({ item }: iNotificationItemProps) => {
   const [showIcons, setShowIcons] = useState<boolean>(false);
   const { markAsRead } = useNotificationStore();
+  const { showAlert } = useAlertDialog();
 
-  const handleClick = async () => {
+  const handleMarkAsRead = async () => {
     try {
       await readNotifications(item.id);
 
@@ -29,11 +31,29 @@ const NotificationItem = ({ item }: iNotificationItemProps) => {
     }
   };
 
+  const handleClick = () => {
+    try {
+      readNotifications(item.id);
+
+      markAsRead(item.id);
+
+      showAlert(
+        item.title,
+        `${item.description} (Ngày ${dayjs(item.created_at).format(
+          "DD-MM-YYYY"
+        )} | ${dayjs(item.created_at).format("HH:mm:ss")})`
+      );
+    } catch (ex) {
+      console.log("error ", ex);
+    }
+  };
+
   return (
     <div
       className="w-full border-b-1 border-gray-200 cursor-pointer hover:bg-gray-50 relative"
       onMouseEnter={() => setShowIcons(true)}
-      onMouseLeave={() => setShowIcons(false)}>
+      onMouseLeave={() => setShowIcons(false)}
+      onClick={handleClick}>
       <div className="p-4 relative">
         <div className="">
           <Label className="text-md">{item.title}</Label>
@@ -54,7 +74,7 @@ const NotificationItem = ({ item }: iNotificationItemProps) => {
       {showIcons && (
         <div className="absolute flex gap-1 py-1 px-2 border-1 border-gray-300 rounded-xs top-5 right-2 bg-white text-gray-500">
           <Bell size={18} />
-          <BookmarkCheck size={18} onClick={handleClick} />
+          <BookmarkCheck size={18} onClick={handleMarkAsRead} />
         </div>
       )}
     </div>

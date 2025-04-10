@@ -70,14 +70,15 @@ export const GloabalAlertDialogProvider = ({
             <AlertDialogCancel onClick={() => setIsOpen(false)}>
               Cancel
             </AlertDialogCancel>
-            <AlertDialogAction
-              onClick={() => {
-                onConfirm?.();
-                setIsOpen(false);
-              }}
-            >
-              Confirm
-            </AlertDialogAction>
+            {onConfirm && (
+              <AlertDialogAction
+                onClick={() => {
+                  onConfirm?.();
+                  setIsOpen(false);
+                }}>
+                Confirm
+              </AlertDialogAction>
+            )}
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
