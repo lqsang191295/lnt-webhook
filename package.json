@@ -55,6 +55,7 @@
     "react": "^19.0.0",
     "react-countdown-circle-timer": "^3.2.1",
     "react-dom": "^19.0.0",
+    "react-image-lightbox": "^5.1.4",
     "react-redux": "^9.2.0",
     "react-resizable-panels": "^2.1.7",
     "react-spinners": "^0.15.0",
