@@ -120,6 +120,7 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }
@@ -128,9 +129,11 @@
 .tiptap {
   /* Heading styles */
 }
+
 .tiptap :first-child {
   margin-top: 0;
 }
+
 .tiptap h1,
 .tiptap h2,
 .tiptap h3,
@@ -141,20 +144,25 @@
   margin-top: 2.5rem;
   text-wrap: pretty;
 }
+
 .tiptap h1,
 .tiptap h2 {
   margin-top: 3.5rem;
   margin-bottom: 1.5rem;
 }
+
 .tiptap h1 {
   font-size: 1.4rem;
 }
+
 .tiptap h2 {
   font-size: 1.2rem;
 }
+
 .tiptap h3 {
   font-size: 1.1rem;
 }
+
 .tiptap h4,
 .tiptap h5,
 .tiptap h6 {
@@ -167,4 +175,42 @@
   color: #2e2b29;
   font-size: 0.85rem;
   padding: 0.25em 0.3em;
+}
+
+.file-item-box {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-basis: 1 1 13.75rem;
+  flex-basis: 1 1 13.75rem;
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  position: relative;
+  vertical-align: top;
+}
+
+.file-item-box::before {
+  content: "";
+  display: inline-block;
+  -webkit-box-flex: 0;
+  -webkit-flex: 0 0 0px;
+  flex: 0 0 0px;
+  height: 0;
+  padding-bottom: 100%;
+}
+
+.file-item-box-content {
+  color: var(--dt-on-surface, rgb(60, 64, 67));
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: column;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  position: absolute;
+  width: 100%;
 }
