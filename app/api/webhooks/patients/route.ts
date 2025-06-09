@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { waitingPatientsByRoom, Patient } from '@/app/types/patient';
+import { waitingPatientsByRoom, Patient } from '@/types/patient';
 
 export async function POST(request: Request) {
   try {

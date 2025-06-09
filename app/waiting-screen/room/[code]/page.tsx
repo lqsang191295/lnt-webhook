@@ -6,13 +6,13 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Upload, X, Users, Clock, ArrowLeft } from "lucide-react"
+import { Upload, Users, Clock, ArrowLeft } from "lucide-react"
 import TimeDisplay from "@/components/TimeDisplay"
 import ClientOnly from "@/components/ClientOnly"
 import LoadingFallback from "@/components/LoadingFallback"
 import Link from "next/link"
 import { useParams } from "next/navigation"
-import { Patient, Room } from '@/app/types/patient'
+import { Patient, Room } from '@/types/patient'
 
 interface ApiResponse {
   room: Room

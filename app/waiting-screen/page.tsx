@@ -2,12 +2,10 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { Building2, ArrowRight, Users, Clock } from 'lucide-react'
+import { Building2, ArrowRight } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import TimeDisplay from '@/components/TimeDisplay'
-import { Room, Patient } from '@/app/types/patient'
-import { formatTime } from '@/app/utils/timeUtils'
-import ClientOnly from '@/components/ClientOnly'
+import { Room, Patient } from '@/types/patient'
 
 interface ApiResponse {
   rooms: (Room & {
@@ -134,7 +132,7 @@ export default function DashboardPage() {
         {/* Danh sách phòng khám */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {rooms.map((room) => (
-            <Link key={room.id} href={`/room/${room.code}`}>
+            <Link key={room.id} href={`/waiting-screen/room/${room.code}`}>
               <Card className={`cursor-pointer transition-all duration-300 hover:shadow-lg hover:scale-105 ${
                 room.count > 0 || room.activePatient ? 'border-2 border-green-500 bg-green-50' : 'border-2 border-gray-200'
               }`}>
