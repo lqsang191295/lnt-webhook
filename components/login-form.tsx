@@ -1,6 +1,7 @@
 "use client";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import Bowser from "bowser";
 import {
   Card,
   CardContent,
@@ -12,33 +13,31 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import Image from "next/image";
-import { useState } from "react";
+import { memo, useState } from "react";
 import { ToastError, ToastSuccess } from "@/lib/toast";
 import { useRouter } from "next/navigation";
 import { login } from "@/actions/auth";
+import Spinner from "./spinner";
+import { saveDeviceLogged } from "@/actions/ad-user-logged";
+import { useGlobalVariables } from "./global-variables";
 
-export function LoginForm({
+const LoginForm = ({
   className,
   ...props
-}: React.ComponentPropsWithoutRef<"div">) {
+}: React.ComponentPropsWithoutRef<"div">) => {
   const router = useRouter();
+  const { deviceToken } = useGlobalVariables();
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [signInLoading, setSignInLoading] = useState<boolean>(false);
 
   const handleAuthenticationZalo = () => {
-    console.log(
-      "process.env.NEXT_PUBLIC_ZALO_APP_ID ==",
-      process.env.NEXT_PUBLIC_ZALO_APP_ID,
-      process.env.NEXT_PUBLIC_REDIRECT_URI
-    );
-    // Phải expose biến môi trường trong Next.js
     const URI_AUTH_ZALO = `https://oauth.zaloapp.com/v4/oa/permission?app_id=${
       process.env.NEXT_PUBLIC_ZALO_APP_ID
     }&redirect_uri=${encodeURIComponent(
       process.env.NEXT_PUBLIC_REDIRECT_URI || ""
     )}`;
 
-    console.log("URI_AUTH_ZALO === ", URI_AUTH_ZALO);
     window.open(
       URI_AUTH_ZALO,
       "_blank",
@@ -47,18 +46,47 @@ export function LoginForm({
   };
 
   const handleLogin = async () => {
+    setSignInLoading(true);
     try {
-      await login(username, password);
+      const data = await login(username, password, deviceToken);
+      await handleSaveDeviceLogged();
+
+      if (data.waitAcceptDevice) {
+        return router.push(
+          `/wait-access-device?token=${data.jwt}&username=${username}&deviceToken=${deviceToken}`
+        );
+      }
 
       ToastSuccess("Đăng nhập thành công");
 
-      setTimeout(() => {
-        router.push("/");
-      }, 1000);
+      router.push("/");
     } catch (ex) {
-      console.log("ex ", ex);
+      console.log("ex handleLogin", ex);
       ToastError("Đăng nhập không thành công");
+    } finally {
+      setSignInLoading(false);
     }
+  };
+
+  const handleSaveDeviceLogged = async () => {
+    try {
+      const device = getDevice();
+
+      await saveDeviceLogged(username, deviceToken, device);
+    } catch (error) {
+      console.log("error  handleSaveDeviceLogged === ", error);
+    }
+  };
+
+  const getDevice = () => {
+    const browser = Bowser.getParser(window.navigator.userAgent);
+    const result = browser.getResult();
+
+    return JSON.stringify({
+      os: result.os.name, // Windows, iOS, Android, macOS,...
+      browser: result.browser.name, // Chrome, Safari, Firefox, ...
+      platform: result.platform.type, // desktop, mobile, tablet,...
+    });
   };
 
   return (
@@ -141,7 +169,13 @@ export function LoginForm({
                   type="submit"
                   className="w-full cursor-pointer"
                   onClick={handleLogin}>
-                  Login
+                  {!signInLoading && "Login"}
+                  {signInLoading && (
+                    <>
+                      <Spinner />
+                      <span>Processing...</span>
+                    </>
+                  )}
                 </Button>
               </div>
               <div className="text-center text-sm">
@@ -161,4 +195,6 @@ export function LoginForm({
       </div>
     </div>
   );
-}
+};
+
+export default memo(LoginForm);

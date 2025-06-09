@@ -1,6 +1,6 @@
 "use client";
 
-import { LIST_WEBHOOK, useWebhookStore } from "@/store/WebhookStore";
+import { LIST_WEBHOOK, useWebhookStore } from "@/store/webhook-store";
 
 export function SidebarLeft() {
   const { setWebhook } = useWebhookStore();

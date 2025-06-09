@@ -1,6 +1,6 @@
 "use client";
 
-import { LIST_POPULAR_AI, useModelAIStore } from "@/store/ModelAIStore";
+import { LIST_POPULAR_AI, useModelAIStore } from "@/store/model-ai-store";
 import { TypeModelAI } from "@/store/types/model-ai";
 import Image from "next/image";
 

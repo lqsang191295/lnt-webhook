@@ -2,9 +2,9 @@
 
 import * as React from "react";
 import {
+  BellRing,
   BookOpen,
   Bot,
-  Frame,
   Map,
   PieChart,
   Settings2,
@@ -13,7 +13,6 @@ import {
 
 import { NavMain } from "@/components/nav-main";
 import { NavProjects } from "@/components/nav-projects";
-import { NavUser } from "@/components/nav-user";
 import { TeamSwitcher } from "@/components/team-switcher";
 import {
   Sidebar,
@@ -22,6 +21,7 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar";
+import NavUser from "./nav-user";
 
 // This is sample data.
 const data = {
@@ -44,14 +44,6 @@ const data = {
           title: "Truy xuất thông tin",
           url: "/truy-xuat-thong-tin",
         },
-        // {
-        //   title: "Webhook",
-        //   url: "/webhook",
-        // },
-        // {
-        //   title: "Settings",
-        //   url: "#",
-        // },
       ],
     },
     {
@@ -135,9 +127,9 @@ const data = {
   ],
   projects: [
     {
-      name: "Design Engineering",
+      name: "Notifications",
       url: "#",
-      icon: Frame,
+      icon: BellRing,
     },
     {
       name: "Sales & Marketing",

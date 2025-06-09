@@ -1,6 +1,5 @@
-"use client"; // Nếu dùng Next.js 13+ (app router)
+"use client";
 
-import { post } from "@/api/client";
 import { useAlertDialog } from "@/components/global-alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -11,22 +10,18 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { ToastError, ToastSuccess } from "@/lib/toast";
-import { getZaloToken } from "@/store/action/zalo";
-import { useGlobalLoadingStore } from "@/store/GlobalStoreLoading";
-import { useZaloData } from "@/store/ZaloDataStore";
-import { Copy, Loader } from "lucide-react";
+import { useZaloData } from "@/store/zalo-data-store";
+import { Copy } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
+import { getZaloToken, refreshToken } from "./_actions";
+import Spinner from "@/components/spinner";
 
 const PageToken = () => {
-  // const [accessToken, setAccessToken] = useState<string>("");
-  // const [refreshToken, setRefreshToken] = useState<string>("");
-
   const [accessTokenCopy, setAccessTokenCopy] = useState<boolean>(false);
   const [refreshTokenCopy, setRefreshTokenCopy] = useState<boolean>(false);
-
   const [loadingToken, setLoadingToken] = useState<boolean>(true);
-  const setLoadingGlobal = useGlobalLoadingStore((state) => state.setLoading);
+  const [processNewToken, setProcessNewToken] = useState<boolean>(false);
 
   const { access_token, refresh_token, setAccessToken, setRefreshToken } =
     useZaloData();
@@ -84,16 +79,8 @@ const PageToken = () => {
 
   const handleGrantNewToken = async () => {
     try {
-      setLoadingGlobal(true);
-      const result = await post(
-        "/webhook/refresh-token",
-        {
-          refresh_token,
-        },
-        {
-          credentials: "include",
-        }
-      );
+      setProcessNewToken(true);
+      const result = await refreshToken(refresh_token);
 
       if (!result || result.error || !result.data) {
         ToastError("Tạo mới token không thành công");
@@ -106,7 +93,7 @@ const PageToken = () => {
       console.log("ex", ex);
       ToastError("Tạo mới token không thành công");
     } finally {
-      setLoadingGlobal(false);
+      setProcessNewToken(false);
     }
   };
 
@@ -141,14 +128,6 @@ const PageToken = () => {
 
   return (
     <div className="mx-4">
-      {/* <div className="mb-4">
-        <Button
-          className="bg-blue-500 cursor-pointer"
-          onClick={handleAuthenticationZalo}>
-          Authentication Zalo
-        </Button>
-      </div> */}
-
       <div className="flex flex-col gap-4 overflow-hidden">
         <Label className="font-semibold">
           Access Token
@@ -171,7 +150,9 @@ const PageToken = () => {
 
         <Label className="max-w-3xs font-normal">
           {loadingToken ? (
-            <Loader className="animate-spin" />
+            <>
+              <Spinner /> <Label>Loading...</Label>
+            </>
           ) : (
             access_token || "Không có dữ liệu"
           )}
@@ -200,7 +181,9 @@ const PageToken = () => {
 
         <Label className="max-w-3xs font-normal">
           {loadingToken ? (
-            <Loader className="animate-spin" />
+            <>
+              <Spinner /> <Label>Loading...</Label>
+            </>
           ) : (
             refresh_token || "Không có dữ liệu"
           )}
@@ -209,7 +192,7 @@ const PageToken = () => {
 
       <div className="mt-4">
         <Button
-          className="cursor-pointer"
+          className="cursor-pointer w-48"
           variant={"outline"}
           onClick={() =>
             showAlert(
@@ -218,7 +201,12 @@ const PageToken = () => {
               handleGrantNewToken
             )
           }>
-          Grant & save new token
+          {!processNewToken && "Grant & save new token"}
+          {processNewToken && (
+            <>
+              <Spinner /> <Label>Processing...</Label>
+            </>
+          )}
         </Button>
       </div>
     </div>

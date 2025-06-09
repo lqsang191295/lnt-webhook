@@ -7,7 +7,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { useDialogStore } from "@/store/DialogStore";
+import { useDialogStore } from "@/store/dialog-store";
 import { ReactNode } from "react";
 
 interface DialogCommonProps {

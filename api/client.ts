@@ -1,17 +1,22 @@
+"use server";
+
+import { cookies } from "next/headers";
+
 export interface RequestOptions {
   token?: string; // Token để xác thực
   headers?: Record<string, unknown>; // Thêm header nếu cần
   params?: Record<string, unknown>; // Query params cho GET
-  credentials?: string;
+  credentials?: boolean;
 }
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API || "";
-
 /**
  * Hàm GET request
  */
 export async function get(endpoint: string, options: RequestOptions = {}) {
-  const { token, headers, params } = options;
+  const cookieStore = await cookies();
+  const token = cookieStore.get("authToken")?.value;
+  const { headers, params, credentials = true } = options;
 
   // Convert object params thành query string (nếu có)
   const queryString = params
@@ -24,7 +29,7 @@ export async function get(endpoint: string, options: RequestOptions = {}) {
 
   const res = await fetch(URL, {
     method: "GET",
-    ...(options.credentials ? { credentials: "include" } : {}),
+    ...(credentials ? { credentials: "include" } : {}),
     headers: {
       "Content-Type": "application/json",
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
@@ -47,7 +52,9 @@ export async function post(
   body: unknown,
   options: RequestOptions = {}
 ) {
-  const { token, headers } = options;
+  const { headers, credentials = true } = options;
+  const cookieStore = await cookies();
+  const token = cookieStore.get("authToken")?.value;
 
   let URL = `${API_BASE_URL}${endpoint}`;
 
@@ -55,7 +62,7 @@ export async function post(
 
   const res = await fetch(URL, {
     method: "POST",
-    ...(options.credentials ? { credentials: "include" } : {}),
+    ...(credentials ? { credentials: "include" } : {}),
     headers: {
       "Content-Type": "application/json",
       ...(token ? { Authorization: `Bearer ${token}` } : {}),

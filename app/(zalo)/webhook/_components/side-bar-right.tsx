@@ -5,10 +5,10 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useModelAIStore } from "@/store/ModelAIStore";
+import { useModelAIStore } from "@/store/model-ai-store";
 import CommonCombobox from "@/components/common-combobox";
 import { ChevronsUpDown } from "lucide-react";
-import { useComboboxStore } from "@/store/ComboboxStore";
+import { useComboboxStore } from "@/store/combobox-store";
 import { generateQuiz } from "@/actions/generate-question";
 import { useState } from "react";
 

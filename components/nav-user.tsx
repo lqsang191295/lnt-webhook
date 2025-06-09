@@ -25,28 +25,45 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { Button } from "./ui/button";
-import { useSelector } from "react-redux";
-import { userData } from "@/store/selector/user";
+import { tUser, useUserStore } from "@/store/user-store";
+import { memo, useEffect } from "react";
+import { logout, verifyUser } from "@/actions/auth";
+import Link from "next/link";
+import { ToastError, ToastSuccess } from "@/lib/toast";
 import { useRouter } from "next/navigation";
 
-export function NavUser() {
-  const { isMobile } = useSidebar();
+const NavUser = () => {
   const router = useRouter();
-  const user = useSelector(userData);
+  const { user, setUser } = useUserStore();
+  const { isMobile } = useSidebar();
 
-  if (!user.email) {
-    return (
-      <div>
-        <Button
-          className="w-full cursor-pointer"
-          variant="outline"
-          onClick={() => router.push("/login")}>
-          Login
-        </Button>
-      </div>
-    );
-  }
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const result = await verifyUser(); // Gọi action từ server
+
+        if (result) {
+          setUser(result as tUser);
+        }
+      } catch (error) {
+        console.error("Error fetching user:", error);
+      }
+    };
+
+    fetchUser();
+  }, [setUser]);
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+
+      router.push("/login");
+      ToastSuccess("Logout success!");
+    } catch (ex) {
+      console.log("ex === ", ex);
+      ToastError("Logout fail!");
+    }
+  };
 
   return (
     <SidebarMenu>
@@ -57,12 +74,14 @@ export function NavUser() {
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground">
               <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarImage src={user.avatar} alt={user.name} />
-                <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                <AvatarImage src={""} alt={user?.username} />
+                <AvatarFallback className="rounded-lg uppercase">
+                  {user?.username.substring(0, 2)}
+                </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold">{user.name}</span>
-                <span className="truncate text-xs">{user.email}</span>
+                <span className="truncate font-semibold">{user?.username}</span>
+                <span className="truncate text-xs">{user?.userId}</span>
               </div>
               <ChevronsUpDown className="ml-auto size-4" />
             </SidebarMenuButton>
@@ -75,12 +94,16 @@ export function NavUser() {
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={user.avatar} alt={user.name} />
-                  <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                  <AvatarImage src={""} alt={user?.username} />
+                  <AvatarFallback className="rounded-lg uppercase">
+                    {user?.username.substring(0, 2)}
+                  </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">{user.name}</span>
-                  <span className="truncate text-xs">{user.email}</span>
+                  <span className="truncate font-semibold">
+                    {user?.username}
+                  </span>
+                  <span className="truncate text-xs">{user?.userId}</span>
                 </div>
               </div>
             </DropdownMenuLabel>
@@ -95,7 +118,7 @@ export function NavUser() {
             <DropdownMenuGroup>
               <DropdownMenuItem>
                 <BadgeCheck />
-                Account
+                <Link href={"/profile"}>Profile</Link>
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <CreditCard />
@@ -103,11 +126,11 @@ export function NavUser() {
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <Bell />
-                Notifications
+                <Link href={"/notification"}>Notifications</Link>
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={handleLogout}>
               <LogOut />
               Log out
             </DropdownMenuItem>
@@ -116,4 +139,6 @@ export function NavUser() {
       </SidebarMenuItem>
     </SidebarMenu>
   );
-}
+};
+
+export default memo(NavUser);
