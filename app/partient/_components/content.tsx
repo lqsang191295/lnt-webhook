@@ -1,5 +1,4 @@
 import { Label } from "@/components/ui/label";
-import FileItem from "./file-item";
 import {
     Accordion,
     AccordionContent,

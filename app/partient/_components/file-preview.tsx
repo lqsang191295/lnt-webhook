@@ -1,7 +1,3 @@
-import { Label } from "@/components/ui/label";
-import { File } from "lucide-react";
-import Image from "next/image";
-
 type FilePreviewProps = {
     image: string
 }
