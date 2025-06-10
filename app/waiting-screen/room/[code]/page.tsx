@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -13,6 +13,7 @@ import LoadingFallback from "@/components/LoadingFallback"
 import Link from "next/link"
 import { useParams } from "next/navigation"
 import { Patient, Room } from '@/types/patient'
+import Image from "next/image"
 
 interface ApiResponse {
   room: Room
@@ -29,14 +30,14 @@ interface ApiResponse {
 function RoomDetailContent() {
   const params = useParams()
   const roomCode = params.code as string
-  
+
   const [data, setData] = useState<ApiResponse | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [bannerImage, setBannerImage] = useState("/hospital-banner.png")
   const [isEditingRoom, setIsEditingRoom] = useState(false)
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
       const response = await fetch(`/api/waiting-patients?room=${roomCode}`)
       if (!response.ok) {
@@ -50,13 +51,13 @@ function RoomDetailContent() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [roomCode])
 
   useEffect(() => {
     fetchData()
     const interval = setInterval(fetchData, 5000) // Cập nhật mỗi 5 giây
     return () => clearInterval(interval)
-  }, [roomCode])
+  }, [fetchData])
 
   // Handle banner image change
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -85,7 +86,7 @@ function RoomDetailContent() {
           <div className="text-red-500 text-6xl mb-4">⚠️</div>
           <h1 className="text-2xl font-bold text-gray-800 mb-2">Lỗi tải dữ liệu</h1>
           <p className="text-gray-600 mb-4">{error || 'Không thể tải dữ liệu phòng khám'}</p>
-          <button 
+          <button
             onClick={fetchData}
             className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
           >
@@ -112,7 +113,7 @@ function RoomDetailContent() {
                 <div className="flex items-center gap-2">
                   <Input
                     value={room.name}
-                    onChange={(e) => setIsEditingRoom(false)}
+                    onChange={() => setIsEditingRoom(false)}
                     className="text-2xl font-bold text-green-600 bg-white border-2"
                   />
                   <Button onClick={() => setIsEditingRoom(false)} size="sm">
@@ -141,7 +142,7 @@ function RoomDetailContent() {
             <Card className="relative overflow-hidden">
               <CardContent className="p-0">
                 <div className="relative group cursor-pointer">
-                  <img
+                  <Image
                     src={bannerImage || "/placeholder.svg"}
                     alt="Hospital Banner"
                     className="w-full h-[630px] object-fill"

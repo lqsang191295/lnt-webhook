@@ -6,6 +6,7 @@ import { Building2, ArrowRight } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import TimeDisplay from '@/components/TimeDisplay'
 import { Room, Patient } from '@/types/patient'
+import { websocketInstance } from '@/websocket'
 
 interface ApiResponse {
   rooms: (Room & {
@@ -45,21 +46,33 @@ export default function DashboardPage() {
   }
 
   useEffect(() => {
-    fetchData()
-    const interval = setInterval(fetchData, 5000) // Cập nhật mỗi 5 giây
-    return () => clearInterval(interval)
-  }, [])
+    websocketInstance.connect();
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-100 to-blue-200 p-4 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Đang tải dữ liệu...</p>
-        </div>
-      </div>
-    )
-  }
+    websocketInstance.onMessage((data) => {
+      alert(`🔔 Tin nhắn nhận từ WinForms: ${JSON.stringify(data)}`);
+    });
+    
+    return () => {
+      websocketInstance.close();
+    };
+  }, []);
+
+  // useEffect(() => {
+  //   fetchData()
+  //   const interval = setInterval(fetchData, 5000) // Cập nhật mỗi 5 giây
+  //   return () => clearInterval(interval)
+  // }, [])
+
+  // if (loading) {
+  //   return (
+  //     <div className="min-h-screen bg-gradient-to-br from-blue-100 to-blue-200 p-4 flex items-center justify-center">
+  //       <div className="text-center">
+  //         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+  //         <p className="text-gray-600">Đang tải dữ liệu...</p>
+  //       </div>
+  //     </div>
+  //   )
+  // }
 
   if (error || !data) {
     return (

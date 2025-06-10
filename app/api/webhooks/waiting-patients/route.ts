@@ -35,7 +35,7 @@ export async function POST(request: Request) {
       // Kiểm tra định dạng arrivalTime (ISO 8601)
       try {
         new Date(patient.arrivalTime);
-      } catch (error) {
+      } catch {
         return NextResponse.json(
           { error: 'Định dạng thời gian không hợp lệ (phải là ISO 8601)' },
           { status: 400 }
