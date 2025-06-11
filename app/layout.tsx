@@ -51,8 +51,6 @@ const RootLayout = ({
     pathname.startsWith(path)
   );
 
-  console.log("Layout renderrrrrrrrrrrrrrr", pathname);
-
   const { setAccessToken, setDsTempalte, setRefreshToken } = useZaloData();
   const loadZaloDataAsync = useCallback(() => {
     getZaloToken().then((resZalo) => {

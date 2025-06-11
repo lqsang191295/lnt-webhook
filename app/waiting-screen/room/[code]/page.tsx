@@ -14,13 +14,12 @@ import Link from "next/link"
 import { useParams } from "next/navigation"
 import { Patient, Room } from '@/types/patient'
 import Image from "next/image"
-
+import { websocketInstance } from '@/websocket'
 interface ApiResponse {
   room: Room
   activePatient: {
     HoTen: string
     NamSinh: string
-    MaBN: string
     Sovaovien: string
   } | null
   patients: Patient[]
@@ -34,12 +33,16 @@ function RoomDetailContent() {
   const [data, setData] = useState<ApiResponse | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [bannerImage, setBannerImage] = useState("/hospital-banner.png")
+  const [bannerImage, setBannerImage] = useState("/imgs/hospital-banner.png")
   const [isEditingRoom, setIsEditingRoom] = useState(false)
 
-  const fetchData = useCallback(async () => {
+  const fetchData = useCallback(async (ID: string) => {
     try {
-      const response = await fetch(`/api/waiting-patients?room=${roomCode}`)
+      const data = { roomCode, ID }
+      const response = await fetch(`/api/waiting-patients`, {
+        method: 'POST',
+        body: JSON.stringify(data),
+      });
       if (!response.ok) {
         throw new Error('Không thể tải dữ liệu')
       }
@@ -47,17 +50,25 @@ function RoomDetailContent() {
       setData(result)
       setError(null)
     } catch (err) {
+      console.error('Lỗi khi tải dữ liệu:', err)
       setError(err instanceof Error ? err.message : 'Lỗi không xác định')
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }, [roomCode])
+  useEffect(() => {
+    fetchData('');
+  }, [])
 
   useEffect(() => {
-    fetchData()
-    const interval = setInterval(fetchData, 5000) // Cập nhật mỗi 5 giây
-    return () => clearInterval(interval)
-  }, [fetchData])
+    websocketInstance.connect();
+    websocketInstance.onMessage((ID) => {
+      fetchData(ID);
+    });
+    return () => {
+      websocketInstance.close();
+    };
+  }, []);
 
   // Handle banner image change
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -87,7 +98,7 @@ function RoomDetailContent() {
           <h1 className="text-2xl font-bold text-gray-800 mb-2">Lỗi tải dữ liệu</h1>
           <p className="text-gray-600 mb-4">{error || 'Không thể tải dữ liệu phòng khám'}</p>
           <button
-            onClick={fetchData}
+            // onClick={fetchData("")}
             className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
           >
             Thử lại
@@ -125,13 +136,13 @@ function RoomDetailContent() {
                   className="text-4xl font-bold text-green-600 cursor-pointer hover:text-green-700"
                   onClick={() => setIsEditingRoom(true)}
                 >
-                  {room.name}
+                  {room?.name}
                 </h1>
               )}
             </div>
           </div>
           <div className="text-right">
-            <h2 className="text-3xl font-bold text-red-600 mb-2">MỜI BỆNH NHÂN</h2>
+            <h2 className="text-3xl font-bold text-red-600 mb-2">MỜI BỆNH NHÂN{params.variable}</h2>
             <TimeDisplay />
           </div>
         </div>
@@ -143,9 +154,11 @@ function RoomDetailContent() {
               <CardContent className="p-0">
                 <div className="relative group cursor-pointer">
                   <Image
+                  width={400}
+                  height={650}
                     src={bannerImage || "/placeholder.svg"}
                     alt="Hospital Banner"
-                    className="w-full h-[630px] object-fill"
+                    className="w-full h-[630px] object-fit"
                   />
                   <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                     <Label htmlFor="banner-upload" className="cursor-pointer">
@@ -208,13 +221,13 @@ function RoomDetailContent() {
                     </thead>
                     <tbody>
                       {patients.map((patient, index) => (
-                        <tr
-                          key={patient.ID}
+                        <tr                      
+                          key={index}
                           className={`border-b hover:bg-blue-50 ${index === 0 ? "bg-yellow-50" : ""}`}
                         >
                           <td className="px-4 py-3 font-semibold text-blue-800">{index + 1}</td>
-                          <td className="px-4 py-3 font-semibold text-blue-800">{patient.HoTen}</td>
-                          <td className="px-4 py-3 text-blue-600">{patient.NamSinh}</td>
+                          <td className="px-4 py-3 font-semibold text-blue-800">{patient.Hoten}</td>
+                          <td className="px-4 py-3 text-blue-600">{patient.Namsinh}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -258,11 +271,11 @@ function RoomDetailContent() {
     </div>
   )
 }
-
 export default function RoomDetail() {
   return (
     <ClientOnly fallback={<LoadingFallback />}>
       <RoomDetailContent />
     </ClientOnly>
   )
-} 
+}
+ 

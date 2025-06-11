@@ -14,7 +14,6 @@ interface ApiResponse {
     activePatient: {
       HoTen: string
       NamSinh: string
-      MaBN: string
       Sovaovien: string
     } | null
     count: number
@@ -28,15 +27,15 @@ export default function DashboardPage() {
   const [data, setData] = useState<ApiResponse | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-
   const fetchData = async () => {
     try {
-      const response = await fetch('/api/waiting-patients')
-      if (!response.ok) {
-        throw new Error('Không thể tải dữ liệu')
-      }
-      const result = await response.json()
-      setData(result)
+      // const response = await fetch('/api/waiting-patients')
+      // if (!response.ok) {
+      //   throw new Error('Không thể tải dữ liệu')
+      // }
+      //const result = await response.json()
+      // console.log('Dữ liệu nhận được:', result)
+      // setData(result)
       setError(null)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Lỗi không xác định')
@@ -45,34 +44,32 @@ export default function DashboardPage() {
     }
   }
 
-  useEffect(() => {
-    websocketInstance.connect();
-
-    websocketInstance.onMessage((data) => {
-      alert(`🔔 Tin nhắn nhận từ WinForms: ${JSON.stringify(data)}`);
-    });
-    
-    return () => {
-      websocketInstance.close();
-    };
-  }, []);
-
   // useEffect(() => {
-  //   fetchData()
-  //   const interval = setInterval(fetchData, 5000) // Cập nhật mỗi 5 giây
-  //   return () => clearInterval(interval)
-  // }, [])
+  //   websocketInstance.connect();
 
-  // if (loading) {
-  //   return (
-  //     <div className="min-h-screen bg-gradient-to-br from-blue-100 to-blue-200 p-4 flex items-center justify-center">
-  //       <div className="text-center">
-  //         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-  //         <p className="text-gray-600">Đang tải dữ liệu...</p>
-  //       </div>
-  //     </div>
-  //   )
-  // }
+  //   websocketInstance.onMessage((data) => {
+  //     alert(`🔔 Tin nhắn nhận từ WinForms: ${JSON.stringify(data)}`);
+  //   });
+    
+  //   return () => {
+  //     websocketInstance.close();
+  //   };
+  // }, []);
+
+  useEffect(() => {
+     fetchData()
+   }, [])
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-100 to-blue-200 p-4 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Đang tải dữ liệu...</p>
+        </div>
+      </div>
+    )
+  }
 
   if (error || !data) {
     return (
@@ -145,7 +142,7 @@ export default function DashboardPage() {
         {/* Danh sách phòng khám */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {rooms.map((room) => (
-            <Link key={room.id} href={`/waiting-screen/room/${room.code}`}>
+            <Link key={room.code} href={`/waiting-screen/room/${room.code}`}>
               <Card className={`cursor-pointer transition-all duration-300 hover:shadow-lg hover:scale-105 ${
                 room.count > 0 || room.activePatient ? 'border-2 border-green-500 bg-green-50' : 'border-2 border-gray-200'
               }`}>
@@ -186,7 +183,7 @@ export default function DashboardPage() {
                       <div className="space-y-2">
                         <div className="text-xs text-gray-500">Bệnh nhân tiếp theo:</div>
                         <div className="text-sm font-semibold text-blue-800 truncate">
-                          {room.patients[0]?.HoTen || 'N/A'}
+                          {room.patients[0]?.Hoten || 'N/A'}
                         </div>
                       </div>
                     )}
@@ -203,10 +200,6 @@ export default function DashboardPage() {
         </div>
 
         {/* Footer */}
-        <div className="mt-8 text-center text-gray-600">
-          <p>Hệ thống tự động cập nhật mỗi 5 giây</p>
-          <p className="text-sm mt-1">© 2024 Bệnh viện Đa khoa</p>
-        </div>
       </div>
     </div>
   )

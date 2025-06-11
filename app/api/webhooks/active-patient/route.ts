@@ -4,15 +4,15 @@ import { callNextPatient, waitingPatientsByRoom } from '@/types/patient';
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { MaBN, Sovaovien, room = 'KN' } = body;
+    const {Sovaovien, room = 'KN' } = body;
 
     // Kiểm tra các tham số bắt buộc
-    if (!MaBN || !Sovaovien) {
+    if (!Sovaovien) {
       return NextResponse.json(
         { 
           error: 'Thiếu tham số bắt buộc',
-          required: ['MaBN', 'Sovaovien'],
-          received: { MaBN, Sovaovien }
+          required: ['Sovaovien'],
+          received: { Sovaovien }
         },
         { status: 400 }
       );
@@ -20,13 +20,13 @@ export async function POST(request: Request) {
 
     // Kiểm tra xem bệnh nhân có tồn tại trong danh sách chờ không
     const waitingPatients = waitingPatientsByRoom[room] || [];
-    const patientExists = waitingPatients.some(p => p.MaBN === MaBN && p.Sovaovien === Sovaovien);
+    const patientExists = waitingPatients.some(p => p.Sovaovien === Sovaovien);
 
     if (!patientExists) {
       return NextResponse.json(
         { 
           error: 'Bệnh nhân không tồn tại trong danh sách chờ',
-          patient: { MaBN, Sovaovien },
+          patient: { Sovaovien },
           room: room,
           waitingCount: waitingPatients.length
         },
@@ -41,7 +41,7 @@ export async function POST(request: Request) {
       return NextResponse.json(
         { 
           error: 'Không thể gọi bệnh nhân',
-          patient: { MaBN, Sovaovien },
+          patient: { Sovaovien },
           room: room
         },
         { status: 500 }
@@ -54,9 +54,8 @@ export async function POST(request: Request) {
         success: true,
         message: 'Bệnh nhân đã được gọi thành công',
         activePatient: {
-          HoTen: activePatient.HoTen,
-          NamSinh: activePatient.NamSinh,
-          MaBN: activePatient.MaBN,
+          HoTen: activePatient.Hoten,
+          NamSinh: activePatient.Namsinh,
           Sovaovien: activePatient.Sovaovien,
           PhongKham: activePatient.PhongKham
         },

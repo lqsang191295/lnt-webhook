@@ -1,25 +1,74 @@
 import { NextResponse } from 'next/server';
-import { waitingPatientsByRoom, activePatientsByRoom, rooms } from '@/types/patient';
+import { Patient, waitingPatientsByRoom, activePatientsByRoom, rooms , callNextPatient} from '@/types/patient';
+import { get } from "@/api/client";
 
-export async function GET(request: Request) {
+export async function POST(request: Request) {
   try {
-    const { searchParams } = new URL(request.url);
-    const roomCode = searchParams.get('room');
+    const body = await request.json();
+    const roomCode = body.roomCode as string;
+    const params = new URLSearchParams({
+      where: `MaBankham='${roomCode}'`,
+      select: 'ID, BV_QLyCapThe.Hoten, BV_QLyCapThe.Namsinh',
+      limit: '4',
+    });
+    const baseUrl = 'http://172.16.0.10:5100/his/get-BV_TiepnhanBenh';
+    const finalUrl = `${baseUrl}?${params.toString()}`;
+    const response = await get(finalUrl);
+    if (!response || !response.data) {
+      return NextResponse.json(
+        { error: 'Không tìm thấy dữ liệu bệnh nhân' },
+        { status: 404 }
+      );
+    }
+    const data = response.data;
+     if (!Array.isArray(data)) {
+      return NextResponse.json(
+        { error: 'Dữ liệu phải là một mảng' },
+        { status: 400 }
+      );
+    }
 
+    // Nhóm bệnh nhân theo phòng khám
+    const patientsByRoom: Record<string, Patient[]> = {};
+    // Kiểm tra từng bệnh nhân trong mảng
+    for (const patient of data) {
+      const BV_QLyCapThe = patient.BV_QLyCapThe || {};
+      BV_QLyCapThe.ID = patient.ID; // Mã tiếp nhận bệnh nhân
+      // Kiểm tra các trường bắt buộc
+      const requiredFields: (keyof Patient)[] = ['Hoten', 'Namsinh'];
+      const missingFields = requiredFields.filter(field => !BV_QLyCapThe[field]);
+
+      if (missingFields.length > 0) {
+        return NextResponse.json(
+          { 
+            error: 'Thiếu các trường bắt buộc',
+            missingFields 
+          },
+          { status: 400 }
+        );
+      }
+
+      // Nhóm bệnh nhân theo phòng khám
+      if (!patientsByRoom[roomCode]) {
+        patientsByRoom[roomCode] = [];
+      }
+      patientsByRoom[roomCode].push(BV_QLyCapThe);
+    }
+    // Cập nhật danh sách bệnh nhân theo phòng khám
+    Object.assign(waitingPatientsByRoom, patientsByRoom);
     if (roomCode) {
       // Lấy dữ liệu cho một phòng khám cụ thể
-      const patients = waitingPatientsByRoom[roomCode] || [];
-      const activePatient = activePatientsByRoom[roomCode] || null;
+      let patients = waitingPatientsByRoom[roomCode] || [];
+      const activePatient = callNextPatient(roomCode, body.ID);
+      if (activePatient) {
+        patients = patients.filter(x => x !== activePatient); }
       const room = rooms.find(r => r.code === roomCode);
-      
       return NextResponse.json(
         { 
           room,
           activePatient: activePatient ? {
-            HoTen: activePatient.HoTen,
-            NamSinh: activePatient.NamSinh,
-            MaBN: activePatient.MaBN,
-            Sovaovien: activePatient.Sovaovien
+            HoTen: activePatient.Hoten,
+            NamSinh: activePatient.Namsinh,
           } : null,
           patients,
           count: patients.length 
@@ -32,10 +81,8 @@ export async function GET(request: Request) {
         ...room,
         patients: waitingPatientsByRoom[room.code] || [],
         activePatient: activePatientsByRoom[room.code] ? {
-          HoTen: activePatientsByRoom[room.code]!.HoTen,
-          NamSinh: activePatientsByRoom[room.code]!.NamSinh,
-          MaBN: activePatientsByRoom[room.code]!.MaBN,
-          Sovaovien: activePatientsByRoom[room.code]!.Sovaovien
+          HoTen: activePatientsByRoom[room.code]!.Hoten,
+          NamSinh: activePatientsByRoom[room.code]!.Namsinh,
         } : null,
         count: (waitingPatientsByRoom[room.code] || []).length
       }));

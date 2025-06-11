@@ -4,7 +4,7 @@ import { Patient, waitingPatientsByRoom } from '@/types/patient';
 export async function POST(request: Request) {
   try {
     const data = await request.json();
-
+    console.log('Dữ liệu nhận được từ webhook:', data);
     // Kiểm tra xem dữ liệu có phải là mảng không
     if (!Array.isArray(data)) {
       return NextResponse.json(
@@ -19,7 +19,7 @@ export async function POST(request: Request) {
     // Kiểm tra từng bệnh nhân trong mảng
     for (const patient of data) {
       // Kiểm tra các trường bắt buộc
-      const requiredFields: (keyof Patient)[] = ['ID', 'MaBN', 'Sovaovien', 'HoTen', 'NamSinh', 'arrivalTime'];
+      const requiredFields: (keyof Patient)[] = ['Hoten', 'Namsinh'];
       const missingFields = requiredFields.filter(field => !patient[field]);
 
       if (missingFields.length > 0) {
@@ -43,7 +43,7 @@ export async function POST(request: Request) {
       }
 
       // Nhóm bệnh nhân theo phòng khám
-      const roomCode = patient.PhongKham || 'KN'; // Mặc định là Khám nội nếu không có
+      const roomCode = patient.PhongKham || ''; // Mặc định là Khám nội nếu không có
       if (!patientsByRoom[roomCode]) {
         patientsByRoom[roomCode] = [];
       }
