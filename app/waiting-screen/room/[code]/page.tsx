@@ -232,26 +232,6 @@ function RoomDetailContent() {
                           <td className="px-4 py-3 text-blue-600">{patient.Namsinh}</td>
                         </tr>
                       ))}
-                      {patients.map((patient, index) => (
-                        <tr                      
-                          key={index}
-                          className={`border-b hover:bg-blue-50 ${index === 0 ? "bg-yellow-50" : ""}`}
-                        >
-                          <td className="px-4 py-3 font-semibold text-blue-800">{index + 1}</td>
-                          <td className="px-4 py-3 font-semibold text-blue-800">{patient.Hoten}</td>
-                          <td className="px-4 py-3 text-blue-600">{patient.Namsinh}</td>
-                        </tr>
-                      ))}
-                      {patients.map((patient, index) => (
-                        <tr                      
-                          key={index}
-                          className={`border-b hover:bg-blue-50 ${index === 0 ? "bg-yellow-50" : ""}`}
-                        >
-                          <td className="px-4 py-3 font-semibold text-blue-800">{index + 1}</td>
-                          <td className="px-4 py-3 font-semibold text-blue-800">{patient.Hoten}</td>
-                          <td className="px-4 py-3 text-blue-600">{patient.Namsinh}</td>
-                        </tr>
-                      ))}
                     </tbody>
                   </table>
                   {patients.length === 0 && (
