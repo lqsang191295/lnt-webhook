@@ -111,10 +111,10 @@ function RoomDetailContent() {
   const { room, activePatient, patients, count } = data
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-100 to-blue-200 p-4">
-      <div className="max-w-7xl mx-auto">
+    <div className="h-screen bg-gradient-to-br from-blue-100 to-blue-200 p-4">
+      <div className="max-w-7xl mx-auto flex flex-col gap-4 h-full">
         {/* Header */}
-        <div className="flex justify-between items-center mb-6">
+        <div className="flex justify-between items-center">
           <div className="flex items-center gap-4">
             <Link href="/" className="text-blue-600 hover:text-blue-800">
               <ArrowLeft className="w-6 h-6" />
@@ -147,7 +147,7 @@ function RoomDetailContent() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 flex-1 overflow-hidden">
           {/* Left Column - Banner */}
           <div className="space-y-4">
             <Card className="relative overflow-hidden">
@@ -181,7 +181,7 @@ function RoomDetailContent() {
           </div>
 
           {/* Right Column - Patient Info */}
-          <div className="space-y-6">
+          <div className="space-y-6 flex flex-col overflow-hidden">
             {/* Current Patient */}
             <Card className="border-2 border-red-500">
               <CardHeader className="bg-red-50">
@@ -203,7 +203,7 @@ function RoomDetailContent() {
             </Card>
 
             {/* Waiting List */}
-            <Card>
+            <Card className="flex-1 overflow-hidden pt-6">
               <CardHeader className="bg-blue-50">
                 <CardTitle className="text-center text-xl text-blue-800">
                   BỆNH NHÂN TIẾP THEO ({count})
@@ -230,6 +230,26 @@ function RoomDetailContent() {
                           <td className="px-4 py-3 text-blue-600">{patient.Namsinh}</td>
                         </tr>
                       ))}
+                      {patients.map((patient, index) => (
+                        <tr                      
+                          key={index}
+                          className={`border-b hover:bg-blue-50 ${index === 0 ? "bg-yellow-50" : ""}`}
+                        >
+                          <td className="px-4 py-3 font-semibold text-blue-800">{index + 1}</td>
+                          <td className="px-4 py-3 font-semibold text-blue-800">{patient.Hoten}</td>
+                          <td className="px-4 py-3 text-blue-600">{patient.Namsinh}</td>
+                        </tr>
+                      ))}
+                      {patients.map((patient, index) => (
+                        <tr                      
+                          key={index}
+                          className={`border-b hover:bg-blue-50 ${index === 0 ? "bg-yellow-50" : ""}`}
+                        >
+                          <td className="px-4 py-3 font-semibold text-blue-800">{index + 1}</td>
+                          <td className="px-4 py-3 font-semibold text-blue-800">{patient.Hoten}</td>
+                          <td className="px-4 py-3 text-blue-600">{patient.Namsinh}</td>
+                        </tr>
+                      ))}
                     </tbody>
                   </table>
                   {patients.length === 0 && (
@@ -245,7 +265,7 @@ function RoomDetailContent() {
         </div>
 
         {/* Footer Stats */}
-        <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <Card>
             <CardContent className="p-4 text-center">
               <div className="text-2xl font-bold text-blue-600">{activePatient ? 1 : 0}</div>
