@@ -36,17 +36,17 @@ function RoomDetailContent() {
   const [bannerImage, setBannerImage] = useState("/imgs/hospital-banner.png")
   const [isEditingRoom, setIsEditingRoom] = useState(false)
 
-  const fetchData = useCallback(async (ID: string) => {
+  const fetchData = useCallback(async () => {
     try {
-      const data = { roomCode, ID }
       const response = await fetch(`/api/waiting-patients`, {
         method: 'POST',
-        body: JSON.stringify(data),
+        body: JSON.stringify(roomCode),
       });
       if (!response.ok) {
         throw new Error('Không thể tải dữ liệu')
       }
       const result = await response.json()
+      console.log('Dữ liệu phòng khám:', result)
       setData(result)
       setError(null)
     } catch (err) {
@@ -57,13 +57,15 @@ function RoomDetailContent() {
     }
   }, [roomCode])
   useEffect(() => {
-    fetchData('');
+    fetchData();
   }, [])
 
   useEffect(() => {
     websocketInstance.connect();
-    websocketInstance.onMessage((ID) => {
-      fetchData(ID);
+    websocketInstance.onMessage((code) => {
+      if (code === roomCode) {
+      fetchData();
+      }
     });
     return () => {
       websocketInstance.close();
