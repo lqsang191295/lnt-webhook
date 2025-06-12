@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { Patient, waitingPatientsByRoom, rooms } from '@/types/patient';
+import { Patient, rooms } from '@/types/patient';
 import { get } from "@/api/client";
 
 export async function POST(request: Request) {
@@ -8,11 +8,11 @@ export async function POST(request: Request) {
     if (roomCode) {
       const today = new Date().toISOString().split('T')[0];
       const params = new URLSearchParams({
-      where: `MaBankham='${roomCode}'&Trangthai='Đang_chờ'&Ngay='2021-04-20 00:00:00.000'orTrangthai='Đang_khám'`,
+      where: `MaBankham='${roomCode}'&(Trangthai='Đang_chờ'|Trangthai='Đang_khám')&Ngay='${today}'`,
       select: 'ID, Trangthai, BV_QLyCapThe.Hoten, BV_QLyCapThe.Namsinh',
       limit: '5',
     });
-    const baseUrl = 'http://172.16.0.10:5100/his/get-BV_TiepnhanBenh';
+    const baseUrl = 'http://172.16.0.10:9001/his/get-BV_TiepnhanBenh';
     const finalUrl = `${baseUrl}?${params.toString()}`;
     const response = await get(finalUrl);
     if (!response || !response.data) {
@@ -56,10 +56,7 @@ export async function POST(request: Request) {
       }
       patientsByRoom[roomCode].push(BV_QLyCapThe);
     }
-    // Cập nhật danh sách bệnh nhân theo phòng khám
-    Object.assign(waitingPatientsByRoom, patientsByRoom);
-      // Lấy dữ liệu cho một phòng khám cụ thể
-      let patients = waitingPatientsByRoom[roomCode] || [];
+      let patients = patientsByRoom[roomCode] || [];
       const activePatient = data.find(p => p.Trangthai === 'Đang_khám')?.BV_QLyCapThe || null;
       const room = rooms.find(r => r.code === roomCode);
       return NextResponse.json(

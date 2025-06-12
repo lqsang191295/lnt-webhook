@@ -5,20 +5,10 @@ import Link from 'next/link'
 import { Building2 } from 'lucide-react'
 import { Card, CardHeader, CardTitle } from '@/components/ui/card'
 import TimeDisplay from '@/components/TimeDisplay'
-import { Room, Patient } from '@/types/patient'
+import { Room } from '@/types/patient'
 
 interface ApiResponse {
-  rooms: (Room & {
-    patients: Patient[]
-    activePatient: {
-      HoTen: string
-      NamSinh: string
-      Sovaovien: string
-    } | null
-    count: number
-  })[]
-  totalPatients: number
-  totalActivePatients: number
+  rooms: Room[]
   totalRooms: number
 }
 
@@ -30,12 +20,13 @@ export default function DashboardPage() {
     try {
       const response = await fetch('/api/waiting-patients', {
         method: 'POST',
-        body: "{}",
+        body: "0",
       })
       if (!response.ok) {
         throw new Error('Không thể tải dữ liệu')
       }
       const result = await response.json()
+      console.log('Dữ liệu từ API:', result)
       setData(result)
       setError(null)
     } catch (err) {
@@ -102,10 +93,8 @@ export default function DashboardPage() {
         {/* Danh sách phòng khám */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {rooms.map((room) => (
-            <Link key={room.code} href={`/waiting-screen/room/${room.code}`}>
-              <Card className={`cursor-pointer transition-all duration-300 hover:shadow-lg hover:scale-105 ${
-                room.count > 0 || room.activePatient ? 'border-2 border-green-500 bg-green-50' : 'border-2 border-gray-200'
-              }`}>
+            <Link key={room.id} href={`/waiting-screen/room/${room.code}`}>
+              <Card className={`cursor-pointer transition-all duration-300 hover:shadow-lg hover:scale-105`}>
                 <CardHeader className="pb-3">
                   <CardTitle className="text-lg text-center text-blue-800">
                     {room.name}

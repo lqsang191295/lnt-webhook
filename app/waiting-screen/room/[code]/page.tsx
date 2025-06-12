@@ -2,7 +2,6 @@
 
 import type React from "react"
 import { useState, useEffect, useCallback } from "react"
-import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -34,7 +33,6 @@ function RoomDetailContent() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [bannerImage, setBannerImage] = useState("/imgs/hospital-banner.png")
-  const [isEditingRoom, setIsEditingRoom] = useState(false)
 
   const fetchData = useCallback(async () => {
     try {
@@ -46,7 +44,6 @@ function RoomDetailContent() {
         throw new Error('Không thể tải dữ liệu')
       }
       const result = await response.json()
-      console.log('Dữ liệu phòng khám:', result)
       setData(result)
       setError(null)
     } catch (err) {
@@ -100,7 +97,7 @@ function RoomDetailContent() {
           <h1 className="text-2xl font-bold text-gray-800 mb-2">Lỗi tải dữ liệu</h1>
           <p className="text-gray-600 mb-4">{error || 'Không thể tải dữ liệu phòng khám'}</p>
           <button
-            // onClick={fetchData("")}
+            onClick={fetchData}
             className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
           >
             Thử lại
@@ -122,25 +119,10 @@ function RoomDetailContent() {
               <ArrowLeft className="w-6 h-6" />
             </Link>
             <div className="flex items-center gap-4">
-              {isEditingRoom ? (
-                <div className="flex items-center gap-2">
-                  <Input
-                    value={room.name}
-                    onChange={() => setIsEditingRoom(false)}
-                    className="text-2xl font-bold text-green-600 bg-white border-2"
-                  />
-                  <Button onClick={() => setIsEditingRoom(false)} size="sm">
-                    Lưu
-                  </Button>
-                </div>
-              ) : (
-                <h1
-                  className="text-4xl font-bold text-green-600 cursor-pointer hover:text-green-700"
-                  onClick={() => setIsEditingRoom(true)}
-                >
+                  <h1
+                  className="text-4xl font-bold text-green-600 cursor-pointer hover:text-green-700"                >
                   {room?.name}
                 </h1>
-              )}
             </div>
           </div>
           <div className="text-right">

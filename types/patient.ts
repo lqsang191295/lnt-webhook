@@ -12,159 +12,120 @@ export interface Room {
   description?: string;
 }
 
-// Biến toàn cục để lưu trữ danh sách bệnh nhân theo phòng khám
-export let waitingPatientsByRoom: Record<string, Patient[]> = {};
-
-// Biến toàn cục để lưu trữ bệnh nhân đang khám theo phòng khám
-export let activePatientsByRoom: Record<string, Patient | null> = {};
-
 // Biến toàn cục để lưu trữ thông tin phòng khám
 export let rooms: Room[] = [
   {
     id: "3",
-    name: "Khám nội",
+    name: "KHÁM NỘI",
     code: "03",
     description: "Phòng khám nội khoa"
   },
   {
     id: "4", 
-    name: "Khám ngoại",
+    name: "KHÁM NGOẠI",
     code: "04",
     description: "Phòng khám ngoại khoa"
   },
   {
-    id: "10",
-    name: "Khám nhi",
-    code: "10",
-    description: "Phòng khám nhi khoa"
-  },
-  {
-    id: "5",
-    name: "Khám mắt",
-    code: "05",
-    description: "Phòng khám mắt"
-  },
-  {
     id: "2",
-    name: "Khám tai mũi họng",
+    name: "KHÁM TAI MŨI HỌNG",
     code: "02",
     description: "Phòng khám tai mũi họng"
   },
   {
+    id: "5",
+    name: "KHÁM MẮT",
+    code: "05",
+    description: "Phòng khám mắt"
+  },
+    {
     id: "6",
-    name: "Khám răng hàm mặt",
+    name: "KHÁM RĂNG HÀM MẶT",
     code: "06",
     description: "Phòng khám răng hàm mặt"
   },
   {
+    id: "10",
+    name: "KHÁM NHI",
+    code: "10",
+    description: "Phòng khám nhi khoa"
+  },
+  {
     id: "7",
-    name: "Khám sản",
+    name: "KHÁM SẢN",
     code: "07",
     description: "Phòng khám sản"
   },
   {
     id: "8",
-    name: "Khám phụ khoa",
+    name: "KHÁM PHỤ KHOA",
     code: "08",
     description: "Phòng khám phụ khoa"
   },
   {
     id: "9",
-    name: "Khám da liễu",
+    name: "KHÁM DA LIỄU",
     code: "09",
     description: "Phòng khám da liễu"
   },
   {
     id: "12",
-    name: "thận nhân tạo",
+    name: "THẬN NHÂN TẠO",
     code: "12",
     description: "thận nhân tạo"
   },
   {
     id: "16",
-    name: "Khám ngoại trú campuchia",
+    name: "KHÁM NGOẠI TRÚ CAMPUCHIA",
     code: "16",
     description: "Phòng khám ngoại trú campuchia"
   },
   {
     id: "17",
-    name: "Vật lý trị liệu",
+    name: "VẬT LÝ TRỊ LIỆU",
     code: "17",
     description: "Phòng khám vật lý trị liệu"
   },
   {
     id: "18",
-    name: "Khám thẩm mỹ",
+    name: "KHÁM THẨM MỸ",
     code: "15",
     description: "Phòng khám thẩm mỹ"
   },
   {
     id: "19",
-    name: "Khám phụ khoa (có hình)",
+    name: "KHÁM PHỤ KHOA (CÓ HÌNH)",
     code: "19",
     description: "Phòng khám phụ khoa (có hình)"
   },
   {
     id: "20",
-    name: "phòng sơ cứu (ngoại trú)",
+    name: "PHÒNG SƠ CỨU (NGOẠI TRÚ)",
     code: "05",
-    description: "Phòng khám mắt"
+    description: "Phòng sơ cứu (ngoại trú)"
   },
   {
     id: "21",
-    name: "Phòng khám khoa nội",
+    name: "PHÒNG KHÁM KHOA NỘI",
     code: "21",
     description: "Phòng khám khoa nội"
   },
   {
     id: "22",
-    name: "Phòng khám khoa ngoại",
+    name: "PHÒNG KHÁM KHOA NGOẠI",
     code: "22",
     description: "Phòng khám khoa ngoại"
   },
   {
     id: "23",
-    name: "Phòng khám khoa nhi",
+    name: "PHÒNG KHÁM KHOA NHI",
     code: "23",
     description: "Phòng khám khoa nhi"
   },
   {
     id: "26",
-    name: "ĐK xét nghiệm",
+    name: "ĐK XÉT NGHIỆM",
     code: "26",
     description: "Đăng ký xét nghiệm"
   }
 ];
-
-// Hàm để gọi bệnh nhân tiếp theo
-export function callNextPatient(roomCode: string, ID?: string): Patient | null {
-  const waitingPatients = waitingPatientsByRoom[roomCode] || [];
-  
-  if (waitingPatients.length === 0) {
-    return null;
-  }
-
-  let nextPatient: Patient;
-  
-  if (ID) {
-    // Tìm bệnh nhân theo Sovaovien
-    const patientIndex = waitingPatients.findIndex(p => p.ID === ID);
-    if (patientIndex === -1) {
-      return null; // Không tìm thấy bệnh nhân
-    }
-    nextPatient = waitingPatients[patientIndex];
-    // Xóa bệnh nhân khỏi danh sách chờ
-    activePatientsByRoom[roomCode] = nextPatient;
-    // waitingPatientsByRoom[roomCode] = waitingPatients.filter(p => p !== nextPatient);
-    // Cập nhật bệnh nhân đang khám
-
-      return nextPatient;
-    } 
-    return null; // Không có bệnh nhân nào trong danh sách chờ
-
-}
-
-// Hàm để kết thúc khám bệnh nhân
-export function finishExamination(roomCode: string): void {
-  activePatientsByRoom[roomCode] = null;
-} 

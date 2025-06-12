@@ -27,7 +27,7 @@ export class WebSocketClient {
             };
 
             this.socket.onerror = (error) => {
-                console.error("[WebSocket] Error:", error);
+                // console.error("[WebSocket] Error:", error);
             };
 
             this.socket.onclose = () => {
