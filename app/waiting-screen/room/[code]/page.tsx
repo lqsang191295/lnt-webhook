@@ -152,15 +152,14 @@ function RoomDetailContent() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 flex-1 overflow-hidden">
           {/* Left Column - Banner */}
           <div className="space-y-4">
-            <Card className="relative overflow-hidden">
-              <CardContent className="p-0">
-                <div className="relative group cursor-pointer">
+            <Card className="relative overflow-hidden h-full w-full p-0">
+              <CardContent className="p-0 h-full w-full">
+                <div className="relative group cursor-pointer h-full w-full">
                   <Image
-                  width={400}
-                  height={650}
                     src={bannerImage || "/placeholder.svg"}
-                    alt="Hospital Banner"
-                    className="w-full h-[630px] object-fit"
+    alt="Hospital Banner"
+    fill
+    className="object-cover"
                   />
                   <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                     <Label htmlFor="banner-upload" className="cursor-pointer">
