@@ -34,17 +34,23 @@ const RootLayout = ({
 }: Readonly<{
   children: React.ReactNode;
 }>) => {
-  console.log("Layout renderrrrrrrrrrrrrrr");
 
   const pathname = usePathname();
   const pathnameNotUseLayout = [
     "/login",
     "/partient",
+    "/waiting-screen",
+    "/waiting-screen/room",
     "/access-device",
     "/wait-access-device",
     "/terms-of-service",
     "/privacy-policy",
   ];
+
+  const useNoLayout = pathnameNotUseLayout.some((path) =>
+    pathname.startsWith(path)
+  );
+
   const { setAccessToken, setDsTempalte, setRefreshToken } = useZaloData();
   const loadZaloDataAsync = useCallback(() => {
     getZaloToken().then((resZalo) => {
@@ -67,7 +73,7 @@ const RootLayout = ({
     loadZaloDataAsync();
   }, [loadZaloDataAsync]);
 
-  if (pathnameNotUseLayout.includes(pathname)) {
+  if (useNoLayout) {
     return (
       <html lang="en">
         <body>
