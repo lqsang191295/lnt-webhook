@@ -91,21 +91,48 @@ function RoomDetailContent() {
 
   if (error || !data) {
     return (
-          <div className="w-screen h-screen bg-[#e6f3f1] border border-green-600 rounded-md flex flex-col select-none">
-      {/* Header */}
-      <div className="grid grid-cols-12 border-b border-green-600 text-green-900 flex-shrink-0">
-        <div className="col-span-6 flex items-center justify-center border-r border-green-600 py-5 font-extrabold text-2xl uppercase">
-          PHÒNG KHÁM NỘI
+           <div className="min-h-screen bg-gradient-to-br from-blue-100 to-blue-200 p-4 flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-red-500 text-6xl mb-4">⚠️</div>
+          <h1 className="text-2xl font-bold text-gray-800 mb-2">Lỗi tải dữ liệu</h1>
+          <p className="text-gray-600 mb-4">{error || 'Không thể tải dữ liệu phòng khám'}</p>
+          <button
+            onClick={fetchData}
+            className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            Thử lại
+          </button>
         </div>
-        <div className="col-span-6 flex flex-col justify-center border-l border-green-600 py-5 font-extrabold text-2xl uppercase leading-tight text-center">
-          <span>MỜI BỆNH NHÂN:</span>
-          <span className="mt-2 truncate">4063. LÊ THÀNH BẢO KHÔI</span>
+      </div>
+
+
+    )
+  }
+
+  const { room, activePatient, patients, count } = data
+
+  return (
+     <div className="w-screen h-screen bg-[#e6f3f1] border border-green-600 rounded-md flex flex-col select-none">
+      {/* Header */}
+      <div className="grid grid-cols-12 h-48 border-b border-green-600 text-green-900 flex-shrink-0">
+        <div className="col-span-6 flex items-center justify-center border-r border-green-600 py-5 font-extrabold text-4xl uppercase">
+          PHÒNG KHÁM {room.name}
+        </div>
+        <div className="col-span-6 flex flex-col justify-center border-l border-green-600 py-5 font-extrabold text-4xl uppercase leading-tight text-center">
+          {activePatient ? (
+            <><span>MỜI BỆNH NHÂN:</span><span className="mt-2 truncate">{activePatient?.HoTen} - {activePatient?.NamSinh}</span></>
+          ): (
+            <div className="text-center text-gray-500">
+              <Clock className="w-16 h-16 mx-auto mb-4 opacity-50" />
+              <p className="text-xl">Chưa có bệnh nhân</p>
+             </div>
+          )}
         </div>
       </div>
 
       {/* Nội dung chính: dùng flex flex-grow để 2 card liền nhau */}
       <div className="flex flex-grow overflow-hidden">
-        {/* Card giữa - Banner app */}
+      {/* Card giữa - Banner app */}
         <Card className="flex-grow rounded-none shadow-none border-r border-green-600 flex flex-col">
           <CardHeader className="pb-4 border-b border-green-600">
             <CardTitle className="text-center text-xl font-extrabold text-gray-800">
@@ -139,11 +166,12 @@ function RoomDetailContent() {
           </CardFooter>
         </Card>
 
+
         {/* Card phải danh sách bệnh nhân */}
         <Card className="w-2/5 rounded-none shadow-none border-green-600 border-l flex flex-col overflow-auto">
           <CardHeader className="border-b border-green-600">
             <CardTitle className="text-green-900 font-extrabold text-xl text-center tracking-wide">
-              BỆNH NHÂN TIẾP THEO
+              BỆNH NHÂN TIẾP THEO ({count})
             </CardTitle>
           </CardHeader>
           <CardContent className="overflow-auto p-0">
@@ -156,36 +184,14 @@ function RoomDetailContent() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                <TableRow className="border-b border-green-200">
-                  <TableCell className="text-center py-2">4078</TableCell>
-                  <TableCell className="py-2 pl-5">TRẦN THỊ KIM THOA</TableCell>
-                  <TableCell className="text-center py-2">1985</TableCell>
-                </TableRow>
-                <TableRow className="border-b border-green-200">
-                  <TableCell className="text-center py-2">4077</TableCell>
-                  <TableCell className="py-2 pl-5">PHẠM THỊ QUÝ</TableCell>
-                  <TableCell className="text-center py-2">1990</TableCell>
-                </TableRow>
-                <TableRow className="border-b border-green-200">
-                  <TableCell className="text-center py-2">4076</TableCell>
-                  <TableCell className="py-2 pl-5">HUỲNH THANH TÂM</TableCell>
-                  <TableCell className="text-center py-2">1987</TableCell>
-                </TableRow>
-                <TableRow className="border-b border-green-200">
-                  <TableCell className="text-center py-2">4075</TableCell>
-                  <TableCell className="py-2 pl-5">NGUYỄN THỊ THÚY</TableCell>
-                  <TableCell className="text-center py-2">1978</TableCell>
-                </TableRow>
-                <TableRow className="border-b border-green-200">
-                  <TableCell className="text-center py-2">4074</TableCell>
-                  <TableCell className="py-2 pl-5">ĐẶNG THỊ THU</TableCell>
-                  <TableCell className="text-center py-2">1982</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell className="text-center py-2">4073</TableCell>
-                  <TableCell className="py-2 pl-5">LÊ THỊ THANH TÂM</TableCell>
-                  <TableCell className="text-center py-2">1993</TableCell>
-                </TableRow>
+                {patients.map((patient, index) => (
+                  <TableRow key={index} className="border-b border-green-200">
+                    <TableCell className="text-center py-2">{++index}</TableCell>
+                    <TableCell className="py-2 pl-5">{patient.Hoten}</TableCell>
+                    <TableCell className="text-center py-2">{patient.Namsinh}</TableCell>
+                  </TableRow>
+                ))}
+                {/* Hiển thị bệnh nhân đang khám nếu có */}
               </TableBody>
             </Table>
           </CardContent>
@@ -194,154 +200,10 @@ function RoomDetailContent() {
 
       {/* Footer hotline */}
       <div className="bg-green-900 text-white text-center py-3 text-base font-extrabold rounded-b-md flex-shrink-0 tracking-wider select-none">
-        Hotline hỗ trợ tải &amp; sử dụng App: 0276 3836 991 - 0941 696 939
-      </div>
-    </div>
-    )
-  }
-
-  const { room, activePatient, patients, count } = data
-
-  return (
-    <div className="h-screen bg-gradient-to-br from-blue-100 to-blue-200 p-4">
-      <div className="max-w-7xl mx-auto flex flex-col gap-4 h-full">
-        {/* Header */}
-        <div className="flex justify-between items-center">
-          <div className="flex items-center gap-4">
-            <Link href="/" className="text-blue-600 hover:text-blue-800">
-              <ArrowLeft className="w-6 h-6" />
-            </Link>
-            <div className="flex items-center gap-4">
-                  <h1
-                  className="text-4xl font-bold text-green-600 cursor-pointer hover:text-green-700"                >
-                  {room?.name}
-                </h1>
-            </div>
-          </div>
-          <div className="text-right">
-            <h2 className="text-3xl font-bold text-red-600 mb-2">MỜI BỆNH NHÂN{params.variable}</h2>
-            <TimeDisplay />
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 flex-1 overflow-hidden">
-          {/* Left Column - Banner */}
-          <div className="space-y-4">
-            <Card className="relative overflow-hidden h-full w-full p-0">
-              <CardContent className="p-0 h-full w-full">
-                <div className="relative group cursor-pointer h-full w-full">
-                  <Image
-                    src={bannerImage || "/placeholder.svg"}
-                    alt="Hospital Banner"
-                    fill
-                    className="object-fill"
-                  />
-                  <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                    <Label htmlFor="banner-upload" className="cursor-pointer">
-                      <div className="bg-white rounded-lg p-4 flex items-center gap-2">
-                        <Upload className="w-5 h-5" />
-                        <span>Thay đổi hình ảnh</span>
-                      </div>
-                    </Label>
-                    <Input
-                      id="banner-upload"
-                      type="file"
-                      accept="image/*"
-                      onChange={handleImageChange}
-                      className="hidden"
-                    />
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Right Column - Patient Info */}
-          <div className="space-y-6 flex flex-col overflow-hidden">
-            {/* Current Patient */}
-            <Card className="border-2 border-red-500">
-              <CardHeader className="bg-red-50">
-                <CardTitle className="text-center text-2xl text-red-600">BỆNH NHÂN HIỆN TẠI</CardTitle>
-              </CardHeader>
-              <CardContent className="p-6">
-                {activePatient ? (
-                  <div className="text-center">
-                    <h3 className="text-3xl font-bold text-blue-800 mb-2">{activePatient.HoTen}</h3>
-                    <p className="text-xl text-blue-600">Năm sinh: {activePatient.NamSinh}</p>
-                  </div>
-                ) : (
-                  <div className="text-center text-gray-500">
-                    <Clock className="w-16 h-16 mx-auto mb-4 opacity-50" />
-                    <p className="text-xl">Chưa có bệnh nhân</p>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-
-            {/* Waiting List */}
-            <Card className="flex-1 overflow-hidden pt-6">
-              <CardHeader className="bg-blue-50">
-                <CardTitle className="text-center text-xl text-blue-800">
-                  BỆNH NHÂN TIẾP THEO ({count})
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-0">
-                <div className="max-h-96 overflow-y-auto">
-                  <table className="w-full">
-                    <thead className="bg-gray-100 sticky top-0">
-                      <tr>
-                        <th className="px-4 py-3 text-left font-bold text-blue-800">STT</th>
-                        <th className="px-4 py-3 text-left font-bold text-blue-800">HỌ VÀ TÊN</th>
-                        <th className="px-4 py-3 text-left font-bold text-blue-800">NĂM SINH</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {patients.map((patient, index) => (
-                        <tr                      
-                          key={index}
-                          className={`border-b hover:bg-blue-50 ${index === 0 ? "bg-yellow-50" : ""}`}
-                        >
-                          <td className="px-4 py-3 font-semibold text-blue-800">{index + 1}</td>
-                          <td className="px-4 py-3 font-semibold text-blue-800">{patient.Hoten}</td>
-                          <td className="px-4 py-3 text-blue-600">{patient.Namsinh}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                  {patients.length === 0 && (
-                    <div className="text-center py-8 text-gray-500">
-                      <Users className="w-16 h-16 mx-auto mb-4 opacity-50" />
-                      <p className="text-lg">Không còn bệnh nhân chờ</p>
-                    </div>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-
-        {/* Footer Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Card>
-            <CardContent className="p-4 text-center">
-              <div className="text-2xl font-bold text-blue-600">{activePatient ? 1 : 0}</div>
-              <div className="text-sm text-gray-600">Đang khám</div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-4 text-center">
-              <div className="text-2xl font-bold text-orange-600">{count}</div>
-              <div className="text-sm text-gray-600">Đang chờ</div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-4 text-center">
-              <div className="text-2xl font-bold text-green-600">
-                {count + (activePatient ? 1 : 0)}
-              </div>
-              <div className="text-sm text-gray-600">Tổng bệnh nhân</div>
-            </CardContent>
-          </Card>
+        <div className="grid grid-cols-12">
+        <div className="col-span-4">Tổng đài: 02763 797999</div>
+        <div className="col-span-4">Hotline: 1900 561 510</div>
+        <div className="col-span-4">Cấp cứu: 0888 79 52 59</div>
         </div>
       </div>
     </div>
