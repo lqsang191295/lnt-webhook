@@ -1,12 +1,9 @@
 import { Card, CardContent } from "@/components/ui/card"
+import { iClsData } from "@/types/cls"
 import { memo } from "react"
 
 interface FooterProps {
-    activePatient: {
-        HoTen: string
-        NamSinh: string
-        Sovaovien: string
-    } | null,
+    activePatient: iClsData[],
     count: number
 }
 

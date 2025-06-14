@@ -1,19 +1,19 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { iClsData } from "@/types/cls"
 import { Patient } from "@/types/patient"
 import { Users } from "lucide-react"
 import { memo } from "react"
 
 interface WaitListProps {
-    count: number,
-    patients: Patient[]
+    waitingList: iClsData[]
 }
 
-const WaitList = ({ count, patients }: WaitListProps) => {
+const WaitList = ({ waitingList }: WaitListProps) => {
 
-    return <Card className="flex-1 overflow-hidden pt-6">
+    return <Card className="col-span-1 flex-1 overflow-hidden">
         <CardHeader className="bg-blue-50">
             <CardTitle className="text-center text-xl text-blue-800">
-                BỆNH NHÂN TIẾP THEO ({count})
+                BỆNH NHÂN TIẾP THEO ({waitingList.length})
             </CardTitle>
         </CardHeader>
         <CardContent className="p-0">
@@ -27,19 +27,19 @@ const WaitList = ({ count, patients }: WaitListProps) => {
                         </tr>
                     </thead>
                     <tbody>
-                        {patients.map((patient, index) => (
+                        {waitingList.map((item, index) => (
                             <tr
                                 key={index}
                                 className={`border-b hover:bg-blue-50 ${index === 0 ? "bg-yellow-50" : ""}`}
                             >
                                 <td className="px-4 py-3 font-semibold text-blue-800">{index + 1}</td>
-                                <td className="px-4 py-3 font-semibold text-blue-800">{patient.Hoten}</td>
-                                <td className="px-4 py-3 text-blue-600">{patient.Namsinh}</td>
+                                <td className="px-4 py-3 font-semibold text-blue-800">{item.BV_QLyCapThe.Hoten}</td>
+                                <td className="px-4 py-3 text-blue-600">{item.BV_QLyCapThe.Namsinh}</td>
                             </tr>
                         ))}
                     </tbody>
                 </table>
-                {patients.length === 0 && (
+                {waitingList.length === 0 && (
                     <div className="text-center py-8 text-gray-500">
                         <Users className="w-16 h-16 mx-auto mb-4 opacity-50" />
                         <p className="text-lg">Không còn bệnh nhân chờ</p>
