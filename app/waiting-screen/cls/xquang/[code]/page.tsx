@@ -5,19 +5,15 @@ import { useState, useEffect, useCallback } from "react"
 import ClientOnly from "@/components/ClientOnly"
 import LoadingFallback from "@/components/LoadingFallback"
 import { useParams } from "next/navigation"
-import { Patient, Room } from '@/types/patient'
 import { websocketInstance } from '@/websocket'
 import Footer from "@/app/waiting-screen/_components/footer"
 import Banner from "@/app/waiting-screen/_components/banner"
-import CurrentPatient from "@/app/waiting-screen/_components/current-patient"
 import WaitList from "@/app/waiting-screen/_components/wait-list"
 import Header from "@/app/waiting-screen/_components/header"
 import { eTiepNhanCLS } from "@/enum/cls"
 import { getDataPhieuTiepNhanCLS } from "@/app/waiting-screen/_actions/cls"
 import { eTrangthai } from "@/enum/status"
 import { iClsData } from "@/types/cls"
-import { Separator } from "@/components/ui/separator"
-
 
 function XQuangContent() {
   const params = useParams()
@@ -126,19 +122,17 @@ function XQuangContent() {
   const waitingList = getWaitingList()
 
   return (
-    <div className="h-screen bg-gradient-to-br from-blue-100 to-blue-200 flex flex-col">
+    <div className="w-screen h-screen bg-[#e6f3f1] border border-green-600 rounded-md flex flex-col select-none">
       {/* Header */}
       <Header room={{ id: "xquang", name: "Phòng Xquang", code: "xquang" }} />
-      <Separator className="!h-2 w-full bg-blue-600" />
-      <div className="grid grid-cols-3 flex-1 overflow-hidden">
+      <div className="flex flex-grow overflow-hidden">
         {/* Left Column - Banner */}
-        <div className="col-span-2 flex">
-          <Banner bannerImage={bannerImage} handleImageChange={handleImageChange} />
-          <Separator className="!w-2 h-full bg-blue-600" orientation="vertical" />
-        </div>
+        <Banner bannerImage={bannerImage} handleImageChange={handleImageChange} />
         {/* Right Column - Patient Info */}
         <WaitList waitingList={waitingList} />
       </div>
+
+      <Footer />
     </div>
   )
 }

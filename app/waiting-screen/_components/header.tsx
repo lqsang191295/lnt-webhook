@@ -15,17 +15,13 @@ const Header = ({ room }: HeaderProps) => {
     const params = useParams()
 
 
-    return <div className="flex justify-between items-center">
-        <div className="flex flex-1 justify-center items-center">
-            <h1
-                className="text-4xl font-bold text-blue-400 cursor-pointer">
-                {room?.name}
-            </h1>
+    return <div className="grid grid-cols-12 border-b border-green-600 text-green-900 flex-shrink-0">
+        <div className="col-span-6 flex items-center justify-center border-r border-green-600 py-5 font-extrabold text-2xl uppercase">
+            PHÒNG KHÁM NỘI
         </div>
-        <Separator className="!w-2 h-full bg-blue-600" orientation="vertical" />
-        <div className="flex flex-1 justify-center items-center py-12 flex-col gap-4">
-            <h2 className="text-3xl font-bold text-blue-400">MỜI BỆNH NHÂN</h2>
-            <Label className="text-3xl font-bold text-blue-400">4003.Nguyễn Văn A</Label>
+        <div className="col-span-6 flex flex-col justify-center border-l border-green-600 py-5 font-extrabold text-2xl uppercase leading-tight text-center">
+            <span>MỜI BỆNH NHÂN:</span>
+            <span className="mt-2 truncate">4063. LÊ THÀNH BẢO KHÔI</span>
         </div>
     </div>
 }
