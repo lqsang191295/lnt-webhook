@@ -124,7 +124,7 @@ function XQuangContent() {
   return (
     <div className="w-screen h-screen bg-[#e6f3f1] border border-green-600 rounded-md flex flex-col select-none">
       {/* Header */}
-      <Header room={{ id: "xquang", name: "Phòng Xquang", code: "xquang" }} />
+      <Header room={{ name: "Phòng Xquang", code: "xquang" }} />
       <div className="flex flex-grow overflow-hidden">
         {/* Left Column - Banner */}
         <Banner bannerImage={bannerImage} handleImageChange={handleImageChange} />

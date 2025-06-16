@@ -34,3 +34,18 @@ export const getDataPhieuTiepNhanCLS = async (loaicls: string, ip: string) => {
         return [];
     }
 }
+
+export const getDataPhieuChidinhDVCT = async (nhom: string) => {
+    try {
+        const response = await get(`/his/get-BV_PhieuChidinhDVCT-by-nhom/${nhom}`);
+
+        if (response.error) {
+            return [];
+        }
+
+        return response.data;
+    } catch (ex) {
+        console.log('getDataPhieuTiepNhanCLS Error = ', ex)
+        return [];
+    }
+}
