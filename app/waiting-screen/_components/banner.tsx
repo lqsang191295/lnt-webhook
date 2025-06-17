@@ -1,46 +1,45 @@
-import { Card, CardContent } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Upload } from "lucide-react"
-import Image from "next/image"
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { memo } from "react"
 
-interface BannerProps {
-    bannerImage: string
-    handleImageChange: (event: React.ChangeEvent<HTMLInputElement>) => void
-}
+// interface BannerProps {
+//     bannerImage: string
+//     handleImageChange: (event: React.ChangeEvent<HTMLInputElement>) => void
+// }
 
-const Banner = ({ bannerImage, handleImageChange }: BannerProps) => {
+const Banner = () => {
 
-    return <div className="space-y-4">
-        <Card className="relative overflow-hidden h-full w-full p-0">
-            <CardContent className="p-0 h-full w-full">
-                <div className="relative group cursor-pointer h-full w-full">
-                    <Image
-                        src={bannerImage || "/placeholder.svg"}
-                        alt="Hospital Banner"
-                        fill
-                        className="object-cover"
-                    />
-                    <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                        <Label htmlFor="banner-upload" className="cursor-pointer">
-                            <div className="bg-white rounded-lg p-4 flex items-center gap-2">
-                                <Upload className="w-5 h-5" />
-                                <span>Thay đổi hình ảnh</span>
-                            </div>
-                        </Label>
-                        <Input
-                            id="banner-upload"
-                            type="file"
-                            accept="image/*"
-                            onChange={handleImageChange}
-                            className="hidden"
-                        />
-                    </div>
-                </div>
-            </CardContent>
-        </Card>
-    </div>
+    return <Card className="flex-grow rounded-none shadow-none border-r border-green-600 flex flex-col">
+        <CardHeader className="pb-4 border-b border-green-600">
+            <CardTitle className="text-center text-xl font-extrabold text-gray-800">
+                BỆNH VIỆN ĐA KHOA LÊ NGỌC TÙNG
+            </CardTitle>
+            <h2 className="text-center font-extrabold text-green-900 text-3xl mt-2 mb-6">
+                CỔNG THÔNG TIN ĐIỆN TỬ BVĐK LÊ NGỌC TÙNG TRÊN ZALO
+            </h2>
+            <p className="text-center text-lg text-green-700 bg-green-200 rounded-sm px-4 py-2 font-semibold">
+                Công cụ hỗ trợ đắc lực trong việc chăm sóc sức khỏe bản thân &amp; gia đình
+            </p>
+        </CardHeader>
+        <CardContent className="flex-grow text-gray-700 font-semibold leading-relaxed text-lg space-y-4 overflow-auto px-6">
+            <ul className="list-disc list-inside">
+                <li>
+                    <span className="font-extrabold">ĐĂNG KÝ KHÁM CHỮA BỆNH ONLINE </span>
+                </li>
+                <li>
+                    <span className="font-extrabold">TRẢ KẾT QUẢ CẬN LÂM SÀNG ONLINE </span>
+                </li>
+                <li>
+                    <span className="font-extrabold">CHƯƠNG TRÌNH KHUYẾN MÃI</span>
+                </li>
+                <li>
+                    <span className="font-extrabold">BẢNG GIÁ DỊCH VỤ</span>
+                </li>
+            </ul>
+        </CardContent>
+        <CardFooter className="flex items-center justify-center space-x-12 pt-4 border-t border-green-600">
+
+        </CardFooter>
+    </Card>
 }
 
 export default memo(Banner);
