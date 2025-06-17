@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { Patient, rooms, setRooms, GetRoomByCode } from '@/types/patient';
+import { Patient, rooms, setRooms, GetRoomByCode, formatToFourDigits } from '@/types/patient';
 import { get } from "@/api/client";
 
 export async function GET() {
@@ -40,10 +40,10 @@ export async function POST(request: Request) {
   try {
     const roomCode = await request.json();
     if (roomCode) {
-      const today = new Date().toISOString().split('T')[0];
+      const today = new Date().toISOString().split('T')[0]; // Lấy ngày hiện tại theo định dạng YYYY-MM-DD
       const params = new URLSearchParams({
-      where: `Phong='${roomCode}'&&(Trangthai='Đang_chờ'||Trangthai='Đang_khám')&&Ngay='${today}'`,
-      select: 'ID, Trangthai, BV_QLyCapThe.Hoten, BV_QLyCapThe.Namsinh',
+      where: `Phong='${roomCode}'&&Trangthai='Đang_chờ'&&Ngay='${today}'`,
+      select: 'ID, Lock, STT, BV_QLyCapThe.Hoten, BV_QLyCapThe.Namsinh',
       limit: '50',
     });
     const baseUrl = 'http://172.16.0.10:9001/his/get-BV_TiepnhanBenh';
@@ -66,10 +66,12 @@ export async function POST(request: Request) {
     // Nhóm bệnh nhân theo phòng khám
     const patientsByRoom: Record<string, Patient[]> = {};
     // Kiểm tra từng bệnh nhân trong mảng
-    const filterData = data.filter(p => p.Trangthai !== 'Đang_khám');
+    const filterData = data.sort((a, b) => a.STT - b.STT);
     for (const patient of filterData) {
       const BV_QLyCapThe = patient.BV_QLyCapThe || {};
       BV_QLyCapThe.ID = patient.ID; // Mã tiếp nhận bệnh nhân
+      BV_QLyCapThe.STT = formatToFourDigits(patient.STT); // Số thứ tự
+      BV_QLyCapThe.IsActive = patient.Lock; // Trạng thái hoạt động
       // Kiểm tra các trường bắt buộc
       const requiredFields: (keyof Patient)[] = ['Hoten', 'Namsinh'];
       const missingFields = requiredFields.filter(field => !BV_QLyCapThe[field]);
@@ -90,18 +92,17 @@ export async function POST(request: Request) {
       }
       patientsByRoom[roomCode].push(BV_QLyCapThe);
     }
-      let patients = patientsByRoom[roomCode] || [];
-      const activePatient = data.find(p => p.Trangthai === 'Đang_khám')?.BV_QLyCapThe || null;
+      const patients = patientsByRoom[roomCode] || [];
+      // lấy thông tin bệnh nhân đang khám
+      const activePatient = patients.find(p => p.IsActive === true) || null;
+      const waitingPatients = patients.filter(p => p.IsActive !== true);
       const room = await GetRoomByCode(roomCode);
       return NextResponse.json(
         { 
           room,
-          activePatient: activePatient ? {
-            HoTen: activePatient.Hoten,
-            NamSinh: activePatient.Namsinh,
-          } : null,
-          patients,
-          count: patients.length 
+          activePatient: activePatient,
+          patients: waitingPatients,
+          count: waitingPatients.length 
         },
         { status: 200 }
       );

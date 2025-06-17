@@ -4,25 +4,15 @@ import type React from "react"
 import { useState, useEffect, useCallback } from "react"
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Upload, X, Users, Clock, ArrowLeft } from "lucide-react"
-import TimeDisplay from "@/components/TimeDisplay"
+import { Clock } from "lucide-react"
 import ClientOnly from "@/components/ClientOnly"
 import LoadingFallback from "@/components/LoadingFallback"
-import Link from "next/link"
 import { useParams } from "next/navigation"
 import { Patient, Room } from '@/types/patient'
-import Image from "next/image"
 import { websocketInstance } from '@/websocket'
 interface ApiResponse {
   room: Room
-  activePatient: {
-    HoTen: string
-    NamSinh: string
-    MaBN: string
-    Sovaovien: string
-  } | null
+  activePatient: Patient | null
   patients: Patient[]
   count: number
 }
@@ -33,10 +23,8 @@ function RoomDetailContent() {
   const [data, setData] = useState<ApiResponse | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [bannerImage, setBannerImage] = useState("/hospital-banner.png")
-  const [isEditingRoom, setIsEditingRoom] = useState(false)
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
       const response = await fetch(`/api/waiting-patients`, {
         method: 'POST',
@@ -49,26 +37,27 @@ function RoomDetailContent() {
       setData(result)
       setError(null)
     } catch (err) {
+      console.error('Lỗi khi tải dữ liệu:', err)
       setError(err instanceof Error ? err.message : 'Lỗi không xác định')
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  }, [roomCode])
+  useEffect(() => {
+    fetchData();
+  }, [fetchData])
 
   useEffect(() => {
-    fetchData()
-    const interval = setInterval(fetchData, 5000) // Cập nhật mỗi 5 giây
-    return () => clearInterval(interval)
-  }, [roomCode])
-
-  // Handle banner image change
-  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0]
-    if (file) {
-      const imageUrl = URL.createObjectURL(file)
-      setBannerImage(imageUrl)
-    }
-  }
+    websocketInstance.connect();
+    websocketInstance.onMessage((code) => {
+      if (code === roomCode) {
+      fetchData();
+      }
+    });
+    return () => {
+      websocketInstance.close();
+    };
+  }, [fetchData]);
 
   if (loading) {
     return (
@@ -112,7 +101,7 @@ function RoomDetailContent() {
         </div>
         <div className="col-span-6 flex flex-col justify-center border-l border-green-600 py-5 font-extrabold text-4xl uppercase leading-tight text-center">
           {activePatient ? (
-            <><span>MỜI BỆNH NHÂN:</span><span className="mt-2 truncate">{activePatient?.HoTen} - {activePatient?.NamSinh}</span></>
+            <><span>MỜI BỆNH NHÂN:</span><span className="mt-2 truncate">{activePatient?.STT}. {activePatient?.Hoten} - {activePatient?.Namsinh}</span></>
           ): (
             <div className="text-center text-gray-500">
               <Clock className="w-16 h-16 mx-auto mb-4 opacity-50" />
@@ -178,7 +167,7 @@ function RoomDetailContent() {
               <TableBody>
                 {patients.map((patient, index) => (
                   <TableRow key={index} className="border-b border-green-200">
-                    <TableCell className="text-center py-2">{++index}</TableCell>
+                    <TableCell className="text-center py-2">{patient.STT}</TableCell>
                     <TableCell className="py-2 pl-5">{patient.Hoten}</TableCell>
                     <TableCell className="text-center py-2">{patient.Namsinh}</TableCell>
                   </TableRow>
@@ -201,11 +190,11 @@ function RoomDetailContent() {
     </div>
   )
 }
-
 export default function RoomDetail() {
   return (
     <ClientOnly fallback={<LoadingFallback />}>
       <RoomDetailContent />
     </ClientOnly>
   )
-} 
+}
+ 
