@@ -1,16 +1,12 @@
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Upload } from "lucide-react"
-import Image from "next/image"
 import { memo } from "react"
 
-interface BannerProps {
-    bannerImage: string
-    handleImageChange: (event: React.ChangeEvent<HTMLInputElement>) => void
-}
+// interface BannerProps {
+//     bannerImage: string
+//     handleImageChange: (event: React.ChangeEvent<HTMLInputElement>) => void
+// }
 
-const Banner = ({ bannerImage, handleImageChange }: BannerProps) => {
+const Banner = () => {
 
     return <Card className="flex-grow rounded-none shadow-none border-r border-green-600 flex flex-col">
         <CardHeader className="pb-4 border-b border-green-600">
