@@ -155,7 +155,7 @@ function PageContent() {
       <Header room={getRoom()} activePatient={curPhieu} />
       <div className="flex flex-grow overflow-hidden">
         {/* Left Column - Banner */}
-        <Banner bannerImage={bannerImage} handleImageChange={handleImageChange} />
+        <Banner />
         {/* Right Column - Patient Info */}
         <WaitList patients={waitingList} />
       </div>
