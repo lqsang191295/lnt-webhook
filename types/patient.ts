@@ -4,7 +4,8 @@ export interface Patient {
   ID: string; // Mã tiếp nhận bệnh nhân
   Hoten: string;
   Namsinh: string;
-  PhongKham?: string; // Mã phòng khám
+  STT?: number; // Số thứ tự
+  IsActive?: boolean; // Trạng thái hoạt động
 }
 
 export interface Room {
@@ -34,4 +35,8 @@ export async function GetRoomByCode(code: string): Promise<Room | null> {
     console.error('Lỗi khi lấy thông tin phòng khám:', error);
     return null;
   }
+}
+
+export function formatToFourDigits(STT: number): string {
+  return STT.toString().padStart(4, '0');
 }
