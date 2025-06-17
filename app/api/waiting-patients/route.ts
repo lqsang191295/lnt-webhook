@@ -1,6 +1,40 @@
 import { NextResponse } from 'next/server';
-import { Patient, rooms } from '@/types/patient';
+import { Patient, rooms, setRooms, GetRoomByCode } from '@/types/patient';
 import { get } from "@/api/client";
+
+export async function GET() {
+  try {
+    // lấy danh sách phòng khám
+    const response = await get(`http://172.16.0.10:9001/his/get-HT_DMPhongBan`);
+    if (!response || !response.data) {
+      return NextResponse.json(
+        { error: 'Không tìm thấy dữ liệu phòng khám' },
+        { status: 404 }
+      );
+    }
+    const data = response.data;
+    if (!Array.isArray(data)) {
+      return NextResponse.json(
+        { error: 'Dữ liệu phải là một mảng' },
+        { status: 400 }
+      );
+    } 
+    setRooms(data.map(room => ({
+      code: room.Ma,
+      name: room.Ten,
+      description: room.Diengiai,
+    })));
+    return NextResponse.json(
+      { rooms, totalRooms: data.length },
+      { status: 200 } )
+  }catch (error) {
+    console.error('Lỗi khi lấy danh sách phòng khám:', error);
+    return NextResponse.json(
+      { error: 'Lỗi khi lấy danh sách phòng khám' },
+      { status: 500 }
+    );
+  }
+}
 
 export async function POST(request: Request) {
   try {
@@ -8,9 +42,9 @@ export async function POST(request: Request) {
     if (roomCode) {
       const today = new Date().toISOString().split('T')[0];
       const params = new URLSearchParams({
-      where: `MaBankham='${roomCode}'&(Trangthai='Đang_chờ'|Trangthai='Đang_khám')&Ngay='${today}'`,
+      where: `Phong='${roomCode}'&&(Trangthai='Đang_chờ'||Trangthai='Đang_khám')&&Ngay='${today}'`,
       select: 'ID, Trangthai, BV_QLyCapThe.Hoten, BV_QLyCapThe.Namsinh',
-      limit: '5',
+      limit: '50',
     });
     const baseUrl = 'http://172.16.0.10:9001/his/get-BV_TiepnhanBenh';
     const finalUrl = `${baseUrl}?${params.toString()}`;
@@ -58,7 +92,7 @@ export async function POST(request: Request) {
     }
       let patients = patientsByRoom[roomCode] || [];
       const activePatient = data.find(p => p.Trangthai === 'Đang_khám')?.BV_QLyCapThe || null;
-      const room = rooms.find(r => r.code === roomCode);
+      const room = await GetRoomByCode(roomCode);
       return NextResponse.json(
         { 
           room,
@@ -68,14 +102,6 @@ export async function POST(request: Request) {
           } : null,
           patients,
           count: patients.length 
-        },
-        { status: 200 }
-      );
-    } else {
-      return NextResponse.json(
-        { 
-          rooms: rooms,
-          totalRooms: rooms.length
         },
         { status: 200 }
       );

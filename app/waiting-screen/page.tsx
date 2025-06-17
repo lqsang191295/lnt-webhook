@@ -1,8 +1,8 @@
 "use client"
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
-import { Building2 } from 'lucide-react'
+import { Building2, Search } from 'lucide-react'
 import { Card, CardHeader, CardTitle } from '@/components/ui/card'
 import TimeDisplay from '@/components/TimeDisplay'
 import { Room } from '@/types/patient'
@@ -16,17 +16,17 @@ export default function DashboardPage() {
   const [data, setData] = useState<ApiResponse | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [searchTerm, setSearchTerm] = useState("")
+  const searchInputRef = useRef<HTMLInputElement>(null)
   const fetchData = async () => {
     try {
       const response = await fetch('/api/waiting-patients', {
-        method: 'POST',
-        body: "0",
+        method: 'GET'
       })
       if (!response.ok) {
         throw new Error('Không thể tải dữ liệu')
       }
       const result = await response.json()
-      console.log('Dữ liệu từ API:', result)
       setData(result)
       setError(null)
     } catch (err) {
@@ -35,7 +35,16 @@ export default function DashboardPage() {
       setLoading(false)
     }
   }
+  useEffect(() => {
+    if (!loading && searchInputRef.current) {
+      searchInputRef.current.focus()
+    }
+  }, [loading])
 
+   const filteredRooms = data?.rooms.filter(room => 
+    room.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    room.description?.toLowerCase().includes(searchTerm.toLowerCase())
+  ) || []
   useEffect(() => {
      fetchData()
    }, [])
@@ -69,7 +78,7 @@ export default function DashboardPage() {
     )
   }
 
-  const { rooms, totalRooms } = data
+  const { totalRooms } = data
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-100 to-blue-200 p-4">
@@ -89,11 +98,29 @@ export default function DashboardPage() {
             <TimeDisplay />
           </div>
         </div>
-
+         {/* Search Bar */}
+        <div className="mb-6 relative">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+            <input
+              ref={searchInputRef}
+              type="text"
+              placeholder="Tìm kiếm phòng..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+          </div>
+          {searchTerm && (
+            <div className="mt-2 text-sm text-gray-600">
+              Tìm thấy {filteredRooms.length} phòng
+            </div>
+          )}
+        </div>
         {/* Danh sách phòng khám */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {rooms.map((room) => (
-            <Link key={room.id} href={`/waiting-screen/room/${room.code}`}>
+          {filteredRooms.map((room) => (
+            <Link key={room.code} href={`/waiting-screen/room/${room.code}`}>
               <Card className={`cursor-pointer transition-all duration-300 hover:shadow-lg hover:scale-105`}>
                 <CardHeader className="pb-3">
                   <CardTitle className="text-lg text-center text-blue-800">
