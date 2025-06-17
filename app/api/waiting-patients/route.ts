@@ -1,11 +1,11 @@
 import { NextResponse } from 'next/server';
 import { Patient, rooms, setRooms, GetRoomByCode, formatToFourDigits } from '@/types/patient';
 import { get } from "@/api/client";
-
+const API_BASE_URL = process.env.NEXT_PUBLIC_API || "";
 export async function GET() {
   try {
     // lấy danh sách phòng khám
-    const response = await get(`http://172.16.0.10:9001/his/get-HT_DMPhongBan`);
+    const response = await get(`${API_BASE_URL}/his/get-HT_DMPhongBan`);
     if (!response || !response.data) {
       return NextResponse.json(
         { error: 'Không tìm thấy dữ liệu phòng khám' },
@@ -46,7 +46,8 @@ export async function POST(request: Request) {
       select: 'ID, Lock, STT, BV_QLyCapThe.Hoten, BV_QLyCapThe.Namsinh',
       limit: '50',
     });
-    const baseUrl = 'http://172.16.0.10:9001/his/get-BV_TiepnhanBenh';
+
+    const baseUrl = `${API_BASE_URL}/his/get-BV_TiepnhanBenh`;
     const finalUrl = `${baseUrl}?${params.toString()}`;
     const response = await get(finalUrl);
     if (!response || !response.data) {
