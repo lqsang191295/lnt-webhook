@@ -92,7 +92,7 @@ export async function POST(request: Request) {
       }
       patientsByRoom[roomCode].push(BV_QLyCapThe);
     }
-      let patients = patientsByRoom[roomCode] || [];
+      const patients = patientsByRoom[roomCode] || [];
       // lấy thông tin bệnh nhân đang khám
       const activePatient = patients.find(p => p.IsActive === true) || null;
       const waitingPatients = patients.filter(p => p.IsActive !== true);
