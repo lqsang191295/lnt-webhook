@@ -45,7 +45,7 @@ function RoomDetailContent() {
   }, [roomCode])
   useEffect(() => {
     fetchData();
-  }, [])
+  }, [fetchData])
 
   useEffect(() => {
     websocketInstance.connect();
@@ -57,7 +57,7 @@ function RoomDetailContent() {
     return () => {
       websocketInstance.close();
     };
-  }, []);
+  }, [fetchData]);
 
   if (loading) {
     return (
