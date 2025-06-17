@@ -1,13 +1,21 @@
 export interface iClsData {
-    ID: string
-    MaBN: string
-    TrangThai: string
-    GioVao: string
-    GioRa: string
-    LoaiCLS: string
-    IP: string
-    BV_QLyCapThe: {
-        Hoten: string
-        Namsinh: string
-    }
+    MaBN: string;
+    TrangThaiKham: string | null;
+    Hoten: string;
+    Namsinh: number;
+}
+
+export interface iClsGroupData {
+    STT: number;
+    MaBN: string;
+    TrangThaiKham: string | null;
+    Hoten: string;
+    Namsinh: number;
+}
+
+export interface iRoom {
+  code: string;
+  name: string;
+  roomId?: string;
+  nhom: string;
 }

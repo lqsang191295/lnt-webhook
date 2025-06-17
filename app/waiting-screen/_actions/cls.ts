@@ -35,9 +35,9 @@ export const getDataPhieuTiepNhanCLS = async (loaicls: string, ip: string) => {
     }
 }
 
-export const getDataPhieuChidinhDVCT = async (nhom: string) => {
+export const getDataPhieuChidinhDVCT = async (nhom: string, phong?: string) => {
     try {
-        const response = await get(`/his/get-BV_PhieuChidinhDVCT-by-nhom/${nhom}`);
+        const response = await get(`/his/get-BV_PhieuChidinhDVCT-by-nhom/${nhom}${phong ? '/' + phong : ''}`);
 
         if (response.error) {
             return [];
