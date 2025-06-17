@@ -20,10 +20,8 @@ function XQuangContent() {
   const id = params.id as string
   const roomCode = params.code as string
   const [data, setData] = useState<iClsData[] | null>(null)
-  const [bannerImage, setBannerImage] = useState("/imgs/hospital-banner.png")
 
   function getTrangThaiKham(trangthai: (string | null)[]): string | null {
-    const hasNull = trangthai.some(v => v === null);
     const allNull = trangthai.every(v => v === null);
     const allHoanThanh = trangthai.every(v => v === eTrangthai[eTrangthai.Đã_thực_hiện]);
 
@@ -68,15 +66,15 @@ function XQuangContent() {
     return result.filter(i => i.TrangThaiKham !== eTrangthai[eTrangthai.Đã_thực_hiện]);
   }
 
-  const getRoom = () => {
+  const getRoom = useCallback(() => {
     const phongban = ListRooms.find(i => {
-      return i.code === id && i.roomId === roomCode
+      return i.code === id
     });
 
     if (phongban) return phongban;
 
     return;
-  }
+  }, [id])
 
   const fetchData = useCallback(async () => {
     try {
@@ -90,10 +88,12 @@ function XQuangContent() {
     } catch (err) {
       console.error('Lỗi khi tải dữ liệu:', err)
     }
-  }, [id])
+  }, [getRoom, roomCode])
 
   useEffect(() => {
     fetchData();
+
+    if(!websocketInstance) return;
 
     websocketInstance.connect();
     websocketInstance.onMessage((data) => {
@@ -104,16 +104,7 @@ function XQuangContent() {
     return () => {
       websocketInstance.close();
     };
-  }, [])
-
-  // Handle banner image change
-  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0]
-    if (file) {
-      const imageUrl = URL.createObjectURL(file)
-      setBannerImage(imageUrl)
-    }
-  }
+  }, [fetchData])
 
   const getCurPhieu = (dataGroup: iClsGroupData[]) => {
     if (!dataGroup) return;
