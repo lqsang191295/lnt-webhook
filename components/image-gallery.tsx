@@ -1,47 +1,82 @@
-'use client';
+'use client'
 
-import FileItem from '@/app/partient/_components/file-item';
-import { iFilePatient } from '@/types/patient';
-import React, { useState } from 'react';
-import Lightbox from 'react-image-lightbox';
-import 'react-image-lightbox/style.css'; 
+import { iFilePatient } from '@/types/patient'
+import { useState } from 'react'
+import {
+    Dialog,
+    DialogContent,
+} from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
+import { X, ChevronLeft, ChevronRight, Download } from 'lucide-react'
+import FileItem from '@/app/partient/_components/file-item'
 
-type ImageGalleryProps = {
+type Props = {
     files: iFilePatient[]
 }
 
-export default function ImageGallery({ files }: ImageGalleryProps) {
-    const [isOpen, setIsOpen] = useState(false);
-    const [photoIndex, setPhotoIndex] = useState(0);
+export default function ImageGallery({ files }: Props) {
+    const [index, setIndex] = useState<number | null>(null)
+
+    const currentFile = index !== null ? files[index] : null
+    const isPdf = currentFile ? /\.pdf$/i.test(currentFile.url) : false
+
+    const close = () => setIndex(null)
+    const prev = () => setIndex((prev) => (prev! - 1 + files.length) % files.length)
+    const next = () => setIndex((prev) => (prev! + 1) % files.length)
+    const download = () => {
+        if (!currentFile) return
+        const link = document.createElement('a')
+        link.href = currentFile.url
+        link.download = currentFile.filename
+        link.click()
+    }
 
     return (
-        <div className="grid grid-cols-7 gap-2 mt-4">
-            {files.map((f, index) => (
-                <FileItem
-                    image={f.url}
-                    key={index}
-                    onClick={() => {
-                        setPhotoIndex(index);
-                        setIsOpen(true);
-                    }}
-                />
-            ))}
+        <>
+            <div className="grid grid-cols-6 gap-3 mt-4">
+                {files.map((f, i) => (
+                    <FileItem
+                        file={f}
+                        key={i}
+                        onClick={() => { setIndex(i) }}
+                    />
+                ))}
+            </div>
 
+            <Dialog open={index !== null} onOpenChange={(v) => !v && close()}>
+                <DialogContent className="w-full h-full p-4 grid-rows-[auto_1fr] [&>button.absolute.top-4.right-4]:hidden" style={{ maxWidth: 'unset', background: '#00000050' }} >
+                    <div className="flex flex-row justify-center">
+                        <div className="font-medium truncate text-white text-xl">{currentFile?.filename}</div>
+                        <div className="flex gap-2 absolute right-4">
+                            <Button className='bg-gray-400 cursor-pointer' size="icon" variant="ghost" onClick={download}>
+                                <Download size={18} />
+                            </Button>
 
-            {isOpen && (
-                <Lightbox
-                    mainSrc={files[photoIndex].url}
-                    nextSrc={files[(photoIndex + 1) % files.length].url}
-                    prevSrc={files[(photoIndex + files.length - 1) % files.length].url}
-                    onCloseRequest={() => setIsOpen(false)}
-                    onMovePrevRequest={() =>
-                        setPhotoIndex((photoIndex + files.length - 1) % files.length)
-                    }
-                    onMoveNextRequest={() =>
-                        setPhotoIndex((photoIndex + 1) % files.length)
-                    }
-                />
-            )}
-        </div>
-    );
+                            <Button className='bg-gray-400 cursor-pointer' size="icon" variant="ghost" onClick={close}>
+                                <X size={18} />
+                            </Button>
+                        </div>
+                    </div>
+
+                    <div className="flex items-center justify-center w-full h-full">
+                        <Button className='bg-gray-400 cursor-pointer' size="icon" variant="ghost" onClick={prev}>
+                            <ChevronLeft size={28} />
+                        </Button>
+
+                        <div className="w-full h-full flex justify-center items-center overflow-hidden">
+                            {isPdf ? (
+                                <iframe src={currentFile?.url} className="w-full h-full" />
+                            ) : (
+                                <img src={currentFile?.url} className="max-h-full max-w-full" />
+                            )}
+                        </div>
+
+                        <Button className='bg-gray-400 cursor-pointer' size="icon" variant="ghost" onClick={next}>
+                            <ChevronRight size={28} />
+                        </Button>
+                    </div>
+                </DialogContent>
+            </Dialog>
+        </>
+    )
 }
