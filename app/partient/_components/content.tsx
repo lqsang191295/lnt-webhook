@@ -35,7 +35,7 @@ export default function Content() {
         finally {
             setLoading(false);
         }
-    }, [getFilePatientData])
+    }, [patient_id])
 
     useEffect(() => {
         fetchData();

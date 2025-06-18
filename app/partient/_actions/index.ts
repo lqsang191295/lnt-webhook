@@ -11,7 +11,7 @@ export const getFilePatientData = async (patientId: string, date?: string) => {
         }
 
         return response.data;
-    } catch (ex) {
+    } catch {
         return [];
     }
 }

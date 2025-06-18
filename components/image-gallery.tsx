@@ -9,6 +9,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { X, ChevronLeft, ChevronRight, Download } from 'lucide-react'
 import FileItem from '@/app/partient/_components/file-item'
+import Image from 'next/image'
 
 type Props = {
     files: iFilePatient[]
@@ -67,7 +68,14 @@ export default function ImageGallery({ files }: Props) {
                             {isPdf ? (
                                 <iframe src={currentFile?.url} className="w-full h-full" />
                             ) : (
-                                <img src={currentFile?.url} className="max-h-full max-w-full" />
+                                <Image
+                                    src={currentFile?.url ?? ''}
+                                    alt={currentFile?.filename ?? ''}
+                                    className="max-h-full max-w-full object-contain"
+                                    width={800} // hoặc bất kỳ giá trị bạn muốn
+                                    height={600}
+                                    unoptimized // dùng khi ảnh không phải từ domain Next config
+                                />
                             )}
                         </div>
 
