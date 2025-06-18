@@ -1,3 +1,5 @@
+'use client';
+
 import { Label } from "@/components/ui/label";
 import {
     Accordion,
@@ -6,10 +8,38 @@ import {
     AccordionTrigger,
 } from "@/components/ui/accordion"
 import ImageGallery from "@/components/image-gallery";
+import { useCallback, useEffect, useState } from "react";
+import { iFileOfPatientData } from "@/types/patient";
+import { getFilePatientData } from "../_actions";
+import { useParams } from "next/navigation";
+import Spinner from "@/components/spinner";
 
 export default function Content() {
-    const images = ["/imgs/logo.png", "/icons/chatgpt-icon.svg",
-        "/icons/deepseek-logo-icon.svg", "/icons/google-gemini-icon.svg", "/icons/grok-logo-icon.svg", "/icons/perplexity-ai-icon.svg"]
+    const params = useParams()
+    const patient_id = params.patient_id as string
+    const [loading, setLoading] = useState<boolean>(false);
+    const [data, setData] = useState<iFileOfPatientData[]>([]);
+
+    const fetchData = useCallback(async () => {
+        try {
+            setLoading(true);
+
+            const filesData = await getFilePatientData(patient_id);
+
+            console.log('filesData----------- ', filesData)
+
+            setData(filesData)
+        } catch (err) {
+            console.error('Lỗi khi tải dữ liệu:', err)
+        }
+        finally {
+            setLoading(false);
+        }
+    }, [getFilePatientData])
+
+    useEffect(() => {
+        fetchData();
+    }, [fetchData])
 
     return <div className="w-full h-full p-4">
         <div className="w-full h-full bg-white rounded-2xl flex flex-col">
@@ -17,23 +47,24 @@ export default function Content() {
                 <Label className="text-2xl">Files</Label>
             </header>
 
-            <main className="gap-2 overflow-auto p-4">
-                <Accordion type="single" collapsible>
-                    <AccordionItem value="item-1">
-                        <AccordionTrigger>Ngày 06-06-2025</AccordionTrigger>
-                        <AccordionContent>
-                            <ImageGallery images={images} />
-                        </AccordionContent>
-                    </AccordionItem>
-
-                    <AccordionItem value="item-2">
-                        <AccordionTrigger>Ngày 06-06-2025</AccordionTrigger>
-                        <AccordionContent>
-                            <ImageGallery images={images} />
-                        </AccordionContent>
-                    </AccordionItem>
-                </Accordion>
-
+            <main className="gap-2 overflow-auto p-4 h-full">
+                {!loading && <Accordion type="multiple" defaultValue={data.map((_, i) => `item-${i}`)}>
+                    {
+                        data.map((d, i) => {
+                            return <AccordionItem value={`item-${i}`} key={`AccordionItem-${i}`}>
+                                <AccordionTrigger>Ngày {d.dateFolder}</AccordionTrigger>
+                                <AccordionContent>
+                                    <ImageGallery files={d.files} />
+                                </AccordionContent>
+                            </AccordionItem>
+                        })
+                    }
+                </Accordion>}
+                {
+                    loading && <div className="w-full h-full flex justify-center items-center gap-2">
+                        <Spinner /> <Label>Loading...</Label>
+                    </div>
+                }
             </main>
         </div>
     </div>;

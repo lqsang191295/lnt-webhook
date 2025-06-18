@@ -1,29 +1,24 @@
 'use client';
 
 import FileItem from '@/app/partient/_components/file-item';
+import { iFilePatient } from '@/types/patient';
 import React, { useState } from 'react';
 import Lightbox from 'react-image-lightbox';
-import 'react-image-lightbox/style.css'; // Import CSS
-
-// const images = [
-//     '/images/img1.jpg',
-//     '/images/img2.jpg',
-//     '/images/img3.jpg',
-// ];
+import 'react-image-lightbox/style.css'; 
 
 type ImageGalleryProps = {
-    images: string[]
+    files: iFilePatient[]
 }
 
-export default function ImageGallery({ images }: ImageGalleryProps) {
+export default function ImageGallery({ files }: ImageGalleryProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [photoIndex, setPhotoIndex] = useState(0);
 
     return (
-        <div className="grid grid-cols-5 gap-2 mt-4">
-            {images.map((img, index) => (
+        <div className="grid grid-cols-7 gap-2 mt-4">
+            {files.map((f, index) => (
                 <FileItem
-                    image={img}
+                    image={f.url}
                     key={index}
                     onClick={() => {
                         setPhotoIndex(index);
@@ -35,15 +30,15 @@ export default function ImageGallery({ images }: ImageGalleryProps) {
 
             {isOpen && (
                 <Lightbox
-                    mainSrc={images[photoIndex]}
-                    nextSrc={images[(photoIndex + 1) % images.length]}
-                    prevSrc={images[(photoIndex + images.length - 1) % images.length]}
+                    mainSrc={files[photoIndex].url}
+                    nextSrc={files[(photoIndex + 1) % files.length].url}
+                    prevSrc={files[(photoIndex + files.length - 1) % files.length].url}
                     onCloseRequest={() => setIsOpen(false)}
                     onMovePrevRequest={() =>
-                        setPhotoIndex((photoIndex + images.length - 1) % images.length)
+                        setPhotoIndex((photoIndex + files.length - 1) % files.length)
                     }
                     onMoveNextRequest={() =>
-                        setPhotoIndex((photoIndex + 1) % images.length)
+                        setPhotoIndex((photoIndex + 1) % files.length)
                     }
                 />
             )}
