@@ -1,28 +1,28 @@
 import { Button } from "@/components/ui/button";
 import {
-    Users,
-    Calendar,
-    UserCheck,
-    Building2,
-    Package,
-    DollarSign,
-    Settings,
-    HelpCircle,
+    // Users,
+    // Calendar,
+    // UserCheck,
+    // Building2,
+    // Package,
+    // DollarSign,
+    // Settings,
+    // HelpCircle,
     Home,
 } from "lucide-react"
 import Image from "next/image";
 
 const sidebarItems = [
-    { icon: Home, label: "Overview", active: false },
-    { icon: Users, label: "Patients", active: false },
-    { icon: Calendar, label: "Appointments", active: true },
-    { icon: UserCheck, label: "Doctors", active: false },
-    { icon: Building2, label: "Departments", active: false },
-    { icon: Users, label: "Employees", active: false },
-    { icon: Package, label: "Products & stock", active: false },
-    { icon: DollarSign, label: "Earnings", active: false },
-    { icon: Settings, label: "Settings", active: false },
-    { icon: HelpCircle, label: "Help & support", active: false },
+    { icon: Home, label: "Overview", active: true },
+    // { icon: Users, label: "Patients", active: false },
+    // { icon: Calendar, label: "Appointments", active: true },
+    // { icon: UserCheck, label: "Doctors", active: false },
+    // { icon: Building2, label: "Departments", active: false },
+    // { icon: Users, label: "Employees", active: false },
+    // { icon: Package, label: "Products & stock", active: false },
+    // { icon: DollarSign, label: "Earnings", active: false },
+    // { icon: Settings, label: "Settings", active: false },
+    // { icon: HelpCircle, label: "Help & support", active: false },
 ]
 
 export default function Navbar() {
