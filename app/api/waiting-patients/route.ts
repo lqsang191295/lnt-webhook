@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { Patient, rooms, setRooms, GetRoomByCode, formatToFourDigits } from '@/types/patient';
 import { get } from "@/api/client";
-const API_BASE_URL = process.env.NEXT_PUBLIC_API || "";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API || "http://172.16.0.10:9001";
 export async function GET() {
   try {
     // lấy danh sách phòng khám
