@@ -15,6 +15,10 @@ import { iClsData, iClsGroupData } from "@/types/cls"
 import { useParams } from "next/navigation"
 import { ListRooms } from "@/constant/cls"
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API || "";
+
+console.log('API_BASE_URL ===  111', API_BASE_URL, process.env)
+
 function PageContent() {
   const params = useParams()
   const id = params.id as string
@@ -113,7 +117,8 @@ function PageContent() {
     })
 
     if (!filter || filter.length === 0) {
-      return dataGroup[0];
+      // return dataGroup[0];
+      return;
     };
 
     return filter[0]

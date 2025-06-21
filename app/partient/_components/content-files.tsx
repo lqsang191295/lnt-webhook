@@ -14,7 +14,7 @@ import { getFilePatientData } from "../_actions";
 import { useParams } from "next/navigation";
 import Spinner from "@/components/spinner";
 
-export default function Content() {
+export default function ContentFiles() {
     const params = useParams()
     const patient_id = params.patient_id as string
     const [loading, setLoading] = useState<boolean>(false);
