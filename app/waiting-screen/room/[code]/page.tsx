@@ -106,7 +106,7 @@ function RoomDetailContent() {
     <div className="lg:col-span-6 flex flex-col justify-center lg:border-l border-green-600 py-2 sm:py-3 lg:py-4 font-extrabold text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl uppercase leading-tight text-center px-2">
       {activePatient ? (
         <>
-          <span className="text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl">MỜI BỆNH NHÂN:</span>
+          <span className="text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl">BỆNH NHÂN ĐANG KHÁM:</span>
           <span className="mt-1 truncate text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl">
             {activePatient?.STT}. {activePatient?.Hoten} - {activePatient?.Namsinh}
           </span>

@@ -1,10 +1,7 @@
 'use client';
 
 import { Label } from "@/components/ui/label";
-import { FC, useCallback, useEffect, useState } from "react";
-import { iFileOfPatientData } from "@/types/patient";
-import { getFilePatientData } from "../_actions";
-import { useParams } from "next/navigation";
+import { FC } from "react";
 
 const InfoRow: FC<{ label: string; value: string }> = ({ label, value }) => (
     <div className="flex flex-col">

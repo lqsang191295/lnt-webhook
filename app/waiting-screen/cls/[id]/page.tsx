@@ -117,7 +117,8 @@ function PageContent() {
     })
 
     if (!filter || filter.length === 0) {
-      return dataGroup[0];
+      // return dataGroup[0];
+      return;
     };
 
     return filter[0]

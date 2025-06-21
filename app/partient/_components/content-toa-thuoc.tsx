@@ -1,45 +1,33 @@
 'use client';
 
 import { Label } from "@/components/ui/label";
-import {
-    Accordion,
-    AccordionContent,
-    AccordionItem,
-    AccordionTrigger,
-} from "@/components/ui/accordion"
-import ImageGallery from "@/components/image-gallery";
-import { useCallback, useEffect, useState } from "react";
-import { iFileOfPatientData } from "@/types/patient";
-import { getFilePatientData } from "../_actions";
-import { useParams } from "next/navigation";
-import Spinner from "@/components/spinner";
 
 export default function ContentToaThuoc() {
-    const params = useParams()
-    const patient_id = params.patient_id as string
-    const [loading, setLoading] = useState<boolean>(false);
-    const [data, setData] = useState<iFileOfPatientData[]>([]);
+    // const params = useParams()
+    // const patient_id = params.patient_id as string
+    // const [loading, setLoading] = useState<boolean>(false);
+    // const [data, setData] = useState<iFileOfPatientData[]>([]);
 
-    const fetchData = useCallback(async () => {
-        try {
-            setLoading(true);
+    // const fetchData = useCallback(async () => {
+    //     try {
+    //         setLoading(true);
 
-            const filesData = await getFilePatientData(patient_id);
+    //         const filesData = await getFilePatientData(patient_id);
 
-            console.log('filesData----------- ', filesData)
+    //         console.log('filesData----------- ', filesData)
 
-            setData(filesData)
-        } catch (err) {
-            console.error('Lỗi khi tải dữ liệu:', err)
-        }
-        finally {
-            setLoading(false);
-        }
-    }, [patient_id])
+    //         setData(filesData)
+    //     } catch (err) {
+    //         console.error('Lỗi khi tải dữ liệu:', err)
+    //     }
+    //     finally {
+    //         setLoading(false);
+    //     }
+    // }, [patient_id])
 
-    useEffect(() => {
-        fetchData();
-    }, [fetchData])
+    // useEffect(() => {
+    //     fetchData();
+    // }, [fetchData])
 
     return <div className="w-full h-full p-4">
         <div className="w-full h-full bg-white rounded-2xl flex flex-col">

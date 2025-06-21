@@ -1,18 +1,7 @@
 'use client';
 
 import { Label } from "@/components/ui/label";
-import { FC, useCallback, useEffect, useState } from "react";
-import { iFileOfPatientData } from "@/types/patient";
-import { getFilePatientData } from "../_actions";
-import { useParams } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-
-const InfoRow: FC<{ label: string; value: string }> = ({ label, value }) => (
-    <div className="flex flex-col">
-        <Label className="text-sm text-muted-foreground">{label}</Label>
-        <p className="font-medium">{value || '—'}</p>
-    </div>
-)
 
 export default function ContentThongTinTiepNhan() {
     // const params = useParams()
