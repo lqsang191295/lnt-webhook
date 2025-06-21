@@ -2,9 +2,10 @@
 
 import type React from "react"
 import { useState, useEffect, useCallback } from "react"
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
 import { Clock } from "lucide-react"
+import Image from 'next/image';
 import ClientOnly from "@/components/ClientOnly"
 import LoadingFallback from "@/components/LoadingFallback"
 import { useParams } from "next/navigation"
@@ -60,7 +61,7 @@ function RoomDetailContent() {
     return () => {
       websocketInstance.close();
     };
-  }, [fetchData]);
+  }, [fetchData, roomCode]);
 
   if (loading) {
     return (
@@ -127,9 +128,11 @@ function RoomDetailContent() {
         <CardTitle className="text-center font-black">
           <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3 lg:gap-4 mb-2">
             <div className="relative">
-              <img
+              <Image
                 src={logoImage || "/placeholder.svg"}
                 alt="Hospital logo"
+                width={500}
+                height={500}
                 className="w-10 h-10 sm:w-14 sm:h-14 md:w-18 md:h-18 lg:w-22 lg:h-22 xl:w-26 xl:h-26 2xl:w-[110px] 2xl:h-[110px] flex-shrink-0 rounded-lg"
               />
             </div>
@@ -158,9 +161,11 @@ function RoomDetailContent() {
             </div>
             <div className="flex items-center justify-center flex-grow">
               <div className="relative">
-                <img
+                <Image
                   src={qrCodeImage || "/placeholder.svg"}
                   alt="Hospital QRCODE"
+                  width={500}
+                  height={500}
                   className="w-24 h-24 sm:w-24 sm:h-24 md:w-28 md:h-28 lg:w-36 lg:h-36 xl:w-50 xl:h-50 2xl:w-70 2xl:h-70 border-3 border-gray-400 object-contain max-w-full max-h-full rounded-lg shadow-lg bg-white p-2"
                 />
                 <div className="absolute inset-0 border-2 border-green-500 rounded-lg animate-pulse opacity-30"></div>
