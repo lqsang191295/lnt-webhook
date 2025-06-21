@@ -14,6 +14,8 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API || "";
  * Hàm GET request
  */
 export async function get(endpoint: string, options: RequestOptions = {}) {
+  console.log('API_BASE_URL ==============', API_BASE_URL)
+
   const cookieStore = await cookies();
   const token = cookieStore.get("authToken")?.value;
   const { headers, params, credentials = true } = options;

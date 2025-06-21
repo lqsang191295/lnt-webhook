@@ -14,7 +14,7 @@ import { getFilePatientData } from "../_actions";
 import { useParams } from "next/navigation";
 import Spinner from "@/components/spinner";
 
-export default function Content() {
+export default function ContentPhieuCD() {
     const params = useParams()
     const patient_id = params.patient_id as string
     const [loading, setLoading] = useState<boolean>(false);
@@ -48,7 +48,8 @@ export default function Content() {
             </header>
 
             <main className="gap-2 overflow-auto p-4 h-full">
-                {!loading && <Accordion type="multiple" defaultValue={data.map((_, i) => `item-${i}`)}>
+                Phieu cd
+                {/* {!loading && <Accordion type="multiple" defaultValue={data.map((_, i) => `item-${i}`)}>
                     {
                         data.map((d, i) => {
                             return <AccordionItem value={`item-${i}`} key={`AccordionItem-${i}`}>
@@ -64,7 +65,7 @@ export default function Content() {
                     loading && <div className="w-full h-full flex justify-center items-center gap-2">
                         <Spinner /> <Label>Loading...</Label>
                     </div>
-                }
+                } */}
             </main>
         </div>
     </div>;
