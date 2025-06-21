@@ -1,52 +1,90 @@
-'use client';
+'use client'
 
-import FileItem from '@/app/partient/_components/file-item';
-import React, { useState } from 'react';
-import Lightbox from 'react-image-lightbox';
-import 'react-image-lightbox/style.css'; // Import CSS
+import { iFilePatient } from '@/types/patient'
+import { useState } from 'react'
+import {
+    Dialog,
+    DialogContent,
+} from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
+import { X, ChevronLeft, ChevronRight, Download } from 'lucide-react'
+import FileItem from '@/app/partient/_components/file-item'
+import Image from 'next/image'
 
-// const images = [
-//     '/images/img1.jpg',
-//     '/images/img2.jpg',
-//     '/images/img3.jpg',
-// ];
-
-type ImageGalleryProps = {
-    images: string[]
+type Props = {
+    files: iFilePatient[]
 }
 
-export default function ImageGallery({ images }: ImageGalleryProps) {
-    const [isOpen, setIsOpen] = useState(false);
-    const [photoIndex, setPhotoIndex] = useState(0);
+export default function ImageGallery({ files }: Props) {
+    const [index, setIndex] = useState<number | null>(null)
+
+    const currentFile = index !== null ? files[index] : null
+    const isPdf = currentFile ? /\.pdf$/i.test(currentFile.url) : false
+
+    const close = () => setIndex(null)
+    const prev = () => setIndex((prev) => (prev! - 1 + files.length) % files.length)
+    const next = () => setIndex((prev) => (prev! + 1) % files.length)
+    const download = () => {
+        if (!currentFile) return
+        const link = document.createElement('a')
+        link.href = currentFile.url
+        link.download = currentFile.filename
+        link.click()
+    }
 
     return (
-        <div className="grid grid-cols-5 gap-2 mt-4">
-            {images.map((img, index) => (
-                <FileItem
-                    image={img}
-                    key={index}
-                    onClick={() => {
-                        setPhotoIndex(index);
-                        setIsOpen(true);
-                    }}
-                />
-            ))}
+        <>
+            <div className="grid grid-cols-6 gap-3 mt-4">
+                {files.map((f, i) => (
+                    <FileItem
+                        file={f}
+                        key={i}
+                        onClick={() => { setIndex(i) }}
+                    />
+                ))}
+            </div>
 
+            <Dialog open={index !== null} onOpenChange={(v) => !v && close()}>
+                <DialogContent className="w-full h-full p-4 grid-rows-[auto_1fr] [&>button.absolute.top-4.right-4]:hidden" style={{ maxWidth: 'unset', background: '#00000050' }} >
+                    <div className="flex flex-row justify-center">
+                        <div className="font-medium truncate text-white text-xl">{currentFile?.filename}</div>
+                        <div className="flex gap-2 absolute right-4">
+                            <Button className='bg-gray-400 cursor-pointer' size="icon" variant="ghost" onClick={download}>
+                                <Download size={18} />
+                            </Button>
 
-            {isOpen && (
-                <Lightbox
-                    mainSrc={images[photoIndex]}
-                    nextSrc={images[(photoIndex + 1) % images.length]}
-                    prevSrc={images[(photoIndex + images.length - 1) % images.length]}
-                    onCloseRequest={() => setIsOpen(false)}
-                    onMovePrevRequest={() =>
-                        setPhotoIndex((photoIndex + images.length - 1) % images.length)
-                    }
-                    onMoveNextRequest={() =>
-                        setPhotoIndex((photoIndex + 1) % images.length)
-                    }
-                />
-            )}
-        </div>
-    );
+                            <Button className='bg-gray-400 cursor-pointer' size="icon" variant="ghost" onClick={close}>
+                                <X size={18} />
+                            </Button>
+                        </div>
+                    </div>
+
+                    <div className="flex items-center justify-center w-full h-full">
+                        <Button className='bg-gray-400 cursor-pointer' size="icon" variant="ghost" onClick={prev}>
+                            <ChevronLeft size={28} />
+                        </Button>
+
+                        <div className="w-full h-full flex justify-center items-center overflow-hidden">
+                            {isPdf ? (
+                                <iframe src={currentFile?.url} className="w-full h-full" />
+                            ) : (
+                                <Image
+                                    src={currentFile?.url ?? ''}
+                                    alt={currentFile?.filename ?? ''}
+                                    className="max-h-full max-w-full object-contain"
+                                    width={800} // hoặc bất kỳ giá trị bạn muốn
+                                    height={600}
+                                    unoptimized // dùng khi ảnh không phải từ domain Next config
+                                />
+                            )}
+                        </div>
+
+                        <Button className='bg-gray-400 cursor-pointer' size="icon" variant="ghost" onClick={next}>
+                            <ChevronRight size={28} />
+                        </Button>
+                    </div>
+                </DialogContent>
+            </Dialog>
+        </>
+    )
 }
