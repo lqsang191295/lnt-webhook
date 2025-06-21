@@ -142,11 +142,11 @@ function XQuangContent() {
   console.log('waitingList === ', waitingList)
 
   return (
-    <div className="w-screen h-screen bg-[#e6f3f1] border border-green-600 rounded-md flex flex-col select-none">
+    <div className="w-screen h-screen bg-[#e6f3f1] border border-green-600 rounded-md flex flex-col select-none overflow-hidden">
       {/* Header */}
       <Header room={getRoom()} activePatient={curPhieu} />
 
-      <div className="flex flex-grow overflow-hidden">
+      <div className="flex flex-col lg:flex-row flex-grow overflow-hidden min-h-0">
         {/* Left Column - Banner */}
         <Banner />
         {/* Right Column - Patient Info */}
