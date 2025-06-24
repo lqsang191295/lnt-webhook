@@ -5,6 +5,7 @@ import ContentPhieuCD from "./content-phieu-cd";
 import ContentToaThuoc from "./content-toa-thuoc";
 import ContentThongTin from "./content-thong-tin";
 import ContentThongTinTiepNhan from "./content-thong-tin-tiep-nhan";
+import ContentQuetQR from "./doctors/content-quet-qr";
 
 interface iMainContentProps {
   navbarItem: iNavbarItemType
@@ -19,6 +20,9 @@ export default function MainContent({ navbarItem }: iMainContentProps) {
       {navbarItem.label === "Phiếu chỉ định" && <ContentPhieuCD />}
       {navbarItem.label === "Toa thuốc" && <ContentToaThuoc />}
       {navbarItem.label === "Files" && <ContentFiles />}
+
+      {/* Doctor */}
+      {navbarItem.label === "Quét QR" && <ContentQuetQR />}
     </main>
   </div>;
 }

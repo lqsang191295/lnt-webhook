@@ -1,15 +1,15 @@
 import { Button } from "@/components/ui/button";
-import { sidebarItems } from "@/constant/nav-bar";
 import { iNavbarItemType } from "@/types/nav-bar";
 import Image from "next/image";
 
 interface iNavarProps {
+    navbarData: iNavbarItemType[]
     navbarItem: iNavbarItemType
     onClick: (item: iNavbarItemType) => void;
 }
 
-export default function Navbar({ navbarItem, onClick }: iNavarProps) {
-    return <div className="w-64 bg-white shadow-sm flex flex-col">
+export default function Navbar({ navbarData, navbarItem, onClick }: iNavarProps) {
+    return <div className="w-64 bg-white shadow-sm md:flex flex-col hidden">
         {/* Logo */}
         <div className="p-4 h-16">
             <div className="flex gap-x-2">
@@ -28,7 +28,7 @@ export default function Navbar({ navbarItem, onClick }: iNavarProps) {
         {/* Navigation */}
         <nav className="flex-1 p-4">
             <ul className="space-y-2">
-                {sidebarItems.map((item, index) => (
+                {navbarData.map((item, index) => (
                     <li key={index}>
                         <Button
                             variant={item.label === navbarItem.label ? "default" : "ghost"}

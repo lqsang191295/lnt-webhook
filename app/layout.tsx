@@ -39,6 +39,7 @@ const RootLayout = ({
   const pathnameNotUseLayout = [
     "/login",
     "/partient",
+    "/doctor",
     "/waiting-screen",
     "/waiting-screen/room",
     "/access-device",

@@ -12,3 +12,8 @@ export const sidebarItems = [
     { icon: Package, label: "Toa thuốc" },
     { icon: Home, label: "Files" },
 ]
+
+export const sidebarDoctorItems = [
+    { icon: Info, label: "Quét QR" },
+]
+
