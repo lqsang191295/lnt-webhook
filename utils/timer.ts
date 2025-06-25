@@ -26,3 +26,11 @@ export function formatDate(date: Date): string {
 export function formatDateTime(date: Date): string {
   return `${formatDate(date)} ${formatTime(date)}`;
 } 
+
+export function formatDateToDDMMYYYY(dateStr: string): string {
+  const date = new Date(dateStr);
+  const dd = String(date.getDate()).padStart(2, '0');
+  const mm = String(date.getMonth() + 1).padStart(2, '0'); // Tháng bắt đầu từ 0
+  const yyyy = date.getFullYear();
+  return `${dd}-${mm}-${yyyy}`;
+}
