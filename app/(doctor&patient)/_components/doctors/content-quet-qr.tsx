@@ -38,10 +38,10 @@ export default function QRZaloStyle() {
                         qrbox: { width: 250, height: 250 },
                     },
                     (decodedText) => {
-                        console.log('Decoded:', decodedText);
+                        alert(decodedText);
                     },
                     (errorMessage) => {
-                        // console.warn(errorMessage);
+                        alert(errorMessage);
                     }
                 );
             });
