@@ -1,78 +1,86 @@
 'use client';
 
-import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+    Accordion,
+    AccordionContent,
+    AccordionItem,
+    AccordionTrigger,
+} from '@/components/ui/accordion';
+import { Label } from '@/components/ui/label';
+import { Card, CardContent } from '@/components/ui/card';
+import { ClipboardList } from 'lucide-react';
+import useSWR from 'swr';
+import { useParams } from 'next/navigation';
+import Spinner from '@/components/spinner';
+import { get, RequestOptions } from '@/api/client';
+import { iThongTinTiepNhan } from '@/types/his-data';
+import { formatDateTimeCT } from '@/utils/timer';
+import { formatVND } from '@/utils/number';
+
+const fetcher = ([url, options]: [string, RequestOptions]) => get(url, options);
 
 export default function ContentThongTinTiepNhan() {
-    // const params = useParams()
-    // const patient_id = params.patient_id as string
-    // const [loading, setLoading] = useState<boolean>(false);
-    // const [data, setData] = useState<iFileOfPatientData[]>([]);
+    const params = useParams()
+    const id = params.patient_id as string
+    const url = `/patient/get-tiep-nhan/${id}`;
+    const { data, error, isLoading } = useSWR([url, {}], fetcher);
 
-    // const fetchData = useCallback(async () => {
-    //     try {
-    //         setLoading(true);
-
-    //         const filesData = await getFilePatientData(patient_id);
-
-    //         console.log('filesData----------- ', filesData)
-
-    //         setData(filesData)
-    //     } catch (err) {
-    //         console.error('Lỗi khi tải dữ liệu:', err)
-    //     }
-    //     finally {
-    //         setLoading(false);
-    //     }
-    // }, [patient_id])
-
-    // useEffect(() => {
-    //     fetchData();
-    // }, [fetchData])
-
-    const data = {
-        ngayGioKham: '21/06/2025 09:00',
-        loaiKham: 'Khám thường',
-        khoaPhong: 'Khoa Nội Tổng quát',
-        bacSi: 'BS. Nguyễn Văn A',
+    if (!data || isLoading) {
+        return <div className="w-full h-full flex justify-center items-center gap-1">
+            <Spinner /> Loading...
+        </div>;
     }
 
-    return <div className="w-full h-full p-4">
-        <div className="w-full h-full bg-white rounded-2xl flex flex-col">
-            <header className="p-4">
-                <Label className="text-2xl">🔍 Thông tin</Label>
-            </header>
+    if (error) {
+        return <div className="w-full h-full flex justify-center items-center gap-1">
+            Has error...
+        </div>;
+    }
 
-            <main className="gap-2 overflow-auto p-4 h-full">
-                <Card className="w-full">
-                    <CardHeader>
-                        <CardTitle className="text-lg">2. Thông tin hành chính - Tiếp nhận</CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <Label className="text-muted-foreground">Ngày giờ khám</Label>
-                                <div className="mt-1">{data.ngayGioKham}</div>
-                            </div>
+    const listTiepNhan = data.data?.length > 0 ? data.data as iThongTinTiepNhan[] : null;
 
-                            <div>
-                                <Label className="text-muted-foreground">Hình thức khám</Label>
-                                <div className="mt-1">{data.loaiKham}</div>
-                            </div>
+    if (!listTiepNhan || listTiepNhan.length === 0) {
+        return <div className="w-full h-full flex justify-center items-center gap-1">
+            No data!
+        </div>;
+    }
 
-                            <div>
-                                <Label className="text-muted-foreground">Khoa phòng tiếp nhận</Label>
-                                <div className="mt-1">{data.khoaPhong}</div>
-                            </div>
+    return (
+        <div className="w-full h-full p-4">
+            <div className="w-full h-full bg-white rounded-2xl flex flex-col">
+                <header className="p-4">
+                    <Label className="text-2xl"><ClipboardList /> Danh sách phiếu tiếp nhận bệnh</Label>
+                </header>
 
-                            <div>
-                                <Label className="text-muted-foreground">Bác sĩ tiếp nhận</Label>
-                                <div className="mt-1">{data.bacSi}</div>
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
-            </main>
-        </div >
-    </div >;
+                <main className="gap-2 overflow-auto p-4 h-full">
+                    <Accordion type="single" collapsible className="w-full space-y-2">
+                        {listTiepNhan.map((item) => (
+                            <AccordionItem key={item.Sovaovien} value={item.Sovaovien}>
+                                <AccordionTrigger className="text-left">
+                                    <div className="flex flex-col text-sm w-full">
+                                        <span className="font-semibold">🕓 {formatDateTimeCT(item.TGVao)}</span>
+                                        <span>🏥 Phòng khám: {item.TenKhoa}</span>
+                                    </div>
+                                </AccordionTrigger>
+                                <AccordionContent>
+                                    <Card className="w-full bg-muted/40 border-none shadow-none">
+                                        <CardContent className="p-4 grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                                            <div>
+                                                <Label className="text-muted-foreground">Bác sĩ điều trị</Label>
+                                                <div>{item.TenBsDieutri}</div>
+                                            </div>
+                                            <div>
+                                                <Label className="text-muted-foreground">Tổng chi phí</Label>
+                                                <div>{formatVND(item.Tongchiphi)}</div>
+                                            </div>
+                                        </CardContent>
+                                    </Card>
+                                </AccordionContent>
+                            </AccordionItem>
+                        ))}
+                    </Accordion>
+                </main>
+            </div>
+        </div>
+    );
 }

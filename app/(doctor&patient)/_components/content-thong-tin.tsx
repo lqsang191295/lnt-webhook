@@ -1,7 +1,14 @@
 'use client';
 
+import { get, RequestOptions } from "@/api/client";
+import Spinner from "@/components/spinner";
 import { Label } from "@/components/ui/label";
+import { iPatientInfo } from "@/types/patient";
+import { Info } from "lucide-react";
+import { useParams } from "next/navigation";
 import { FC } from "react";
+import useSWR from 'swr';
+
 
 const InfoRow: FC<{ label: string; value: string }> = ({ label, value }) => (
     <div className="flex flex-col">
@@ -10,68 +17,54 @@ const InfoRow: FC<{ label: string; value: string }> = ({ label, value }) => (
     </div>
 )
 
+const fetcher = ([url, options]: [string, RequestOptions]) => get(url, options);
+
 export default function ContentThongTin() {
-    // const params = useParams()
-    // const patient_id = params.patient_id as string
-    // const [loading, setLoading] = useState<boolean>(false);
-    // const [data, setData] = useState<iFileOfPatientData[]>([]);
+    const params = useParams()
+    const id = params.patient_id as string
+    const encodedWhere = encodeURIComponent(JSON.stringify({ Ma: id }));
+    const url = `/his/get-BV_QLyCapThe?where=${encodedWhere}`;
+    const { data, error, isLoading } = useSWR([url, {}], fetcher);
 
-    // const fetchData = useCallback(async () => {
-    //     try {
-    //         setLoading(true);
+    if (!data || isLoading) {
+        return <div className="w-full h-full flex justify-center items-center gap-1">
+            <Spinner /> Loading...
+        </div>;
+    }
 
-    //         const filesData = await getFilePatientData(patient_id);
+    if (error) {
+        return <div className="w-full h-full flex justify-center items-center gap-1">
+            Has error...
+        </div>;
+    }
 
-    //         console.log('filesData----------- ', filesData)
+    const info = data.data?.length > 0 ? data.data[0] as iPatientInfo : null;
 
-    //         setData(filesData)
-    //     } catch (err) {
-    //         console.error('Lỗi khi tải dữ liệu:', err)
-    //     }
-    //     finally {
-    //         setLoading(false);
-    //     }
-    // }, [patient_id])
-
-    // useEffect(() => {
-    //     fetchData();
-    // }, [fetchData])
-
-    const data = {
-        hoTen: 'Nguyễn Văn A',
-        gioiTinh: 'Nam',
-        ngaySinh: '1980-05-12',
-        maBenhNhan: 'BN123456',
-        maVaoVien: 'VV20240621',
-        diaChi: '123 Đường ABC, Quận 1',
-        soDienThoai: '0901234567',
-        doiTuong: 'BHYT',
-        ngayGioTiepNhan: '2025-06-21T08:30',
-        noiGioiThieu: 'Phòng khám Đa Khoa ABC',
-        soVaoVien: 'SVV456789',
-        soHoSo: 'HS20240621'
+    if (!info) {
+        return <div className="w-full h-full flex justify-center items-center gap-1">
+            No data!
+        </div>;
     }
 
     return <div className="w-full h-full p-4">
         <div className="w-full h-full bg-white rounded-2xl flex flex-col">
             <header className="p-4">
-                <Label className="text-2xl">🔍 Thông tin</Label>
+                <Label className="text-2xl"><Info /> Thông tin</Label>
             </header>
 
             <main className="gap-2 overflow-auto p-4 h-full">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <InfoRow label="Họ tên" value={data.hoTen} />
-                    <InfoRow label="Giới tính" value={data.gioiTinh} />
-                    <InfoRow label="Ngày sinh" value={data.ngaySinh} />
-                    <InfoRow label="Mã bệnh nhân" value={data.maBenhNhan} />
-                    <InfoRow label="Mã vào viện" value={data.maVaoVien} />
-                    <InfoRow label="Địa chỉ" value={data.diaChi} />
-                    <InfoRow label="Số điện thoại" value={data.soDienThoai} />
-                    <InfoRow label="Đối tượng" value={data.doiTuong} />
-                    <InfoRow label="Ngày giờ tiếp nhận" value={data.ngayGioTiepNhan} />
-                    <InfoRow label="Nơi giới thiệu" value={data.noiGioiThieu} />
-                    <InfoRow label="Số vào viện" value={data.soVaoVien} />
-                    <InfoRow label="Số hồ sơ" value={data.soHoSo} />
+                    <InfoRow label="Họ tên" value={info.Hoten} />
+                    <InfoRow label="Giới tính" value={info.Gioitinh} />
+                    <InfoRow label="Ngày sinh" value={`${info.Ngaysinh}/${info.Thangsinh}/${info.Namsinh}`} />
+                    <InfoRow label="Mã bệnh nhân" value={info.Ma} />
+                    <InfoRow label="Địa chỉ" value={info.Diachi} />
+                    <InfoRow label="Số điện thoại" value={info.Dienthoai} />
+                    <InfoRow label="Đối tượng" value={info.Doituong} />
+                    <InfoRow label="Ngày giờ tiếp nhận" value={info.Ngay} />
+                    <InfoRow label="Nơi giới thiệu" value={info.NguonGioithieu} />
+                    <InfoRow label="Tiền sử bệnh bản thân" value={info.TTChung && JSON.parse(info.TTChung)["TienSuBenhBanThan"]} />
+                    <InfoRow label="Tiền sử bệnh gia đình" value={info.TTChung && JSON.parse(info.TTChung)["TienSuBenhGiaDinh"]} />
                 </div>
             </main>
         </div >
