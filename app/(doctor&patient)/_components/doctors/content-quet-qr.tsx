@@ -27,21 +27,23 @@ export default function QRZaloStyle() {
         if (hasPermission) {
             scannerRef.current = new Html5Qrcode(qrRegionId);
             Html5Qrcode.getCameras().then((devices) => {
-                if (devices && devices.length) {
-                    scannerRef.current?.start(
-                        devices[0].id,
-                        {
-                            fps: 10,
-                            qrbox: { width: 250, height: 250 },
-                        },
-                        (decodedText) => {
-                            console.log('Decoded:', decodedText);
-                        },
-                        (errorMessage) => {
-                            console.warn(errorMessage);
-                        }
-                    );
-                }
+                const backCamera = devices.find(device =>
+                    device.label.toLowerCase().includes('back')
+                ) || devices[0];
+
+                scannerRef.current?.start(
+                    backCamera.id,
+                    {
+                        fps: 10,
+                        qrbox: { width: 250, height: 250 },
+                    },
+                    (decodedText) => {
+                        console.log('Decoded:', decodedText);
+                    },
+                    (errorMessage) => {
+                        // console.warn(errorMessage);
+                    }
+                );
             });
         }
         return () => {
@@ -49,7 +51,7 @@ export default function QRZaloStyle() {
         };
     }, [hasPermission]);
 
-    if (hasPermission === false) {
+    if (!hasPermission) {
         return (
             <div className="flex flex-col items-center justify-center h-full px-4 text-center">
                 <Label className="mb-4">Bạn chưa cấp quyền truy cập camera để quét mã QR.</Label>
