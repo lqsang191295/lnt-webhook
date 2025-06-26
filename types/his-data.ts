@@ -52,3 +52,16 @@ export interface iToaThuoc {
   TenBsKeToa: string;
   TenKhoa: string;
 }
+
+export interface iThongTinTiepNhan {
+  MaBN: string;
+  Sovaovien: string;
+  Ngay: string;         
+  Doituong: string;
+  LydoVV: string;
+  TGVao: string;        
+  Tongchiphi: number;
+  Ghichu: string;
+  TenKhoa: string;
+  TenBsDieutri: string;
+}

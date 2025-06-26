@@ -14,7 +14,6 @@ import { formatDateToDDMMYYYY } from "@/utils/timer";
 const fetcher = ([url, options]: [string, RequestOptions]) => get(url, options);
 
 export default function ContentToaThuoc() {
-
   const params = useParams()
   const id = params.patient_id as string
   const url = `/patient/get-toa-thuoc/${id}`;
