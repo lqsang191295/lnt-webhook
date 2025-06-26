@@ -40,9 +40,9 @@ export default function QRZaloStyle() {
                     (decodedText) => {
                         alert(decodedText);
                     },
-                    // (errorMessage) => {
-                    //     alert(errorMessage);
-                    // }
+                    () => {
+                        //
+                    }
                 );
             });
         }
