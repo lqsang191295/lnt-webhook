@@ -3,6 +3,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { Html5Qrcode } from 'html5-qrcode';
 import { Camera, User, MoreHorizontal, Image as ImageIcon, Clock } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
 
 export default function QRZaloStyle() {
     const qrRegionId = 'qr-scanner';
@@ -14,7 +16,7 @@ export default function QRZaloStyle() {
             try {
                 await navigator.mediaDevices.getUserMedia({ video: true });
                 setHasPermission(true);
-            } catch (err) {
+            } catch {
                 setHasPermission(false);
             }
         };
@@ -36,7 +38,7 @@ export default function QRZaloStyle() {
                             console.log('Decoded:', decodedText);
                         },
                         (errorMessage) => {
-                            // console.warn(errorMessage);
+                            console.warn(errorMessage);
                         }
                     );
                 }
@@ -47,17 +49,38 @@ export default function QRZaloStyle() {
         };
     }, [hasPermission]);
 
+    if (hasPermission === false) {
+        return (
+            <div className="flex flex-col items-center justify-center h-full px-4 text-center">
+                <Label className="mb-4">Bạn chưa cấp quyền truy cập camera để quét mã QR.</Label>
+                <Button
+                    onClick={async () => {
+                        try {
+                            await navigator.mediaDevices.getUserMedia({ video: true });
+                            setHasPermission(true);
+                        } catch {
+                            alert('Không thể truy cập camera. Hãy kiểm tra trình duyệt hoặc thiết bị.');
+                        }
+                    }}
+                    className="px-4 py-2 bg-green-500 hover:bg-green-600 rounded-lg text-white text-sm cursor-pointer"
+                >
+                    Yêu cầu quyền truy cập camera
+                </Button>
+            </div>
+        );
+    }
+
     return (
         <div className="relative w-full h-full overflow-hidden flex flex-col">
             <div id={qrRegionId} className="w-full h-full object-cover z-0 absolute" />
 
             {/* Top Buttons */}
             <div className="flex justify-between p-4 z-10 text-white">
-                <button className="bg-black/40 p-2 rounded-full"><Camera size={24} /></button>
-                <button className="bg-black/40 px-4 py-2 rounded-full text-sm flex items-center gap-2">
+                <Button className="bg-black/40 p-2 rounded-full"><Camera size={24} /></Button>
+                <Button className="bg-black/40 px-4 py-2 rounded-full text-sm flex items-center gap-2">
                     <User size={18} /> Mã QR của tôi
-                </button>
-                <button className="bg-black/40 p-2 rounded-full"><MoreHorizontal size={24} /></button>
+                </Button>
+                <Button className="bg-black/40 p-2 rounded-full"><MoreHorizontal size={24} /></Button>
             </div>
 
             {/* Center Options */}
@@ -75,22 +98,22 @@ export default function QRZaloStyle() {
 
             {/* Bottom Options */}
             <div className="p-4 text-sm text-center">
-                <p className="mb-2 text-xs opacity-80">Quét mọi mã QR</p>
+                <Label className="mb-2 text-xs opacity-80">Quét mọi mã QR</Label>
                 <div className="flex justify-center gap-4 text-xs opacity-90">
                     <span className="font-semibold">VietQR</span>
                     <span className="font-semibold">website</span>
                     <span className="font-semibold">Zalo</span>
                 </div>
                 <div className="flex justify-around">
-                    <button className="flex flex-col items-center">
+                    <Button className="flex flex-col items-center">
                         <ImageIcon size={28} />
                         <span className="mt-1 text-xs">Ảnh có sẵn</span>
-                    </button>
+                    </Button>
 
-                    <button className="flex flex-col items-center">
+                    <Button className="flex flex-col items-center">
                         <Clock size={28} />
                         <span className="mt-1 text-xs">Gần đây</span>
-                    </button>
+                    </Button>
                 </div>
             </div>
 
