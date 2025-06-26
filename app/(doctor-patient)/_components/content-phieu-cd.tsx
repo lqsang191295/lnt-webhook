@@ -40,8 +40,8 @@ export default function ContentPhieuCD() {
     }
 
     return (
-        <div className="w-full h-full p-4">
-            <div className="w-full h-full bg-white rounded-2xl flex flex-col">
+        <div className="w-full h-full">
+            <div className="w-full h-full bg-white flex flex-col">
                 <header className="p-4">
                     <Label className="text-2xl">Phiếu chỉ định</Label>
                 </header>

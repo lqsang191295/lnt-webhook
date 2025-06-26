@@ -58,7 +58,7 @@ export default function ContentChiDinh() {
   };
 
   return (
-    <div className="p-4 space-y-4">
+    <div className="space-y-4">
       {/* Header Buttons */}
       <div className="flex flex-wrap gap-2">
         <Button variant="outline"><SquarePen size={16} className="mr-1" /> Sửa</Button>

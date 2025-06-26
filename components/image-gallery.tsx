@@ -34,7 +34,7 @@ export default function ImageGallery({ files }: Props) {
 
     return (
         <>
-            <div className="grid grid-cols-6 gap-3 mt-4">
+            <div className="grid grid-cols-3 md:grid-cols-6 gap-3 mt-4">
                 {files.map((f, i) => (
                     <FileItem
                         file={f}

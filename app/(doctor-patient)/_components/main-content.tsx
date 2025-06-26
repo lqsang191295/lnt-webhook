@@ -13,9 +13,9 @@ interface iMainContentProps {
 }
 
 export default function MainContent({ navbarItem }: iMainContentProps) {
-  return <div className="flex-1 flex flex-col">
+  return <div className="flex-1 flex flex-col mt-16 md:mt-0">
     {/* <Header /> */}
-    <main className="bg-blue-100 flex-1 overflow-hidden">
+    <main className="bg-blue-100 flex-1 overflow-hidden md:p-4">
       {navbarItem.label === "Thông tin hành chính" && <ContentThongTin />}
       {navbarItem.label === "Thông tin tiếp nhận" && <ContentThongTinTiepNhan />}
       {navbarItem.label === "Phiếu chỉ định" && <ContentPhieuCD />}
