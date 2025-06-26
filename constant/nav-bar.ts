@@ -1,19 +1,23 @@
 import {
-    Users,
     Package,
-    Home,
     Info,
+    BriefcaseMedical,
+    ScanQrCode,
+    File,
+    Stethoscope,
+    PcCase,
 } from "lucide-react"
 
 export const sidebarItems = [
     { icon: Info, label: "Thông tin hành chính" },
-    { icon: Info, label: "Thông tin tiếp nhận" },
-    { icon: Users, label: "Phiếu chỉ định" },
+    { icon: Stethoscope, label: "Thông tin tiếp nhận" },
+    { icon: PcCase, label: "Phiếu chỉ định" },
     { icon: Package, label: "Toa thuốc" },
-    { icon: Home, label: "Files" },
+    { icon: File, label: "Files" },
 ]
 
 export const sidebarDoctorItems = [
-    { icon: Info, label: "Quét QR" },
+    { icon: ScanQrCode, label: "Quét QR" },
+    { icon: BriefcaseMedical, label: "Chỉ định trực tiếp" },
 ]
 

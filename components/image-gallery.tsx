@@ -8,7 +8,7 @@ import {
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { X, ChevronLeft, ChevronRight, Download } from 'lucide-react'
-import FileItem from '@/app/(doctor&patient)/_components/file-item'
+import FileItem from '@/app/(doctor-patient)/_components/file-item'
 import Image from 'next/image'
 
 type Props = {
