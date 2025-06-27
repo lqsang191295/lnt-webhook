@@ -136,6 +136,12 @@ function PageContent() {
     return;
   }
 
+  setTimeout(() => {
+    if (document.documentElement.requestFullscreen) {
+      document.documentElement.requestFullscreen();
+    }
+  }, 1000)
+
   const dataGroup = groupAndTransform(data);
   const curPhieu = getCurPhieu(dataGroup)
   const waitingList = getWaitingList(dataGroup, curPhieu)

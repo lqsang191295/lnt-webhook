@@ -128,6 +128,12 @@ function XQuangContent() {
     })
   }
 
+  setTimeout(() => {
+    if (document.documentElement.requestFullscreen) {
+      document.documentElement.requestFullscreen();
+    }
+  }, 1000)
+
   if (!data) {
     return;
   }
