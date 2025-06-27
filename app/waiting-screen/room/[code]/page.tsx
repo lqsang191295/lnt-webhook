@@ -11,6 +11,7 @@ import LoadingFallback from "@/components/LoadingFallback"
 import { useParams } from "next/navigation"
 import { Patient, Room } from '@/types/patient'
 import { websocketInstance } from '@/websocket'
+import FullscreenToggle from "@/components/full-screen-toggle";
 interface ApiResponse {
   room: Room
   activePatient: Patient | null
@@ -95,12 +96,6 @@ function RoomDetailContent() {
   }
 
   const { room, activePatient, patients, count } = data
-
-  setTimeout(() => {
-    if (document.documentElement.requestFullscreen) {
-      document.documentElement.requestFullscreen();
-    }
-  }, 1000)
 
   return (
     <div className="w-screen h-screen bg-[#e6f3f1] border border-green-600 rounded-md flex flex-col select-none overflow-hidden">
@@ -268,6 +263,8 @@ function RoomDetailContent() {
           <div className="px-1 sm:px-2">Cấp cứu: 0888 79 52 59</div>
         </div>
       </div>
+
+      <FullscreenToggle />
     </div>
 
   )

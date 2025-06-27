@@ -14,6 +14,7 @@ import { eTrangthai } from "@/enum/status"
 import { iClsData, iClsGroupData } from "@/types/cls"
 import { useParams } from "next/navigation"
 import { ListRooms } from "@/constant/cls"
+import FullscreenToggle from "@/components/full-screen-toggle"
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API || "";
 
@@ -136,12 +137,6 @@ function PageContent() {
     return;
   }
 
-  setTimeout(() => {
-    if (document.documentElement.requestFullscreen) {
-      document.documentElement.requestFullscreen();
-    }
-  }, 1000)
-
   const dataGroup = groupAndTransform(data);
   const curPhieu = getCurPhieu(dataGroup)
   const waitingList = getWaitingList(dataGroup, curPhieu)
@@ -163,6 +158,8 @@ function PageContent() {
       </div>
 
       <Footer />
+
+      <FullscreenToggle />
     </div>
   )
 }
