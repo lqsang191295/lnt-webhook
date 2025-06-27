@@ -42,6 +42,8 @@ export default function CustomDropdownTable({
 }: CustomDropdownTableProps) {
   const [open, setOpen] = useState(false);
 
+  if(!data) return;
+
   const label = getLabel
     ? getLabel(value)
     : data.find((d) => d[keyValue] === value)?.[headers[0].key] || placeholder;

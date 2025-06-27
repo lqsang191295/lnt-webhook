@@ -9,6 +9,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { SquarePen, Trash2, Save, ClipboardList, PlusCircle } from 'lucide-react';
 import { Label } from '@/components/ui/label';
 import CustomSelectGrid from '@/components/custom/custom-select-grid';
+import { trpc } from '@/trpc/client';
+import { HT_DMPhongBanHeaders } from '@/constant/headers';
 
 const headers = [
   { key: 'id', title: 'Mã' },
@@ -56,6 +58,10 @@ const ddList = ['Test thu ngân', 'Điều dưỡng A'];
 export default function ContentChiDinh() {
   const [data, setData] = useState(sampleData);
 
+  const { data: HT_DMPhongBanData, isLoading } = trpc.HT_DMPhongBan.getAll.useQuery()
+
+  console.log('HT_DMPhongBanData === ', HT_DMPhongBanData)
+
   const [form, setForm] = useState({
     phong: '101',
     bsKham: 'BS.TRẦN THƯỢNG HẢI',
@@ -85,21 +91,21 @@ export default function ContentChiDinh() {
         <Button variant="outline"><ClipboardList size={16} className="mr-1" /> In chỉ định</Button>
       </div>
 
-      <div className='flex-1 overflow-auto'>
+      <div className='w-full flex-1 overflow-auto'>
         {/* Card - Thông tin chuẩn đoán & kết quả */}
-        <div className='flex w-full bg-amber-50 p-0.5'>
-          <Card className="p-4 space-y-4 text-sm">
-            <div>
+        <div className='flex w-full bg-amber-50 '>
+          <div className="p-4 space-y-4 text-sm w-full border">
+            <div className='flex gap-2'>
               <Label>Chẩn đoán chính</Label>
               <Input value={form.chandoanChinh} onChange={(e) => handleChange('chandoanChinh', e.target.value)} />
             </div>
 
-            <div>
+            <div className='flex gap-2'>
               <Label>Chẩn đoán phụ</Label>
               <Input value={form.chandoanPhu} onChange={(e) => handleChange('chandoanPhu', e.target.value)} />
             </div>
 
-            <div>
+            <div className='flex gap-2'>
               <Label>Chẩn đoán bệnh</Label>
               <Input value={form.chandoanBenh} onChange={(e) => handleChange('chandoanBenh', e.target.value)} className="h-24" />
             </div>
@@ -152,23 +158,23 @@ export default function ContentChiDinh() {
               <Button variant="outline" className="text-blue-600 border-blue-600">Cập nhật SL khám</Button>
               <Button variant="destructive">Tổng hợp chẩn đoán</Button>
             </div>
-          </Card>
-          <div className="p-4 space-y-4 bg-amber-50 border">
-            <div className="space-y-2">
+          </div>
+          <div className="p-4 space-y-2 bg-amber-50 border">
+            <div className="flex gap-2">
               <Label>Số phòng</Label>
               <div className="flex items-center gap-2">
                 <CustomSelectGrid
                   value={form.phong}
                   onValueChange={(val) => handleChange('phong', val)}
-                  headers={headers}
-                  data={phongList}
+                  headers={HT_DMPhongBanHeaders}
+                  data={HT_DMPhongBanData}
                   keyValue="id"
                 />
                 <Button size="sm">Lưu</Button>
               </div>
             </div>
 
-            <div className="space-y-2">
+            <div className="flex gap-2">
               <Label>BS Khám</Label>
               <Select value={form.bsKham} onValueChange={(val) => handleChange('bsKham', val)}>
                 <SelectTrigger>
@@ -182,7 +188,7 @@ export default function ContentChiDinh() {
               </Select>
             </div>
 
-            <div className="space-y-2">
+            <div className="flex gap-2">
               <Label>Điều dưỡng</Label>
               <Select value={form.dd} onValueChange={(val) => handleChange('dd', val)}>
                 <SelectTrigger>
@@ -196,7 +202,7 @@ export default function ContentChiDinh() {
               </Select>
             </div>
 
-            <div className="space-y-2">
+            <div className="flex gap-2">
               <Label className="text-red-600">BS giới thiệu</Label>
               <Select value={form.bsGt} onValueChange={(val) => handleChange('bsGt', val)}>
                 <SelectTrigger>
@@ -210,7 +216,7 @@ export default function ContentChiDinh() {
               </Select>
             </div>
 
-            <div className="space-y-2">
+            <div className="flex gap-2">
               <Label className="text-blue-600">ĐD giới thiệu</Label>
               <Select value={form.ddGt} onValueChange={(val) => handleChange('ddGt', val)}>
                 <SelectTrigger>

@@ -11,8 +11,11 @@ import { Toaster } from "sonner";
 import GlobalLoading from "@/components/global-loading";
 import { usePathname } from "next/navigation";
 import { useZaloData } from "@/store/zalo-data-store";
-import { memo, useCallback, useEffect } from "react";
+import { memo, useCallback, useEffect, useState } from "react";
 import { getZaloDsTemplate, getZaloToken } from "./(zalo)/token/_actions";
+import { httpBatchLink } from '@trpc/client'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { trpc } from "@/trpc/client";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -70,6 +73,13 @@ const RootLayout = ({
     });
   }, [setAccessToken, setDsTempalte, setRefreshToken]);
 
+  const [queryClient] = useState(() => new QueryClient())
+  const [trpcClient] = useState(() =>
+    trpc.createClient({
+      links: [httpBatchLink({ url: '/api/trpc' })],
+    })
+  )
+
   useEffect(() => {
     loadZaloDataAsync();
   }, [loadZaloDataAsync]);
@@ -78,7 +88,9 @@ const RootLayout = ({
     return (
       <html lang="en">
         <body>
-          <GlobalVariablesProvider>{children}</GlobalVariablesProvider>
+          <trpc.Provider client={trpcClient} queryClient={queryClient}>
+            <GlobalVariablesProvider>{children}</GlobalVariablesProvider>
+          </trpc.Provider>
           <Toaster />
         </body>
       </html>
