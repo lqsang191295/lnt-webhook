@@ -14,7 +14,7 @@ import { useZaloData } from "@/store/zalo-data-store";
 import { memo, useCallback, useEffect, useState } from "react";
 import { getZaloDsTemplate, getZaloToken } from "./(zalo)/token/_actions";
 import { httpBatchLink } from '@trpc/client'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { QueryClient } from '@tanstack/react-query'
 import { trpc } from "@/trpc/client";
 
 const geistSans = Geist({

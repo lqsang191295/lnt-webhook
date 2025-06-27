@@ -12,17 +12,6 @@ import CustomSelectGrid from '@/components/custom/custom-select-grid';
 import { trpc } from '@/trpc/client';
 import { HT_DMPhongBanHeaders } from '@/constant/headers';
 
-const headers = [
-  { key: 'id', title: 'Mã' },
-  { key: 'name', title: 'Tên phòng' },
-  { key: 'note', title: 'Ghi chú' },
-];
-
-const phongList = [
-  { id: 'P01', name: 'Phòng 1 1111111', note: 'Lầu 1 1111111111' },
-  { id: 'P02', name: 'Phòng 2', note: 'Lầu 2' },
-];
-
 const sampleData = [
   {
     id: 'KB_100',
@@ -56,9 +45,9 @@ const bsList = ['BS.TRẦN THƯỢNG HẢI', 'BS.NGUYỄN VĂN A'];
 const ddList = ['Test thu ngân', 'Điều dưỡng A'];
 
 export default function ContentChiDinh() {
-  const [data, setData] = useState(sampleData);
+  const [data] = useState(sampleData);
 
-  const { data: HT_DMPhongBanData, isLoading } = trpc.HT_DMPhongBan.getAll.useQuery()
+  const { data: HT_DMPhongBanData } = trpc.HT_DMPhongBan.getAll.useQuery()
 
   console.log('HT_DMPhongBanData === ', HT_DMPhongBanData)
 
@@ -271,7 +260,7 @@ export default function ContentChiDinh() {
                   </tr>
                 </thead>
                 <tbody>
-                  {data.map((item, idx) => (
+                  {data.map((item) => (
                     <tr key={item.id} className="border-b">
                       <td className="p-2"><input type="checkbox" defaultChecked /></td>
                       <td className="p-2">{item.id}</td>

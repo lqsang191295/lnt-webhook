@@ -16,7 +16,7 @@ interface iNavarProps {
     onClick: (item: iNavbarItemType) => void;
 }
 
-export default function NavbarMobile({ navbarData, navbarItem, onClick }: iNavarProps) {
+export default function NavbarMobile({ navbarData, onClick }: iNavarProps) {
     return <div className="bg-white shadow-sm md:hidden flex-col flex fixed top-0 w-full z-10">
         {/* Logo */}
         <div className="p-4 h-16 flex flex-row justify-between">
@@ -41,7 +41,7 @@ export default function NavbarMobile({ navbarData, navbarItem, onClick }: iNavar
                 <DropdownMenuContent className="w-56" align="start">
                     <DropdownMenuGroup>
                         {navbarData.map((item, index) => (
-                            <DropdownMenuItem onClick={() => { onClick(item) }}>
+                            <DropdownMenuItem key={`drop-down-menu-${index}`} onClick={() => { onClick(item) }}>
                                 <item.icon className="w-4 h-4" />
                                 {item.label}
                             </DropdownMenuItem>

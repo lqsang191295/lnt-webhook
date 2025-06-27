@@ -24,7 +24,7 @@ interface HeaderItem {
 interface CustomDropdownTableProps {
   value: string;
   onValueChange: (val: string) => void;
-  data: Record<string, any>[];
+  data?: Record<string, unknown>[];
   headers: HeaderItem[];
   keyValue: string;
   getLabel?: (val: string) => string;
@@ -42,11 +42,12 @@ export default function CustomDropdownTable({
 }: CustomDropdownTableProps) {
   const [open, setOpen] = useState(false);
 
-  if(!data) return;
+  if (!data) return null;
 
   const label = getLabel
     ? getLabel(value)
-    : data.find((d) => d[keyValue] === value)?.[headers[0].key] || placeholder;
+    : (data.find((d) => d[keyValue] === value)?.[headers[0].key] as string) ||
+      placeholder;
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -69,10 +70,10 @@ export default function CustomDropdownTable({
           <TableBody>
             {data.map((item, index) => (
               <TableRow
-                key={item[keyValue] || index}
+                key={(item[keyValue] as string) || index}
                 className="cursor-pointer hover:bg-accent"
                 onClick={() => {
-                  onValueChange(item[keyValue]);
+                  onValueChange(item[keyValue] as string);
                   setOpen(false);
                 }}
               >
@@ -81,7 +82,7 @@ export default function CustomDropdownTable({
                     key={h.key}
                     className="px-2 py-1 whitespace-nowrap"
                   >
-                    {item[h.key]}
+                    {String(item[h.key] ?? '')}
                   </TableCell>
                 ))}
               </TableRow>
