@@ -18,7 +18,7 @@ export default function FullscreenToggle() {
     if (hidden) return;
 
     return (
-        <div ref={divRef} className="absolute bottom-1 right-1 bg-white/50 rounded-xs p-1 z-10">
+        <div ref={divRef} className="absolute top-1 right-1 bg-blue-500 rounded-xs p-1 z-10">
             <div onClick={enterFullscreen}><Fullscreen className='text-white' /></div>
         </div>
     )
