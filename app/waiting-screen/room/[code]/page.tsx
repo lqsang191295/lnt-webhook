@@ -100,7 +100,7 @@ function RoomDetailContent() {
   return (
     <div className="w-screen h-screen bg-[#e6f3f1] border border-green-600 rounded-md flex flex-col select-none overflow-hidden">
       {/* Header - Responsive */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 min-h-[80px] sm:min-h-[100px] lg:h-32 xl:h-40 border-b border-green-600 text-green-900 flex-shrink-0">
+      <div className="grid grid-cols-1 lg:grid-cols-12 min-h-[60px] sm:min-h-[80px] lg:h-32 xl:h-30 border-b border-green-600 text-green-900 flex-shrink-0">
         <div className="lg:col-span-6 flex items-center justify-center border-b lg:border-b-0 lg:border-r border-green-600 py-2 sm:py-3 lg:py-4 font-extrabold text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl uppercase px-2">
           PHÒNG KHÁM {room.name}
         </div>
@@ -154,7 +154,7 @@ function RoomDetailContent() {
           <CardContent className="flex-grow flex-basis-2/3 min-h-0 text-gray-800 font-bold leading-relaxed text-xs sm:text-sm md:text-base lg:text-lg space-y-2 sm:space-y-3 lg:space-y-4 px-2 sm:px-3 lg:px-5 py-2 sm:py-3 lg:py-4">
             <div className="h-full flex flex-col lg:flex-row gap-3 sm:gap-4 lg:gap-6 min-h-0">
               {/* QR Code section - Enhanced with better visual appeal */}
-              <div className="flex-1 order-2 lg:order-1 flex flex-col justify-center min-w-0">
+              <div className="lg:order-1 flex flex-col justify-center min-w-0">
                 <div className="text-center">
                   <p className="font-black text-red-700 text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl 2xl:text-2xl mb-2 sm:mb-3 lg:mb-4 bg-white rounded-lg px-3 py-2 border-2 border-red-300 shadow-md">
                     QUÉT MÃ QR-CODE TẠI ĐÂY!
