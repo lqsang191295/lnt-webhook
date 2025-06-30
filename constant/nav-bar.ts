@@ -6,9 +6,11 @@ import {
     File,
     Stethoscope,
     PcCase,
+    History,
 } from "lucide-react"
 
 export const sidebarItems = [
+    { icon: History, label: "Lịch sử khám" },
     { icon: Info, label: "Thông tin hành chính" },
     { icon: Stethoscope, label: "Thông tin tiếp nhận" },
     { icon: PcCase, label: "Phiếu chỉ định" },

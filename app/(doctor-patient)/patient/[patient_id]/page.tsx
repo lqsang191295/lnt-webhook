@@ -14,9 +14,9 @@ export default function Page() {
   const [navbarItem, setNavbarItem] = useState<iNavbarItemType>(sidebarItems[0])
   const { patient: patientData } = usePatientStore();
 
-  if (!patientData || !patientData.logged) {
-    router.push('/patient/login')
-  }
+  // if (!patientData || !patientData.logged) {
+  //   router.push('/patient/login')
+  // }
 
   return <div className="flex h-screen flex-col md:flex-row">
     <Navbar navbarData={sidebarItems} navbarItem={navbarItem} onClick={setNavbarItem} />

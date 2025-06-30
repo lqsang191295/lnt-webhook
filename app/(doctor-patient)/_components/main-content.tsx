@@ -6,14 +6,16 @@ import ContentThongTin from "./content-thong-tin";
 import ContentThongTinTiepNhan from "./content-thong-tin-tiep-nhan";
 import ContentQuetQR from "./doctors/content-quet-qr";
 import ContentChiDinh from "./doctors/content-chi-dinh";
+import ContentLichSuKham from "./content-lich-su-kham";
 
 interface iMainContentProps {
   navbarItem: iNavbarItemType
 }
 
 export default function MainContent({ navbarItem }: iMainContentProps) {
-  return <div className="flex-1 flex flex-col mt-16 md:mt-0">
+  return <div className="flex-1 flex flex-col mt-16 md:mt-0 overflow-x-hidden">
     <main className="bg-blue-100 flex-1 overflow-hidden md:p-4">
+      {navbarItem.label === "Lịch sử khám" && <ContentLichSuKham />}
       {navbarItem.label === "Thông tin hành chính" && <ContentThongTin />}
       {navbarItem.label === "Thông tin tiếp nhận" && <ContentThongTinTiepNhan />}
       {navbarItem.label === "Phiếu chỉ định" && <ContentPhieuCD />}
