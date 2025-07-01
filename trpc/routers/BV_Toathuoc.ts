@@ -2,9 +2,9 @@ import { z } from "zod";
 import { procedure, router } from "../trpc";
 import { prisma } from '@/lib/prisma';
 
-export const BV_PhieuChidinhDVRouter = router({
+export const BV_ToathuocRouter = router({
   getAll: procedure.query(async () => {
-    return prisma.bV_PhieuChidinhDV.findMany();
+    return prisma.bV_Toathuoc.findMany();
   }),
   getByMaBN: procedure
     .input(z.object({
@@ -16,15 +16,14 @@ export const BV_PhieuChidinhDVRouter = router({
         MaBN: input.maBN,
         Ngay: new Date(input.Ngay)
       };
-      return prisma.bV_PhieuChidinhDV.findMany({
+      return prisma.bV_Toathuoc.findMany({
         where,
         include: {
-          TTBacsiKham: true,
+          TTBacsiKeToa: true,
           TTPhongKham: true,
-          BV_PhieuChidinhDVCT: {
+          BV_ToathuocCT: {
             include: {
-              TTNguoiChiDinh: true,
-              TTNguoithuchien: true,
+              TTBsKetoa: true,
             }
           }
         },

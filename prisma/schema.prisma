@@ -1360,6 +1360,9 @@ model BV_PhieuChidinhDVCT {
   TrangThaiKham        String?            @db.NVarChar(50)
   BV_PhieuChidinhDV    BV_PhieuChidinhDV? @relation(fields: [IDPCD], references: [ID], onDelete: NoAction, onUpdate: NoAction, map: "FK_BV_PhieuChidinhDVCT_BV_PhieuChidinhDV")
 
+  TTNguoiChiDinh      HT_DMNhanSu? @relation("FK_BV_PhieuChidinhDVCT_HT_DMNhanSu_Nguoichidinh", fields: [Nguoichidinh], references: [Ma], onUpdate: NoAction, onDelete: NoAction)
+  TTNguoithuchien      HT_DMNhanSu? @relation("FK_BV_PhieuChidinhDVCT_HT_DMNhanSu_Nguoithuchien", fields: [Nguoithuchien], references: [Ma], onUpdate: NoAction, onDelete: NoAction)
+
   @@index([ID], map: "CIX_Id", clustered: true)
   @@index([IDPCD], map: "IX_IDPCD")
   @@index([Sovaovien], map: "NIX_SoPhieu")
@@ -3374,6 +3377,10 @@ model BV_Toathuoc {
   IDChiDinhGoi                     String?   @db.UniqueIdentifier
   MaGoi                            String?   @db.NVarChar(50)
 
+  BV_ToathuocCT BV_ToathuocCT[]
+  TTBacsiKeToa      HT_DMNhanSu? @relation("FK_BV_ToaThuoc_HT_DMNhanSu_BacsiKeToa", fields: [BsKetoa], references: [Ma], onUpdate: NoAction, onDelete: NoAction)
+  TTPhongKham      HT_DMKhoaPhong? @relation("FK_BV_ToaThuoc_HT_DMKhoaPhong_KhoaPhong", fields: [Khoa], references: [Ma], onUpdate: NoAction, onDelete: NoAction)
+
   @@index([ID], map: "CIX_ID", clustered: true)
   @@index([Ngay], map: "IX_Ngay")
   @@index([Sovaovien], map: "IX_SoVaoVien")
@@ -3466,6 +3473,9 @@ model BV_ToathuocCT {
   GayMe           Boolean?
   isNuocNgoai     Boolean?
   TienChenhLechNN Decimal?  @db.Decimal(18, 4)
+
+  BV_Toathuoc    BV_Toathuoc? @relation(fields: [ID_Toa], references: [ID], onDelete: NoAction, onUpdate: NoAction, map: "FK_BV_ToathuocCT_BV_Toathuoc")
+  TTBsKetoa      HT_DMNhanSu? @relation("FK_BV_ToathuocCT_HT_DMNhanSu_BsKetoa", fields: [BsKetoa], references: [Ma], onUpdate: NoAction, onDelete: NoAction)
 
   @@index([ID], map: "CIX_ID", clustered: true)
   @@index([ID_Toa], map: "IX_IDToa")
@@ -4256,6 +4266,7 @@ model HT_DMKhoaPhong {
 
   KhoaPhongInfo  BV_Master[] @relation("PhongKhamRelation")
   PCD_KhoaPhongInfo  BV_PhieuChidinhDV[] @relation("PCD_PhongKhamRelation")
+  PCD_KhoaPhongInfo_BV_Toathuoc  BV_Toathuoc[] @relation("FK_BV_ToaThuoc_HT_DMKhoaPhong_KhoaPhong")
 }
 
 model HT_DMKhu {
@@ -4448,6 +4459,10 @@ model HT_DMNhanSu {
 
   BacSiInfo  BV_Master[] @relation("BacSiRelation")
   PCD_BacSiInfo  BV_PhieuChidinhDV[] @relation("PCD_BacSiRelation")
+  BV_PhieuChidinhDVCT_Nguoichidinh BV_PhieuChidinhDVCT[] @relation("FK_BV_PhieuChidinhDVCT_HT_DMNhanSu_Nguoichidinh")
+  BV_PhieuChidinhDVCT_Nguoithuchien BV_PhieuChidinhDVCT[] @relation("FK_BV_PhieuChidinhDVCT_HT_DMNhanSu_Nguoithuchien")
+  BV_ToaThuoc_HT_DMNhanSu_BacsiKeToa BV_Toathuoc[] @relation("FK_BV_ToaThuoc_HT_DMNhanSu_BacsiKeToa")
+  BV_ToathuocCT_HT_DMNhanSu_BsKetoa  BV_ToathuocCT[] @relation("FK_BV_ToathuocCT_HT_DMNhanSu_BsKetoa")
 }
 
 model HT_DMNhanSuQuay {
