@@ -1,29 +1,45 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { format } from 'date-fns';
-import { vi } from 'date-fns/locale';
-import { Calendar as CalendarIcon, FileText } from 'lucide-react';
+import { useState } from "react";
+import { format } from "date-fns";
+import { vi } from "date-fns/locale";
+import { Calendar as CalendarIcon, FileText } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { trpc } from '@/trpc/client';
-import { useParams } from 'next/navigation';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { trpc } from "@/trpc/client";
+import { useParams } from "next/navigation";
 import Spinner from "@/components/spinner";
-import { formatDateTimeCT, formatDateToDDMMYYYY } from '@/utils/timer';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { formatDateTimeCT, formatDateToDDMMYYYY } from "@/utils/timer";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { iPhieuChidinhDV } from '@/types/his-data';
-import {
-  Tabs,
-  TabsList,
-  TabsTrigger,
-  TabsContent,
-} from "@/components/ui/tabs";
+import { iPhieuChidinhDV } from "@/types/his-data";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
 export default function ContentLichSuKham() {
   const params = useParams();
@@ -37,21 +53,31 @@ export default function ContentLichSuKham() {
   const [queryInput, setQueryInput] = useState<any>(null);
   const [queryPcdDVInput, setQueryPcdDVInput] = useState<any>(null);
 
-  const { data, refetch, isFetching, isFetched } = trpc.BV_Master.getByMaBN.useQuery(queryInput!, {
-    enabled: !!queryInput, // chỉ chạy nếu có input
-  });
+  const { data, refetch, isFetching, isFetched } =
+    trpc.BV_Master.getByMaBN.useQuery(queryInput!, {
+      enabled: !!queryInput, // chỉ chạy nếu có input
+    });
 
-  const { data: dataPcdDV, refetch: refetchPcdDV, isFetching: isFetchingPcdDV, isFetched: isFetchedPcdDV } = trpc.BV_PhieuChidinhDV.getByMaBN.useQuery(queryPcdDVInput!, {
+  const {
+    data: dataPcdDV,
+    refetch: refetchPcdDV,
+    isFetching: isFetchingPcdDV,
+    isFetched: isFetchedPcdDV,
+  } = trpc.BV_PhieuChidinhDV.getByMaBN.useQuery(queryPcdDVInput!, {
     enabled: !!queryPcdDVInput, // chỉ chạy nếu có input
   });
 
-  console.log('data ==== ', data)
-  console.log('dataPcdDV ==== ', dataPcdDV)
+  console.log("data ==== ", data);
+  console.log("dataPcdDV ==== ", dataPcdDV);
 
   const handleFilter = () => {
-    const from = new Date(format(fromDate, 'yyyy-MM-dd'));
-    const to = new Date(format(toDate, 'yyyy-MM-dd'));
-    setQueryInput({ maBN, TuNgay: from.toISOString(), DenNgay: to.toISOString() });
+    const from = new Date(format(fromDate, "yyyy-MM-dd"));
+    const to = new Date(format(toDate, "yyyy-MM-dd"));
+    setQueryInput({
+      maBN,
+      TuNgay: from.toISOString(),
+      DenNgay: to.toISOString(),
+    });
   };
 
   const handleGetAll = () => {
@@ -64,13 +90,13 @@ export default function ContentLichSuKham() {
 
     setQueryPcdDVInput({
       maBN,
-      Ngay: item.Ngay
-    })
+      Ngay: item.Ngay,
+    });
 
-    console.log('asdasd ', {
+    console.log("asdasd ", {
       maBN,
-      Ngay: item.Ngay
-    })
+      Ngay: item.Ngay,
+    });
   };
 
   return (
@@ -81,14 +107,20 @@ export default function ContentLichSuKham() {
 
       <main className="overflow-auto p-4 w-full h-full space-y-4">
         <div className="flex flex-col md:flex-row gap-4 items-end">
-          <div className='w-full flex gap-2'>
+          <div className="w-full flex gap-2">
             <div className="flex flex-col flex-1 space-y-1">
               <Label>Từ ngày</Label>
               <Popover>
                 <PopoverTrigger asChild>
-                  <Button variant="outline" className="w-full justify-start text-left font-normal">
+                  <Button
+                    variant="outline"
+                    className="w-full justify-start text-left font-normal">
                     <CalendarIcon className="mr-2 h-4 w-4" />
-                    {fromDate ? format(fromDate, 'dd/MM/yyyy') : <span>Chọn ngày</span>}
+                    {fromDate ? (
+                      format(fromDate, "dd/MM/yyyy")
+                    ) : (
+                      <span>Chọn ngày</span>
+                    )}
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0" align="start">
@@ -106,9 +138,15 @@ export default function ContentLichSuKham() {
               <Label>Đến ngày</Label>
               <Popover>
                 <PopoverTrigger asChild>
-                  <Button variant="outline" className="w-full justify-start text-left font-normal">
+                  <Button
+                    variant="outline"
+                    className="w-full justify-start text-left font-normal">
                     <CalendarIcon className="mr-2 h-4 w-4" />
-                    {toDate ? format(toDate, 'dd/MM/yyyy') : <span>Chọn ngày</span>}
+                    {toDate ? (
+                      format(toDate, "dd/MM/yyyy")
+                    ) : (
+                      <span>Chọn ngày</span>
+                    )}
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0" align="start">
@@ -126,7 +164,9 @@ export default function ContentLichSuKham() {
 
           <div className="flex gap-2">
             <Button onClick={handleFilter}>Lấy dữ liệu</Button>
-            <Button variant="secondary" onClick={handleGetAll}>Lấy toàn bộ</Button>
+            <Button variant="secondary" onClick={handleGetAll}>
+              Lấy toàn bộ
+            </Button>
           </div>
         </div>
 
@@ -155,7 +195,7 @@ export default function ContentLichSuKham() {
                 {data.map((item) => (
                   <TableRow key={item.Sovaovien}>
                     <TableCell>{item.Sovaovien}</TableCell>
-                    <TableCell>{formatDateTimeCT(item.TGVao || '')}</TableCell>
+                    <TableCell>{formatDateTimeCT(item.TGVao || "")}</TableCell>
                     <TableCell>{item.TTPhongKham?.Ten}</TableCell>
                     <TableCell>{item.TTBacsi?.Ten}</TableCell>
                     <TableCell>{item.LydoVV}</TableCell>
@@ -163,7 +203,10 @@ export default function ContentLichSuKham() {
                     <TableCell>{item.TTChanDoanPhu?.VVIET}</TableCell>
                     <TableCell>{item.ChandoanKhac}</TableCell>
                     <TableCell className="text-right">
-                      <Button variant="ghost" size="sm" onClick={() => openDetail(item)}>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => openDetail(item)}>
                         <FileText className="w-4 h-4 mr-1" /> Xem chi tiết
                       </Button>
                     </TableCell>
@@ -187,7 +230,9 @@ export default function ContentLichSuKham() {
             <DialogTitle>Chi tiết lần khám</DialogTitle>
           </DialogHeader>
           {/* Chi tiết dữ liệu selected nếu cần */}
-          <Tabs defaultValue="canlamsang" className="w-full overflow-hidden flex-1">
+          <Tabs
+            defaultValue="canlamsang"
+            className="w-full overflow-hidden flex-1">
             <TabsList className="mb-4">
               <TabsTrigger value="canlamsang">Cận lâm sàng</TabsTrigger>
               <TabsTrigger value="toathuoc">Toa thuốc</TabsTrigger>
@@ -195,60 +240,79 @@ export default function ContentLichSuKham() {
 
             {/* Tab: Cận lâm sàng */}
             <TabsContent value="canlamsang" className="overflow-auto">
-              <Accordion type="multiple" className="w-full space-y-2 overflow-auto">
-                {dataPcdDV?.map((phieu: iPhieuChidinhDV) => (
-                  <AccordionItem value={phieu.ID} key={phieu.ID} className="border rounded-lg !border-b ">
+              <Accordion
+                type="multiple"
+                className="w-full space-y-2 overflow-auto">
+                {dataPcdDV?.map((phieu: any) => (
+                  <AccordionItem
+                    value={phieu.ID}
+                    key={phieu.ID}
+                    className="border rounded-lg !border-b ">
                     <AccordionTrigger className="px-4 py-2 text-left">
                       <div className="flex flex-col">
-                        <span className="font-medium">Mã phiếu: {phieu.ID}</span>
-                        <span className="text-sm text-muted-foreground">
-                          Ngày chỉ định: {formatDateToDDMMYYYY(phieu.Ngay)} • Bác sĩ: {phieu.TTBacsiKham?.Ten} • Khoa: {phieu.TTPhongKham?.Ten}
+                        <span className="font-medium">
+                          Mã phiếu: {phieu.ID}
                         </span>
-                        <span className="text-sm text-orange-500 italic">Chẩn đoán: {phieu.Chandoan}</span>
+                        <span className="text-sm text-muted-foreground">
+                          Ngày chỉ định: {formatDateToDDMMYYYY(phieu.Ngay)} •
+                          Bác sĩ: {phieu.TTBacsiKham?.Ten} • Khoa:{" "}
+                          {phieu.TTPhongKham?.Ten}
+                        </span>
+                        <span className="text-sm text-orange-500 italic">
+                          Chẩn đoán: {phieu.Chandoan}
+                        </span>
                       </div>
                     </AccordionTrigger>
                     <AccordionContent className="px-4 pb-4 ">
                       <Card className="border-none shadow-none p-0 ">
                         <CardContent className="p-0 space-y-3">
                           {/* Show chi tiết từng dịch vụ trong phiếu */}
-                          {phieu.BV_PhieuChidinhDVCT.map((ct) => (
-                            <Table>
-                              <TableHeader>
-                                <TableRow>
-                                  <TableHead>Tên dịch vụ</TableHead>
-                                  <TableHead>Người chỉ định</TableHead>
-                                  <TableHead>Người thực hiện</TableHead>
-                                  <TableHead>Số lượng</TableHead>
-                                  <TableHead>Đơn giá</TableHead>
-                                  <TableHead>Đơn giá BH</TableHead>
-                                  <TableHead>Tổng chi phí</TableHead>
-                                  <TableHead>Người thực hiện</TableHead>
-                                  <TableHead>Kết quả</TableHead>
-                                  <TableHead>Trạng thái</TableHead>
-
+                          <Table key="">
+                            <TableHeader>
+                              <TableRow>
+                                <TableHead>Tên dịch vụ</TableHead>
+                                <TableHead>Người chỉ định</TableHead>
+                                <TableHead>Người thực hiện</TableHead>
+                                <TableHead>Số lượng</TableHead>
+                                <TableHead>Đơn giá</TableHead>
+                                <TableHead>Đơn giá BH</TableHead>
+                                <TableHead>Tổng chi phí</TableHead>
+                                <TableHead>Người thực hiện</TableHead>
+                                <TableHead>Kết quả</TableHead>
+                                <TableHead>Trạng thái</TableHead>
+                              </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                              {phieu.BV_PhieuChidinhDVCT.map((item: any) => (
+                                <TableRow key={item.Sovaovien}>
+                                  <TableCell>{item.Sovaovien}</TableCell>
+                                  <TableCell>
+                                    {formatDateTimeCT(item.TGVao || "")}
+                                  </TableCell>
+                                  <TableCell>{item.TTPhongKham?.Ten}</TableCell>
+                                  <TableCell>{item.TTBacsi?.Ten}</TableCell>
+                                  <TableCell>{item.LydoVV}</TableCell>
+                                  <TableCell>
+                                    {item.TTChanDoanChinh?.VVIET}
+                                  </TableCell>
+                                  <TableCell>
+                                    {item.TTChanDoanPhu?.VVIET}
+                                  </TableCell>
+                                  <TableCell>{item.ChandoanKhac}</TableCell>
+                                  <TableCell className="text-right">
+                                    <Button
+                                      variant="ghost"
+                                      size="sm"
+                                      onClick={() => openDetail(item)}>
+                                      <FileText className="w-4 h-4 mr-1" /> Xem
+                                      chi tiết
+                                    </Button>
+                                  </TableCell>
                                 </TableRow>
-                              </TableHeader>
-                              <TableBody>
-                                {phieu.BV_PhieuChidinhDVCT.map((item) => (
-                                  <TableRow key={item.Sovaovien}>
-                                    <TableCell>{item.Sovaovien}</TableCell>
-                                    <TableCell>{formatDateTimeCT(item.TGVao || '')}</TableCell>
-                                    <TableCell>{item.TTPhongKham?.Ten}</TableCell>
-                                    <TableCell>{item.TTBacsi?.Ten}</TableCell>
-                                    <TableCell>{item.LydoVV}</TableCell>
-                                    <TableCell>{item.TTChanDoanChinh?.VVIET}</TableCell>
-                                    <TableCell>{item.TTChanDoanPhu?.VVIET}</TableCell>
-                                    <TableCell>{item.ChandoanKhac}</TableCell>
-                                    <TableCell className="text-right">
-                                      <Button variant="ghost" size="sm" onClick={() => openDetail(item)}>
-                                        <FileText className="w-4 h-4 mr-1" /> Xem chi tiết
-                                      </Button>
-                                    </TableCell>
-                                  </TableRow>
-                                ))}
-                              </TableBody>
-                            </Table>
-                            // <div
+                              ))}
+                            </TableBody>
+                          </Table>
+                          {/* // <div
                             //   key={ct.ID}
                             //   className="flex justify-between items-center border p-3 rounded-lg"
                             // >
@@ -258,8 +322,7 @@ export default function ContentLichSuKham() {
                             //   <Badge variant={ct.Dathuchien ? 'default' : 'outline'}>
                             //     {ct.Dathuchien ? 'Đã thực hiện' : "Chưa thực hiện"}
                             //   </Badge>
-                            // </div>
-                          ))}
+                            // </div> */}
                         </CardContent>
                       </Card>
                     </AccordionContent>
@@ -270,7 +333,9 @@ export default function ContentLichSuKham() {
 
             {/* Tab: Toa thuốc */}
             <TabsContent value="toathuoc">
-              <div className="text-muted-foreground italic">Đang phát triển hoặc chưa có dữ liệu.</div>
+              <div className="text-muted-foreground italic">
+                Đang phát triển hoặc chưa có dữ liệu.
+              </div>
             </TabsContent>
           </Tabs>
         </DialogContent>
