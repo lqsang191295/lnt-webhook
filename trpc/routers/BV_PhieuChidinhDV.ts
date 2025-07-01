@@ -18,6 +18,11 @@ export const BV_PhieuChidinhDVRouter = router({
       };
       return prisma.bV_PhieuChidinhDV.findMany({
         where,
+        include: {
+          TTBacsiKham: true,
+          TTPhongKham: true,
+          BV_PhieuChidinhDVCT: true
+        },
       });
     }),
 });

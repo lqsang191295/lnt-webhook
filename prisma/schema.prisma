@@ -880,8 +880,8 @@ model BV_Master {
   isGoiPhauThuat        Boolean?
   isRaVien              Boolean?
   UpHD                  Boolean?
-  TTBacsi               HT_DMNhanSu? @relation("BacSiRelation", fields: [BsDieutri], references: [Ma])
-  TTPhongKham           HT_DMKhoaPhong? @relation("PhongKhamRelation", fields: [KhoaPhong], references: [Ma])
+  TTBacsi               HT_DMNhanSu? @relation("BacSiRelation", fields: [BsDieutri], references: [Ma], onUpdate: NoAction, onDelete: NoAction)
+  TTPhongKham           HT_DMKhoaPhong? @relation("PhongKhamRelation", fields: [KhoaPhong], references: [Ma], onUpdate: NoAction, onDelete: NoAction)
   TTChanDoanChinh       HT_DMICD10? @relation("ChanDoanChinhRelation", fields: [ChandoanChinh], references: [CICD10], onUpdate: NoAction, onDelete: NoAction)
   TTChanDoanPhu         HT_DMICD10? @relation("ChanDoanPhuRelation", fields: [ChandoanPhu], references: [CICD10], onUpdate: NoAction, onDelete: NoAction)
 }
@@ -1254,6 +1254,9 @@ model BV_PhieuChidinhDV {
   @@index([Ngay], map: "IX_Ngay")
   @@index([Sovaovien], map: "IX_SoVaoVien")
   @@index([SoPhieuChiDinh], map: "NIX_SoPhieuChiDinh")
+
+  TTBacsiKham           HT_DMNhanSu? @relation("PCD_BacSiRelation", fields: [BsKham], references: [Ma], onUpdate: NoAction, onDelete: NoAction)
+  TTPhongKham           HT_DMKhoaPhong? @relation("PCD_PhongKhamRelation", fields: [KhoaPhong], references: [Ma], onUpdate: NoAction, onDelete: NoAction)
 }
 
 model BV_PhieuChidinhDVCT {
@@ -4252,6 +4255,7 @@ model HT_DMKhoaPhong {
   UPDATE_DATE DateTime @default(now(), map: "DF__HT_DMKhoa__UPDAT__3FFCF760") @db.DateTime
 
   KhoaPhongInfo  BV_Master[] @relation("PhongKhamRelation")
+  PCD_KhoaPhongInfo  BV_PhieuChidinhDV[] @relation("PCD_PhongKhamRelation")
 }
 
 model HT_DMKhu {
@@ -4443,6 +4447,7 @@ model HT_DMNhanSu {
   KhongTinhCLS      Boolean?
 
   BacSiInfo  BV_Master[] @relation("BacSiRelation")
+  PCD_BacSiInfo  BV_PhieuChidinhDV[] @relation("PCD_BacSiRelation")
 }
 
 model HT_DMNhanSuQuay {

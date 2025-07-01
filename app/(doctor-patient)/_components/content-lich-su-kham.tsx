@@ -182,62 +182,97 @@ export default function ContentLichSuKham() {
       </main>
 
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="w-full">
+        <DialogContent className="w-full h-9/12 flex flex-col">
           <DialogHeader>
             <DialogTitle>Chi tiết lần khám</DialogTitle>
           </DialogHeader>
           {/* Chi tiết dữ liệu selected nếu cần */}
-            <Tabs defaultValue="canlamsang" className="w-full">
-              <TabsList className="mb-4">
-                <TabsTrigger value="canlamsang">Cận lâm sàng</TabsTrigger>
-                <TabsTrigger value="toathuoc">Toa thuốc</TabsTrigger>
-              </TabsList>
+          <Tabs defaultValue="canlamsang" className="w-full overflow-hidden flex-1">
+            <TabsList className="mb-4">
+              <TabsTrigger value="canlamsang">Cận lâm sàng</TabsTrigger>
+              <TabsTrigger value="toathuoc">Toa thuốc</TabsTrigger>
+            </TabsList>
 
-              {/* Tab: Cận lâm sàng */}
-              <TabsContent value="canlamsang">
-                <Accordion type="multiple" className="w-full space-y-2">
-                  {dataPcdDV?.map((phieu: iPhieuChidinhDV) => (
-                    <AccordionItem value={phieu.ID} key={phieu.ID} className="border rounded-lg !border-b">
-                      <AccordionTrigger className="px-4 py-2 text-left">
-                        <div className="flex flex-col">
-                          <span className="font-medium">Mã phiếu: {phieu.ID}</span>
-                          <span className="text-sm text-muted-foreground">
-                            Ngày chỉ định: {formatDateToDDMMYYYY(phieu.Ngay)} • Bác sĩ: {phieu.TenBsKham} • Khoa: {phieu.TenKhoa}
-                          </span>
-                          <span className="text-sm text-orange-500 italic">Ghi chú: {phieu.Ghichu}</span>
-                        </div>
-                      </AccordionTrigger>
-                      <AccordionContent className="px-4 pb-4">
-                        <Card className="border-none shadow-none p-0">
-                          <CardContent className="p-0 space-y-3">
-                            {/* Show chi tiết từng dịch vụ trong phiếu */}
-                            <div></div>
-                            {/* {phieu.phieuDVCT.map((ct) => (
-                              <div
-                                key={ct.ID}
-                                className="flex justify-between items-center border p-3 rounded-lg"
-                              >
-                                <div>
-                                  <div className="font-medium">{ct.TenDV}</div>
-                                </div>
-                                <Badge variant={ct.Dathuchien ? 'default' : 'outline'}>
-                                  {ct.Dathuchien ? 'Đã thực hiện' : "Chưa thực hiện"}
-                                </Badge>
-                              </div>
-                            ))} */}
-                          </CardContent>
-                        </Card>
-                      </AccordionContent>
-                    </AccordionItem>
-                  ))}
-                </Accordion>
-              </TabsContent>
+            {/* Tab: Cận lâm sàng */}
+            <TabsContent value="canlamsang" className="overflow-auto">
+              <Accordion type="multiple" className="w-full space-y-2 overflow-auto">
+                {dataPcdDV?.map((phieu: iPhieuChidinhDV) => (
+                  <AccordionItem value={phieu.ID} key={phieu.ID} className="border rounded-lg !border-b ">
+                    <AccordionTrigger className="px-4 py-2 text-left">
+                      <div className="flex flex-col">
+                        <span className="font-medium">Mã phiếu: {phieu.ID}</span>
+                        <span className="text-sm text-muted-foreground">
+                          Ngày chỉ định: {formatDateToDDMMYYYY(phieu.Ngay)} • Bác sĩ: {phieu.TTBacsiKham?.Ten} • Khoa: {phieu.TTPhongKham?.Ten}
+                        </span>
+                        <span className="text-sm text-orange-500 italic">Chẩn đoán: {phieu.Chandoan}</span>
+                      </div>
+                    </AccordionTrigger>
+                    <AccordionContent className="px-4 pb-4 ">
+                      <Card className="border-none shadow-none p-0 ">
+                        <CardContent className="p-0 space-y-3">
+                          {/* Show chi tiết từng dịch vụ trong phiếu */}
+                          {phieu.BV_PhieuChidinhDVCT.map((ct) => (
+                            <Table>
+                              <TableHeader>
+                                <TableRow>
+                                  <TableHead>Tên dịch vụ</TableHead>
+                                  <TableHead>Người chỉ định</TableHead>
+                                  <TableHead>Người thực hiện</TableHead>
+                                  <TableHead>Số lượng</TableHead>
+                                  <TableHead>Đơn giá</TableHead>
+                                  <TableHead>Đơn giá BH</TableHead>
+                                  <TableHead>Tổng chi phí</TableHead>
+                                  <TableHead>Người thực hiện</TableHead>
+                                  <TableHead>Kết quả</TableHead>
+                                  <TableHead>Trạng thái</TableHead>
 
-              {/* Tab: Toa thuốc */}
-              <TabsContent value="toathuoc">
-                <div className="text-muted-foreground italic">Đang phát triển hoặc chưa có dữ liệu.</div>
-              </TabsContent>
-            </Tabs>
+                                </TableRow>
+                              </TableHeader>
+                              <TableBody>
+                                {phieu.BV_PhieuChidinhDVCT.map((item) => (
+                                  <TableRow key={item.Sovaovien}>
+                                    <TableCell>{item.Sovaovien}</TableCell>
+                                    <TableCell>{formatDateTimeCT(item.TGVao || '')}</TableCell>
+                                    <TableCell>{item.TTPhongKham?.Ten}</TableCell>
+                                    <TableCell>{item.TTBacsi?.Ten}</TableCell>
+                                    <TableCell>{item.LydoVV}</TableCell>
+                                    <TableCell>{item.TTChanDoanChinh?.VVIET}</TableCell>
+                                    <TableCell>{item.TTChanDoanPhu?.VVIET}</TableCell>
+                                    <TableCell>{item.ChandoanKhac}</TableCell>
+                                    <TableCell className="text-right">
+                                      <Button variant="ghost" size="sm" onClick={() => openDetail(item)}>
+                                        <FileText className="w-4 h-4 mr-1" /> Xem chi tiết
+                                      </Button>
+                                    </TableCell>
+                                  </TableRow>
+                                ))}
+                              </TableBody>
+                            </Table>
+                            // <div
+                            //   key={ct.ID}
+                            //   className="flex justify-between items-center border p-3 rounded-lg"
+                            // >
+                            //   <div>
+                            //     <div className="font-medium">{ct.TenDV}</div>
+                            //   </div>
+                            //   <Badge variant={ct.Dathuchien ? 'default' : 'outline'}>
+                            //     {ct.Dathuchien ? 'Đã thực hiện' : "Chưa thực hiện"}
+                            //   </Badge>
+                            // </div>
+                          ))}
+                        </CardContent>
+                      </Card>
+                    </AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+            </TabsContent>
+
+            {/* Tab: Toa thuốc */}
+            <TabsContent value="toathuoc">
+              <div className="text-muted-foreground italic">Đang phát triển hoặc chưa có dữ liệu.</div>
+            </TabsContent>
+          </Tabs>
         </DialogContent>
       </Dialog>
     </div>
