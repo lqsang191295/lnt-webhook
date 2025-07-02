@@ -39,7 +39,7 @@ export default function LoginPage() {
     if (token) {
       router.push(`/patient/${id}`); // đã login → redirect
     }
-  }, []);
+  }, [id, router]);
 
   useEffect(() => {
     if (cooldown <= 0) return;
@@ -88,7 +88,7 @@ export default function LoginPage() {
       localStorage.setItem("token-patient", fakeToken);
 
       ToastSuccess("Đăng nhập thành công");
-      router.push("/");
+      router.push(`/patient/${id}`);
     } catch (ex) {
       console.error("ex handleLogin", ex);
       ToastError("Đăng nhập không thành công");
