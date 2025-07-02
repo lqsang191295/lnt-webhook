@@ -1,7 +1,13 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ToastError, ToastSuccess } from "@/lib/toast";
@@ -26,7 +32,7 @@ export default function LoginPage() {
   // check login nếu có token
   useEffect(() => {
     const token = localStorage.getItem("token-patient");
-    console.log('Token ==== ', token)
+    console.log("Token ==== ", token);
 
     // if (token) {
     //   router.push("/"); // đã login → redirect
@@ -47,6 +53,7 @@ export default function LoginPage() {
     setSendingOTP(true);
     try {
       const otp = genOTP();
+      console.log("otp === ", otp);
       otpValue.current = otp; // giữ lại để so sánh
       await sentOTP(phone, otp);
 
@@ -64,7 +71,7 @@ export default function LoginPage() {
   const handleLogin = async () => {
     setOtpError(false);
 
-    console.log('otpValue.current === ', otpValue.current)
+    console.log("otpValue.current === ", otpValue.current);
 
     if (otp !== otpValue.current) {
       setOtpError(true);
@@ -73,7 +80,9 @@ export default function LoginPage() {
 
     try {
       // demo: tạo token giả (bạn có thể thay bằng JWT thật)
-      const fakeToken = btoa(JSON.stringify({ phone, logged: true, loginAt: Date.now() }));
+      const fakeToken = btoa(
+        JSON.stringify({ phone, logged: true, loginAt: Date.now() })
+      );
       localStorage.setItem("token-patient", fakeToken);
 
       ToastSuccess("Đăng nhập thành công");
@@ -81,7 +90,7 @@ export default function LoginPage() {
     } catch (ex) {
       console.error("ex handleLogin", ex);
       ToastError("Đăng nhập không thành công");
-    } 
+    }
   };
 
   return (
@@ -93,7 +102,9 @@ export default function LoginPage() {
           </div>
           <div className="grid text-left text-sm leading-tight">
             <span className="truncate text-[10px]">BỆNH VIỆN ĐA KHOA</span>
-            <span className="truncate text-base font-semibold">LÊ NGỌC TÙNG</span>
+            <span className="truncate text-base font-semibold">
+              LÊ NGỌC TÙNG
+            </span>
           </div>
         </div>
 
@@ -122,8 +133,7 @@ export default function LoginPage() {
                   type="submit"
                   className="w-full"
                   onClick={handleMobile}
-                  disabled={cooldown > 0 || sendingOTP}
-                >
+                  disabled={cooldown > 0 || sendingOTP}>
                   {cooldown > 0 ? `Vui lòng đợi ${cooldown}s` : "Nhận mã OTP"}
                 </Button>
               </form>
@@ -142,7 +152,9 @@ export default function LoginPage() {
                     className={otpError ? "border-red-500" : ""}
                   />
                   {otpError && (
-                    <span className="text-red-500 text-sm">Mã OTP không đúng</span>
+                    <span className="text-red-500 text-sm">
+                      Mã OTP không đúng
+                    </span>
                   )}
                 </div>
 
@@ -150,8 +162,7 @@ export default function LoginPage() {
                   type="submit"
                   variant="secondary"
                   className="w-full"
-                  onClick={handleLogin}
-                >
+                  onClick={handleLogin}>
                   Đăng nhập
                 </Button>
 
@@ -160,8 +171,7 @@ export default function LoginPage() {
                   type="button"
                   className="w-full"
                   onClick={handleMobile}
-                  disabled={cooldown > 0 || sendingOTP}
-                >
+                  disabled={cooldown > 0 || sendingOTP}>
                   {cooldown > 0 ? `Gửi lại sau ${cooldown}s` : "Gửi lại mã OTP"}
                 </Button>
               </form>

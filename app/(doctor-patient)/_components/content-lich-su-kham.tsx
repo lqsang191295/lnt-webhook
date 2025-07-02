@@ -41,45 +41,113 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { formatVND } from "@/utils/number";
 
+interface iQueryInput {
+  maBN: string;
+  TuNgay?: string;
+  DenNgay?: string;
+}
+
+interface iQueryPcdDVInput {
+  maBN: string;
+  Ngay: string;
+}
+
+interface iData {
+  Sovaovien: string;
+  TGVao: string;
+  TTPhongKham?: { Ten: string };
+  TTBacsi?: { Ten: string };
+  LydoVV: string;
+  TTChanDoanChinh?: { VVIET: string };
+  TTChanDoanPhu?: { VVIET: string };
+  ChandoanKhac: string;
+  Ngay: string;
+  ID: string;
+}
+
+interface iDataPcdDV {
+  ID: string;
+  Ngay: string;
+  TTBacsiKham?: { Ten: string };
+  TTPhongKham?: { Ten: string };
+  Chandoan: string;
+  BV_PhieuChidinhDVCT: Array<iDataPcdDVCT>;
+}
+
+interface iDataPcdDVCT {
+  ID: string;
+  MaDV: string;
+  TenDV: string;
+  TTNguoiChiDinh?: { Ten: string };
+  TTNguoithuchien?: { Ten: string };
+  Soluong: number;
+  Dongia: number;
+  DongiaBH: number;
+  Tongchiphi: number;
+  Ketqua: string;
+  Dathuchien: boolean;
+}
+
+interface iDataToaThuoc {
+  ID: string;
+  Ngay: string;
+  TTBacsiKeToa?: { Ten: string };
+  TTPhongKham?: { Ten: string };
+  Ghichu: string;
+  BV_ToathuocCT: Array<iDataToaThuocCT>;
+}
+
+interface iDataToaThuocCT {
+  ID: string;
+  Ma: string;
+  Ten: string;
+  Hoatchat: string;
+  Hamluong: string;
+  TTBsKetoa?: { Ten: string };
+  Soluong: number;
+  Dongia: number;
+  DongiaBH: number;
+  Ghichu: string;
+}
 export default function ContentLichSuKham() {
   const params = useParams();
   const maBN = params.patient_id as string;
 
   const today = new Date();
-  const [fromDate, setFromDate] = useState<Date>(today);
-  const [toDate, setToDate] = useState<Date>(today);
-  const [selected, setSelected] = useState<any>(null);
+  const [fromDate, setFromDate] = useState<Date | undefined>(today);
+  const [toDate, setToDate] = useState<Date | undefined>(today);
+  // const [selected, setSelected] = useState<any>(null);
   const [open, setOpen] = useState(false);
-  const [queryInput, setQueryInput] = useState<any>(null);
-  const [queryPcdDVInput, setQueryPcdDVInput] = useState<any>(null);
+  const [queryInput, setQueryInput] = useState<iQueryInput | null>(null);
+  const [queryPcdDVInput, setQueryPcdDVInput] =
+    useState<iQueryPcdDVInput | null>(null);
 
-  const { data, refetch, isFetching, isFetched } =
-    trpc.BV_Master.getByMaBN.useQuery(queryInput!, {
-      enabled: !!queryInput, // chỉ chạy nếu có input
-    });
-
-  const {
-    data: dataPcdDV,
-    refetch: refetchPcdDV,
-    isFetching: isFetchingPcdDV,
-    isFetched: isFetchedPcdDV,
-  } = trpc.BV_PhieuChidinhDV.getByMaBN.useQuery(queryPcdDVInput!, {
-    enabled: !!queryPcdDVInput, // chỉ chạy nếu có input
+  const { data, isFetching } = trpc.BV_Master.getByMaBN.useQuery(queryInput!, {
+    enabled: !!queryInput, // chỉ chạy nếu có input
   });
-  const {
-    data: dataToaThuoc,
-    refetch: refetchToaThuoc,
-    isFetching: isFetchingToaThuoc,
-    isFetched: isFetchedToaThuoc,
-  } = trpc.BV_Toathuoc.getByMaBN.useQuery(queryPcdDVInput!, {
-    enabled: !!queryPcdDVInput, // chỉ chạy nếu có input
-  });
+  const { data: dataPcdDV } = trpc.BV_PhieuChidinhDV.getByMaBN.useQuery(
+    queryPcdDVInput!,
+    {
+      enabled: !!queryPcdDVInput, // chỉ chạy nếu có input
+    }
+  );
+  const { data: dataToaThuoc } = trpc.BV_Toathuoc.getByMaBN.useQuery(
+    queryPcdDVInput!,
+    {
+      enabled: !!queryPcdDVInput, // chỉ chạy nếu có input
+    }
+  );
 
   console.log("data ==== ", data);
   console.log("dataPcdDV ==== ", dataPcdDV);
-  console.log("dataToaThuoc ===== ", dataToaThuoc)
+  console.log("dataToaThuoc ===== ", dataToaThuoc);
 
   const handleFilter = () => {
+    if (!fromDate || !toDate) {
+      alert("Vui lòng chọn cả hai ngày");
+      return;
+    }
+
     const from = new Date(format(fromDate, "yyyy-MM-dd"));
     const to = new Date(format(toDate, "yyyy-MM-dd"));
     setQueryInput({
@@ -93,8 +161,8 @@ export default function ContentLichSuKham() {
     setQueryInput({ maBN }); // không lọc theo ngày
   };
 
-  const openDetail = (item: any) => {
-    setSelected(item);
+  const openDetail = (item: iData) => {
+    // setSelected(item);
     setOpen(true);
 
     setQueryPcdDVInput({
@@ -202,7 +270,7 @@ export default function ContentLichSuKham() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {data.map((item) => (
+                {data.map((item: iData) => (
                   <TableRow key={item.Sovaovien}>
                     <TableCell>{item.Sovaovien}</TableCell>
                     <TableCell>{formatDateTimeCT(item.TGVao || "")}</TableCell>
@@ -253,74 +321,98 @@ export default function ContentLichSuKham() {
               <Accordion
                 type="multiple"
                 className="w-full space-y-2 overflow-auto">
-                {dataPcdDV && dataPcdDV.length > 0 && dataPcdDV?.map((phieu: any) => (
-                  <AccordionItem
-                    value={phieu.ID}
-                    key={phieu.ID}
-                    className="border rounded-lg !border-b ">
-                    <AccordionTrigger className="px-4 py-2 text-left">
-                      <div className="flex flex-col">
-                        <span className="font-medium">
-                          Mã phiếu: {phieu.ID}
-                        </span>
-                        <span className="text-sm text-muted-foreground">
-                          Ngày chỉ định: {formatDateToDDMMYYYY(phieu.Ngay)} •
-                          Bác sĩ: {phieu.TTBacsiKham?.Ten} • Khoa:{" "}
-                          {phieu.TTPhongKham?.Ten}
-                        </span>
-                        <span className="text-sm text-orange-500 italic">
-                          Chẩn đoán: {phieu.Chandoan}
-                        </span>
-                      </div>
-                    </AccordionTrigger>
-                    <AccordionContent className="px-4 pb-4 ">
-                      <Card className="border-none shadow-none p-0 ">
-                        <CardContent className="p-0 space-y-3">
-                          {/* Show chi tiết từng dịch vụ trong phiếu */}
-                          <Table key="">
-                            <TableHeader>
-                              <TableRow>
-                                <TableHead>Mã dịch vụ</TableHead>
-                                <TableHead>Tên dịch vụ</TableHead>
-                                <TableHead>Người chỉ định</TableHead>
-                                <TableHead>Người thực hiện</TableHead>
-                                <TableHead>Số lượng</TableHead>
-                                <TableHead>Đơn giá</TableHead>
-                                <TableHead>Đơn giá BH</TableHead>
-                                <TableHead>Tổng chi phí</TableHead>
-                                <TableHead>Kết quả</TableHead>
-                                <TableHead>Trạng thái</TableHead>
-                              </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                              {phieu.BV_PhieuChidinhDVCT.map((item: any) => (
-                                <TableRow key={item.ID}>
-                                  <TableCell>{item.MaDV}</TableCell>
-                                  <TableCell>{item.TenDV}</TableCell>
-                                  <TableCell>{item.TTNguoiChiDinh?.Ten}</TableCell>
-                                  <TableCell>{item.TTNguoithuchien?.Ten}</TableCell>
-                                  <TableCell>{item.Soluong}</TableCell>
-                                  <TableCell>{formatVND(item.Dongia)}</TableCell>
-                                  <TableCell>{formatVND(item.DongiaBH)}</TableCell>
-                                  <TableCell>{formatVND(item.Tongchiphi)}</TableCell>
-                                  <TableCell>{item.Ketqua}</TableCell>
-                                  <TableCell>
-                                    <Badge variant={item.Dathuchien ? 'default' : 'outline'}>
-                                      {item.Dathuchien ? 'Đã thực hiện' : "Chưa thực hiện"}
-                                    </Badge>
-                                  </TableCell>
+                {dataPcdDV &&
+                  dataPcdDV.length > 0 &&
+                  dataPcdDV?.map((phieu: iDataPcdDV) => (
+                    <AccordionItem
+                      value={phieu.ID}
+                      key={phieu.ID}
+                      className="border rounded-lg !border-b ">
+                      <AccordionTrigger className="px-4 py-2 text-left">
+                        <div className="flex flex-col">
+                          <span className="font-medium">
+                            Mã phiếu: {phieu.ID}
+                          </span>
+                          <span className="text-sm text-muted-foreground">
+                            Ngày chỉ định: {formatDateToDDMMYYYY(phieu.Ngay)} •
+                            Bác sĩ: {phieu.TTBacsiKham?.Ten} • Khoa:{" "}
+                            {phieu.TTPhongKham?.Ten}
+                          </span>
+                          <span className="text-sm text-orange-500 italic">
+                            Chẩn đoán: {phieu.Chandoan}
+                          </span>
+                        </div>
+                      </AccordionTrigger>
+                      <AccordionContent className="px-4 pb-4 ">
+                        <Card className="border-none shadow-none p-0 ">
+                          <CardContent className="p-0 space-y-3">
+                            {/* Show chi tiết từng dịch vụ trong phiếu */}
+                            <Table key="">
+                              <TableHeader>
+                                <TableRow>
+                                  <TableHead>Mã dịch vụ</TableHead>
+                                  <TableHead>Tên dịch vụ</TableHead>
+                                  <TableHead>Người chỉ định</TableHead>
+                                  <TableHead>Người thực hiện</TableHead>
+                                  <TableHead>Số lượng</TableHead>
+                                  <TableHead>Đơn giá</TableHead>
+                                  <TableHead>Đơn giá BH</TableHead>
+                                  <TableHead>Tổng chi phí</TableHead>
+                                  <TableHead>Kết quả</TableHead>
+                                  <TableHead>Trạng thái</TableHead>
                                 </TableRow>
-                              ))}
-                            </TableBody>
-                          </Table>
-                        </CardContent>
-                      </Card>
-                    </AccordionContent>
-                  </AccordionItem>
-                ))}
+                              </TableHeader>
+                              <TableBody>
+                                {phieu.BV_PhieuChidinhDVCT.map(
+                                  (item: iDataPcdDVCT) => (
+                                    <TableRow key={item.ID}>
+                                      <TableCell>{item.MaDV}</TableCell>
+                                      <TableCell>{item.TenDV}</TableCell>
+                                      <TableCell>
+                                        {item.TTNguoiChiDinh?.Ten}
+                                      </TableCell>
+                                      <TableCell>
+                                        {item.TTNguoithuchien?.Ten}
+                                      </TableCell>
+                                      <TableCell>{item.Soluong}</TableCell>
+                                      <TableCell>
+                                        {formatVND(item.Dongia)}
+                                      </TableCell>
+                                      <TableCell>
+                                        {formatVND(item.DongiaBH)}
+                                      </TableCell>
+                                      <TableCell>
+                                        {formatVND(item.Tongchiphi)}
+                                      </TableCell>
+                                      <TableCell>{item.Ketqua}</TableCell>
+                                      <TableCell>
+                                        <Badge
+                                          variant={
+                                            item.Dathuchien
+                                              ? "default"
+                                              : "outline"
+                                          }>
+                                          {item.Dathuchien
+                                            ? "Đã thực hiện"
+                                            : "Chưa thực hiện"}
+                                        </Badge>
+                                      </TableCell>
+                                    </TableRow>
+                                  )
+                                )}
+                              </TableBody>
+                            </Table>
+                          </CardContent>
+                        </Card>
+                      </AccordionContent>
+                    </AccordionItem>
+                  ))}
 
-                {dataPcdDV && dataPcdDV.length === 0 &&
-                  <div className="w-full h-full flex justify-center items-center">Không có dữ liệu</div>}
+                {dataPcdDV && dataPcdDV.length === 0 && (
+                  <div className="w-full h-full flex justify-center items-center">
+                    Không có dữ liệu
+                  </div>
+                )}
               </Accordion>
             </TabsContent>
 
@@ -329,67 +421,81 @@ export default function ContentLichSuKham() {
               <Accordion
                 type="multiple"
                 className="w-full space-y-2 overflow-auto">
-                {dataToaThuoc && dataToaThuoc.length > 0 && dataToaThuoc.map((phieu: any) => (
-                  <AccordionItem
-                    value={phieu.ID}
-                    key={phieu.ID}
-                    className="border rounded-lg !border-b ">
-                    <AccordionTrigger className="px-4 py-2 text-left">
-                      <div className="flex flex-col">
-                        <span className="font-medium">
-                          Mã phiếu: {phieu.ID}
-                        </span>
-                        <span className="text-sm text-muted-foreground">
-                          Ngày chỉ định: {formatDateToDDMMYYYY(phieu.Ngay)} •
-                          Bác sĩ: {phieu.TTBacsiKeToa?.Ten} • Khoa: {phieu.TTPhongKham?.Ten}
-                        </span>
-                        <span className="text-sm text-orange-500 italic">
-                          Ghi chú: {phieu.Ghichu}
-                        </span>
-                      </div>
-                    </AccordionTrigger>
-                    <AccordionContent className="px-4 pb-4 ">
-                      <Card className="border-none shadow-none p-0 ">
-                        <CardContent className="p-0 space-y-3">
-                          {/* Show chi tiết từng dịch vụ trong phiếu */}
-                          <Table key="">
-                            <TableHeader>
-                              <TableRow>
-                                <TableHead>Mã dịch vụ</TableHead>
-                                <TableHead>Tên dịch vụ</TableHead>
-                                <TableHead>Hoạt chất</TableHead>
-                                <TableHead>Hàm lượng</TableHead>
-                                <TableHead>Bác sĩ kê toa</TableHead>
-                                <TableHead>Số lượng</TableHead>
-                                <TableHead>Đơn giá</TableHead>
-                                <TableHead>Đơn giá BH</TableHead>
-                                <TableHead>Ghi chú</TableHead>
-                              </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                              {phieu.BV_ToathuocCT.map((item: any) => (
-                                <TableRow key={item.ID}>
-                                  <TableCell>{item.Ma}</TableCell>
-                                  <TableCell>{item.Ten}</TableCell>
-                                  <TableCell>{item.Hoatchat}</TableCell>
-                                  <TableCell>{item.Hamluong}</TableCell>
-                                  <TableCell>{item.TTBsKetoa?.Ten}</TableCell>
-                                  <TableCell>{item.Soluong}</TableCell>
-                                  <TableCell>{formatVND(item.Dongia)}</TableCell>
-                                  <TableCell>{formatVND(item.DongiaBH)}</TableCell>
-                                  <TableCell>{item.Ghichu}</TableCell>
+                {dataToaThuoc &&
+                  dataToaThuoc.length > 0 &&
+                  dataToaThuoc.map((phieu: iDataToaThuoc) => (
+                    <AccordionItem
+                      value={phieu.ID}
+                      key={phieu.ID}
+                      className="border rounded-lg !border-b ">
+                      <AccordionTrigger className="px-4 py-2 text-left">
+                        <div className="flex flex-col">
+                          <span className="font-medium">
+                            Mã phiếu: {phieu.ID}
+                          </span>
+                          <span className="text-sm text-muted-foreground">
+                            Ngày chỉ định: {formatDateToDDMMYYYY(phieu.Ngay)} •
+                            Bác sĩ: {phieu.TTBacsiKeToa?.Ten} • Khoa:{" "}
+                            {phieu.TTPhongKham?.Ten}
+                          </span>
+                          <span className="text-sm text-orange-500 italic">
+                            Ghi chú: {phieu.Ghichu}
+                          </span>
+                        </div>
+                      </AccordionTrigger>
+                      <AccordionContent className="px-4 pb-4 ">
+                        <Card className="border-none shadow-none p-0 ">
+                          <CardContent className="p-0 space-y-3">
+                            {/* Show chi tiết từng dịch vụ trong phiếu */}
+                            <Table key="">
+                              <TableHeader>
+                                <TableRow>
+                                  <TableHead>Mã dịch vụ</TableHead>
+                                  <TableHead>Tên dịch vụ</TableHead>
+                                  <TableHead>Hoạt chất</TableHead>
+                                  <TableHead>Hàm lượng</TableHead>
+                                  <TableHead>Bác sĩ kê toa</TableHead>
+                                  <TableHead>Số lượng</TableHead>
+                                  <TableHead>Đơn giá</TableHead>
+                                  <TableHead>Đơn giá BH</TableHead>
+                                  <TableHead>Ghi chú</TableHead>
                                 </TableRow>
-                              ))}
-                            </TableBody>
-                          </Table>
-                        </CardContent>
-                      </Card>
-                    </AccordionContent>
-                  </AccordionItem>
-                ))}
+                              </TableHeader>
+                              <TableBody>
+                                {phieu.BV_ToathuocCT.map(
+                                  (item: iDataToaThuocCT) => (
+                                    <TableRow key={item.ID}>
+                                      <TableCell>{item.Ma}</TableCell>
+                                      <TableCell>{item.Ten}</TableCell>
+                                      <TableCell>{item.Hoatchat}</TableCell>
+                                      <TableCell>{item.Hamluong}</TableCell>
+                                      <TableCell>
+                                        {item.TTBsKetoa?.Ten}
+                                      </TableCell>
+                                      <TableCell>{item.Soluong}</TableCell>
+                                      <TableCell>
+                                        {formatVND(item.Dongia)}
+                                      </TableCell>
+                                      <TableCell>
+                                        {formatVND(item.DongiaBH)}
+                                      </TableCell>
+                                      <TableCell>{item.Ghichu}</TableCell>
+                                    </TableRow>
+                                  )
+                                )}
+                              </TableBody>
+                            </Table>
+                          </CardContent>
+                        </Card>
+                      </AccordionContent>
+                    </AccordionItem>
+                  ))}
 
-                {dataToaThuoc && dataToaThuoc.length === 0 &&
-                  <div className="w-full h-full flex justify-center items-center">Không có dữ liệu</div>}
+                {dataToaThuoc && dataToaThuoc.length === 0 && (
+                  <div className="w-full h-full flex justify-center items-center">
+                    Không có dữ liệu
+                  </div>
+                )}
               </Accordion>
             </TabsContent>
           </Tabs>
