@@ -15,6 +15,20 @@ export default function Page() {
     sidebarItems[0]
   );
   const tokenPatient = localStorage.getItem("token-patient");
+
+  if (tokenPatient) {
+    try {
+      const parsedToken = JSON.parse(tokenPatient);
+      if (parsedToken && parsedToken.phone) {
+        usePatientStore.getState().setPhone(parsedToken.phone);
+        usePatientStore.getState().setLogged(true);
+      }
+    } catch (error) {
+      console.error("Error parsing token-patient:", error);
+      localStorage.removeItem("token-patient");
+      router.push("/patient/login");
+    }
+  }
   console.log("tokenPatient === ", tokenPatient);
   const { patient: patientData } = usePatientStore();
 
