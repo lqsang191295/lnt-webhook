@@ -18,7 +18,7 @@ export default function Page() {
 
   if (tokenPatient) {
     try {
-      const parsedToken = JSON.parse(tokenPatient);
+      const parsedToken = JSON.parse(atob(tokenPatient));
       if (parsedToken && parsedToken.phone) {
         usePatientStore.getState().setPhone(parsedToken.phone);
         usePatientStore.getState().setLogged(true);
