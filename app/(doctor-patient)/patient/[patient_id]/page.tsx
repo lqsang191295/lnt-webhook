@@ -14,7 +14,11 @@ export default function Page() {
   const [navbarItem, setNavbarItem] = useState<iNavbarItemType>(
     sidebarItems[0]
   );
+  const tokenPatient = localStorage.getItem("token-patient");
+  console.log("tokenPatient === ", tokenPatient);
   const { patient: patientData } = usePatientStore();
+
+  console.log("patientData === ", patientData);
 
   if (!patientData || !patientData.logged) {
     router.push("/patient/login");
