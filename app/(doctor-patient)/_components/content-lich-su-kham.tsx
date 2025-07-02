@@ -138,6 +138,7 @@ export default function ContentLichSuKham() {
                     selected={fromDate}
                     onSelect={setFromDate}
                     locale={vi}
+                    required={false}
                   />
                 </PopoverContent>
               </Popover>
@@ -164,7 +165,7 @@ export default function ContentLichSuKham() {
                     selected={toDate}
                     onSelect={setToDate}
                     locale={vi}
-                    varia
+                    required={false}
                   />
                 </PopoverContent>
               </Popover>
@@ -324,7 +325,7 @@ export default function ContentLichSuKham() {
             </TabsContent>
 
             {/* Tab: Toa thuốc */}
-            <TabsContent value="toathuoc">
+            <TabsContent value="toathuoc" className="overflow-auto">
               <Accordion
                 type="multiple"
                 className="w-full space-y-2 overflow-auto">
