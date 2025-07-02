@@ -7,10 +7,13 @@ import { sidebarItems } from "@/constant/nav-bar";
 import { iNavbarItemType } from "@/types/nav-bar";
 import NavbarMobile from "../../_components/nav-bar-mobile";
 import { usePatientStore } from "@/store/patient-store";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 
 export default function Page() {
   const router = useRouter();
+  const params = useParams();
+  const maBN = params.patient_id as string;
+
   const [navbarItem, setNavbarItem] = useState<iNavbarItemType>(
     sidebarItems[0]
   );
@@ -26,7 +29,7 @@ export default function Page() {
     } catch (error) {
       console.error("Error parsing token-patient:", error);
       localStorage.removeItem("token-patient");
-      router.push("/patient/login");
+      router.push(`/patient/login?id=${maBN}`);
     }
   }
   console.log("tokenPatient === ", tokenPatient);
@@ -35,7 +38,7 @@ export default function Page() {
   console.log("patientData === ", patientData);
 
   if (!patientData || !patientData.logged) {
-    router.push("/patient/login");
+    router.push(`/patient/login?id=${maBN}`);
   }
 
   return (

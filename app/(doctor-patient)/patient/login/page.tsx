@@ -13,11 +13,13 @@ import { Label } from "@/components/ui/label";
 import { ToastError, ToastSuccess } from "@/lib/toast";
 import { genOTP, sentOTP } from "@/utils/otp";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const id = searchParams.get("id");
 
   const [form, setForm] = useState<"phone" | "otp">("phone");
   const [phone, setPhone] = useState("");
@@ -34,9 +36,9 @@ export default function LoginPage() {
     const token = localStorage.getItem("token-patient");
     console.log("Token ==== ", token);
 
-    // if (token) {
-    //   router.push("/"); // đã login → redirect
-    // }
+    if (token) {
+      router.push(`/patient/${id}`); // đã login → redirect
+    }
   }, []);
 
   useEffect(() => {
