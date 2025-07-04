@@ -271,7 +271,7 @@ export default function ContentLichSuKham() {
               </TableHeader>
               <TableBody>
                 {data.map((item: iData) => (
-                  <TableRow key={item.Sovaovien}>
+                  <TableRow key={item.ID}>
                     <TableCell>{item.Sovaovien}</TableCell>
                     <TableCell>{formatDateTimeCT(item.TGVao || "")}</TableCell>
                     <TableCell>{item.TTPhongKham?.Ten}</TableCell>

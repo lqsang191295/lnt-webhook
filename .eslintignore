@@ -1,2 +1,9 @@
 lib/generated/
 lib/generated/prisma/
+// eslint.config.js
+export default [
+  {
+    ignores: ['node_modules', '.next', 'public'],
+    // ... các config khác
+  }
+]
