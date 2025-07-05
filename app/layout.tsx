@@ -13,9 +13,10 @@ import { usePathname } from "next/navigation";
 import { useZaloData } from "@/store/zalo-data-store";
 import { memo, useCallback, useEffect, useState } from "react";
 import { getZaloDsTemplate, getZaloToken } from "./(zalo)/token/_actions";
-import { httpBatchLink } from '@trpc/client'
-import { QueryClient } from '@tanstack/react-query'
+import { httpBatchLink } from "@trpc/client";
+import { QueryClient } from "@tanstack/react-query";
 import { trpc } from "@/trpc/client";
+import { ThemeProvider } from "@ui5/webcomponents-react";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -37,7 +38,6 @@ const RootLayout = ({
 }: Readonly<{
   children: React.ReactNode;
 }>) => {
-
   const pathname = usePathname();
   const pathnameNotUseLayout = [
     "/login",
@@ -49,6 +49,7 @@ const RootLayout = ({
     "/wait-access-device",
     "/terms-of-service",
     "/privacy-policy",
+    "/erm",
   ];
 
   const useNoLayout = pathnameNotUseLayout.some((path) =>
@@ -73,12 +74,12 @@ const RootLayout = ({
     });
   }, [setAccessToken, setDsTempalte, setRefreshToken]);
 
-  const [queryClient] = useState(() => new QueryClient())
+  const [queryClient] = useState(() => new QueryClient());
   const [trpcClient] = useState(() =>
     trpc.createClient({
-      links: [httpBatchLink({ url: '/api/trpc' })],
+      links: [httpBatchLink({ url: "/api/trpc" })],
     })
-  )
+  );
 
   useEffect(() => {
     loadZaloDataAsync();
@@ -88,9 +89,11 @@ const RootLayout = ({
     return (
       <html lang="en">
         <body>
-          <trpc.Provider client={trpcClient} queryClient={queryClient}>
-            <GlobalVariablesProvider>{children}</GlobalVariablesProvider>
-          </trpc.Provider>
+          <ThemeProvider>
+            <trpc.Provider client={trpcClient} queryClient={queryClient}>
+              <GlobalVariablesProvider>{children}</GlobalVariablesProvider>
+            </trpc.Provider>
+          </ThemeProvider>
           <Toaster />
         </body>
       </html>

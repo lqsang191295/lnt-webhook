@@ -1,4 +1,6 @@
 @import "tailwindcss";
+@import "@sap-ui/common-css/dist/sap-content-paddings.css";
+@import "@sap-ui/common-css/dist/sap-container-type.css";
 
 @plugin "tailwindcss-animate";
 
