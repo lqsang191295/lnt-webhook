@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useCallback, useEffect } from "react";
 import Header from "../../_components/header";
 import {
   Button,
@@ -23,12 +23,44 @@ import "@ui5/webcomponents-icons/dist/add.js";
 import "@ui5/webcomponents-icons/dist/locked.js";
 import "@ui5/webcomponents-icons/dist/delete.js";
 import "@ui5/webcomponents-icons/dist/search.js";
-import "@ui5/webcomponents-icons/dist/search.js";
 import "@ui5/webcomponents-icons-tnt/dist/user.js";
+import { iFileOfPatientData } from "@/types/patient";
+import { getFilePatientData } from "@/app/(doctor-patient)/_actions";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import ImageGallery from "@/components/image-gallery";
+import Spinner from "@/components/spinner";
 
 export default function Content() {
+  const patient_id = "068142";
   const [openDialog, setOpenDiaglog] = React.useState<boolean>(false);
   const [openMessage, setOpenMessage] = React.useState<boolean>(false);
+  const [loading, setLoading] = React.useState<boolean>(false);
+  const [data, setData] = React.useState<iFileOfPatientData[]>([]);
+
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true);
+
+      const filesData = await getFilePatientData(patient_id);
+
+      console.log("filesData----------- ", filesData);
+
+      setData(filesData);
+    } catch (err) {
+      console.error("Lỗi khi tải dữ liệu:", err);
+    } finally {
+      setLoading(false);
+    }
+  }, [patient_id]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   return (
     <div className="flex flex-col h-screen overflow-hidden">
@@ -207,11 +239,14 @@ export default function Content() {
                 {i <= 2 ? <Icon name="accept" /> : <Icon name="decline" />}
               </TableCell>
               <TableCell>
-                <Button onClick={() => setOpenDiaglog(false)}>
+                <Button onClick={() => setOpenDiaglog(true)}>
                   <Icon name="edit" />
                 </Button>
                 <Button onClick={() => setOpenMessage(true)}>
                   <Icon name="delete" />
+                </Button>
+                <Button onClick={() => setOpenDiaglog(true)}>
+                  <Icon name="search" />
                 </Button>
               </TableCell>
             </TableRow>
@@ -220,7 +255,7 @@ export default function Content() {
 
         {/* Dialog add, edit */}
         <Dialog
-          className="w-full max-w-2xl"
+          className="w-full h-full"
           open={openDialog}
           footer={
             <FlexBox
@@ -231,12 +266,12 @@ export default function Content() {
               <Button onClick={() => setOpenDiaglog(false)}>Đóng</Button>
             </FlexBox>
           }
-          headerText="Thêm chữ ký"
+          headerText="Xem hồ sơ bệnh án"
           onBeforeClose={function Xs() {}}
           onBeforeOpen={function Xs() {}}
           onClose={function Xs() {}}
           onOpen={function Xs() {}}>
-          <div className="flex flex-col gap-4 w-full">
+          {/* <div className="flex flex-col gap-4 w-full">
             <div className="flex flex-col w-full">
               <Label>Mã nhân viên (*)</Label>
               <Input className="w-full" type="Text" />
@@ -320,7 +355,32 @@ export default function Content() {
               <Label>Uri (*)</Label>
               <Input className="w-full" type="Text" />
             </div>
-          </div>
+          </div> */}
+          <main className="gap-2 overflow-auto p-4 h-full">
+            {!loading && (
+              <Accordion
+                type="multiple"
+                defaultValue={data.map((_, i) => `item-${i}`)}>
+                {data.map((d, i) => {
+                  return (
+                    <AccordionItem
+                      value={`item-${i}`}
+                      key={`AccordionItem-${i}`}>
+                      <AccordionTrigger>Ngày {d.dateFolder}</AccordionTrigger>
+                      <AccordionContent>
+                        <ImageGallery files={d.files} />
+                      </AccordionContent>
+                    </AccordionItem>
+                  );
+                })}
+              </Accordion>
+            )}
+            {loading && (
+              <div className="w-full h-full flex justify-center items-center gap-2">
+                <Spinner /> <Label>Loading...</Label>
+              </div>
+            )}
+          </main>
         </Dialog>
 
         {/* Message box for delete */}
