@@ -24,7 +24,7 @@ import "@ui5/webcomponents-icons-tnt/dist/user.js";
 export default function ErmTaiKhoan() {
   return (
     <div className="flex flex-col h-screen overflow-hidden">
-      <Header />
+      <Header bearcums="Quản lý tài khoản" />
 
       <div className="flex flex-col flex-1 overflow-hidden p-4">
         <Bar

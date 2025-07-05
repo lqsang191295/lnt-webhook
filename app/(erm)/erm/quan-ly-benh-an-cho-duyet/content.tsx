@@ -10,6 +10,8 @@ import {
   Icon,
   Input,
   Label,
+  MediaGallery,
+  MediaGalleryItem,
   MessageBox,
   Option,
   Select,
@@ -25,6 +27,7 @@ import "@ui5/webcomponents-icons/dist/delete.js";
 import "@ui5/webcomponents-icons/dist/search.js";
 import "@ui5/webcomponents-icons/dist/search.js";
 import "@ui5/webcomponents-icons-tnt/dist/user.js";
+import Image from "next/image";
 
 export default function Content() {
   const [openDialog, setOpenDiaglog] = React.useState<boolean>(false);
@@ -32,7 +35,7 @@ export default function Content() {
 
   return (
     <div className="flex flex-col h-screen overflow-hidden">
-      <Header bearcums="Quản lý hồ sơ bệnh án" />
+      <Header bearcums="Quản lý bệnh án chờ duyệt" />
 
       <div className="flex flex-col flex-1 overflow-hidden p-4">
         <FlexBox
@@ -207,7 +210,7 @@ export default function Content() {
                 {i <= 2 ? <Icon name="accept" /> : <Icon name="decline" />}
               </TableCell>
               <TableCell>
-                <Button onClick={() => setOpenDiaglog(false)}>
+                <Button onClick={() => setOpenDiaglog(true)}>
                   <Icon name="edit" />
                 </Button>
                 <Button onClick={() => setOpenMessage(true)}>
@@ -220,107 +223,92 @@ export default function Content() {
 
         {/* Dialog add, edit */}
         <Dialog
-          className="w-full max-w-2xl"
+          className="w-full h-full overflow-auto"
           open={openDialog}
           footer={
             <FlexBox
               fitContainer
               justifyContent="End"
-              style={{ paddingBlock: "0.25rem" }}>
-              <Button onClick={() => setOpenDiaglog(false)}>Lưu</Button>
-              <Button onClick={() => setOpenDiaglog(false)}>Đóng</Button>
+              style={{ paddingBlock: "0.25rem" }}
+              className="gap-2 flex">
+              <Button
+                design="Emphasized"
+                onClick={() => setOpenDiaglog(false)}
+                icon="accept">
+                Duyệt
+              </Button>
+              <Button
+                design="Negative"
+                onClick={() => setOpenDiaglog(false)}
+                icon="decline">
+                Trả về
+              </Button>
+              <Button className="border" onClick={() => setOpenDiaglog(false)}>
+                Đóng
+              </Button>
             </FlexBox>
           }
-          headerText="Thêm chữ ký"
+          headerText="Bệnh án"
           onBeforeClose={function Xs() {}}
           onBeforeOpen={function Xs() {}}
           onClose={function Xs() {}}
           onOpen={function Xs() {}}>
-          <div className="flex flex-col gap-4 w-full">
-            <div className="flex flex-col w-full">
-              <Label>Mã nhân viên (*)</Label>
-              <Input className="w-full" type="Text" />
-            </div>
-            <div className="flex flex-row w-full gap-6">
-              <div className="flex flex-1 flex-col w-full">
-                <Label>Khoa/Phòng (*)</Label>
-                <Input className="w-full" type="Text" />
-              </div>
-              <div className="flex flex-1 flex-col w-full">
-                <Label>Chức vụ (*)</Label>
-                <Input className="w-full" type="Text" />
-              </div>
-            </div>
-            <div className="flex flex-row w-full gap-6">
-              <div className="flex flex-1 flex-col w-full">
-                <Label>Ngày hiệu lực (*)</Label>
-                <DatePicker
-                  onChange={function Xs() {}}
-                  onClose={function Xs() {}}
-                  onInput={function Xs() {}}
-                  onOpen={function Xs() {}}
-                  onValueStateChange={function Xs() {}}
-                  primaryCalendarType="Gregorian"
-                  valueState="None"
-                />
-              </div>
-              <div className="flex flex-1 flex-col w-full">
-                <Label>Ngày hết hạn (*)</Label>
-                <DatePicker
-                  onChange={function Xs() {}}
-                  onClose={function Xs() {}}
-                  onInput={function Xs() {}}
-                  onOpen={function Xs() {}}
-                  onValueStateChange={function Xs() {}}
-                  primaryCalendarType="Gregorian"
-                  valueState="None"
-                />
-              </div>
-            </div>
-            <div className="flex flex-1 flex-col w-full">
-              <Label>File chữ ký (*)</Label>
-              <div className="flex flex-col gap-2 border border-gray-200">
-                <div className="flex flex-row items-center justify-between p-2 bg-gray-100">
-                  <Button design="Emphasized" icon="add">
-                    Chọn file
-                  </Button>
-                </div>
-                <div className="p-2">
-                  <Label>CKS_Bs_Le_Van_A.txt</Label>
-                </div>
-              </div>
-            </div>
-            <div className="flex flex-1 flex-col w-full">
-              <Label>File con dấu (*)</Label>
-              <div className="flex flex-col gap-2 border border-gray-200">
-                <div className="flex flex-row items-center justify-between p-2 bg-gray-100">
-                  <Button design="Emphasized" icon="add">
-                    Chọn file
-                  </Button>
-                </div>
-                <div className="p-2">
-                  <Label>CKS_Bs_Le_Van_A.txt</Label>
-                </div>
-              </div>
-            </div>
-            <div className="flex flex-1 flex-col w-full">
-              <Label className="font-bold">Thông tin chữ ký</Label>
-              <div className="flex flex-row w-full gap-6 mt-1">
-                <div className="flex flex-1 flex-col w-full">
-                  <Label>API Key (*)</Label>
-                  <Input className="w-full" type="Text" />
-                </div>
-                <div className="flex flex-1 flex-col w-full">
-                  <Label>Mã bí mật (*)</Label>
-                  <Input className="w-full" type="Text" />
-                </div>
-              </div>
-            </div>
-            <div className="flex flex-1 flex-col w-full">
-              <Label>Uri (*)</Label>
-              <Input className="w-full" type="Text" />
-            </div>
-          </div>
+          <MediaGallery
+            layout="Auto"
+            menuHorizontalAlign="Left"
+            menuVerticalAlign="Bottom"
+            onDisplayAreaClick={function Xs() {}}
+            onOverflowClick={function Xs() {}}
+            onSelectionChange={function Xs() {}}>
+            <MediaGalleryItem>
+              <Image
+                src="/icons/user.png"
+                width={100}
+                height={100}
+                alt="icon"
+              />
+            </MediaGalleryItem>
+            <MediaGalleryItem>
+              <Image
+                src="/icons/user.png"
+                width={100}
+                height={100}
+                alt="icon"
+              />
+            </MediaGalleryItem>
+            <MediaGalleryItem>
+              <Image
+                src="/icons/user.png"
+                width={100}
+                height={100}
+                alt="icon"
+              />
+            </MediaGalleryItem>
+            <MediaGalleryItem>
+              <Image
+                src="/icons/user.png"
+                width={100}
+                height={100}
+                alt="icon"
+              />
+            </MediaGalleryItem>
+            <MediaGalleryItem>
+              <Image
+                src="/icons/user.png"
+                width={100}
+                height={100}
+                alt="icon"
+              />
+            </MediaGalleryItem>
+            <MediaGalleryItem>
+              <Image
+                src="/icons/user.png"
+                width={100}
+                height={100}
+                alt="icon"
+              />
+            </MediaGalleryItem>
+          </MediaGallery>
         </Dialog>
 
         {/* Message box for delete */}

@@ -31,7 +31,7 @@ export default function ErmTaiKhoan() {
 
   return (
     <div className="flex flex-col h-screen overflow-hidden">
-      <Header />
+      <Header bearcums="Quản lý chữ ký số" />
 
       <div className="flex flex-col flex-1 overflow-hidden p-4">
         <FlexBox
