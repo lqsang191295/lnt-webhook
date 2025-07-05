@@ -22,7 +22,7 @@ import "@ui5/webcomponents-icons/dist/attachment-text-file.js";
 export default function ErmHsbaCanKy() {
   return (
     <div className="flex flex-col h-screen overflow-hidden">
-      <Header />
+      <Header bearcums="Quản lý tài liệu ký số" />
 
       <div className="flex flex-col flex-1 p-4 overflow-hidden">
         <TabContainer
