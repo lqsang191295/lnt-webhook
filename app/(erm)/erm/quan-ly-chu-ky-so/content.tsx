@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useCallback, useEffect } from "react";
 import Header from "../../_components/header";
 import {
   Button,
@@ -24,10 +24,24 @@ import "@ui5/webcomponents-icons/dist/locked.js";
 import "@ui5/webcomponents-icons/dist/delete.js";
 import "@ui5/webcomponents-icons/dist/search.js";
 import "@ui5/webcomponents-icons-tnt/dist/user.js";
+import { dbService } from "@/store/db-cache";
+import Ui5CustomComboBox from "@/components/custom/sap-ui5-combobox-custom";
 
 export default function ErmTaiKhoan() {
   const [openDialog, setOpenDiaglog] = React.useState<boolean>(false);
   const [openMessage, setOpenMessage] = React.useState<boolean>(false);
+
+  const [NS_NhanVienData, setNS_NhanVienData] = React.useState([]);
+
+  const fetctData = useCallback(async () => {
+    const data = await dbService.NS_NhanVien.get();
+
+    setNS_NhanVienData(data);
+  }, []);
+
+  useEffect(() => {
+    fetctData();
+  }, [fetctData]);
 
   return (
     <div className="flex flex-col h-screen overflow-hidden">
@@ -200,7 +214,15 @@ export default function ErmTaiKhoan() {
           <div className="flex flex-col gap-4 w-full">
             <div className="flex flex-col w-full">
               <Label>Mã nhân viên (*)</Label>
-              <Input className="w-full" type="Text" />
+              <Ui5CustomComboBox
+                header={{
+                  Ma: "Mã NV",
+                  Ten: "Họ tên",
+                  ChucVu: "Chức vụ",
+                }}
+                data={NS_NhanVienData}
+                setSelected={() => {}}
+              />
             </div>
             <div className="flex flex-row w-full gap-6">
               <div className="flex flex-1 flex-col w-full">
