@@ -108,7 +108,7 @@ export default function ErmHsbaCanKy() {
                     Ký tài liệu
                   </Button>
                 </div>
-                <div className="flex-1 grid grid-cols-2 md:grid-cols-5 gap-4 w-full overflow-scroll">
+                <div className="flex-1 grid grid-cols-2 md:grid-cols-5 gap-4 w-full overflow-y-scroll">
                   {[
                     1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,
                     18,
@@ -117,7 +117,7 @@ export default function ErmHsbaCanKy() {
                       key={item}
                       className="w-full p-4 bg-white border border-gray-200">
                       <div className="flex gap-1 items-center justify-between">
-                        <Label className="font-semibold text-lg">
+                        <Label className="font-semibold text-sm">
                           Phiếu kết quả xét nghiệm
                         </Label>
                         <CheckBox
@@ -126,18 +126,20 @@ export default function ErmHsbaCanKy() {
                         />
                       </div>
                       <div className="flex gap-1 items-center">
-                        <Label className="font-semibold">Ngày gửi:</Label>
-                        <Label>01/01/2023</Label>
+                        <Label className="font-semibold text-xs">
+                          Ngày gửi:
+                        </Label>
+                        <Label className="text-xs">01/01/2023</Label>
                       </div>
                       <div className="flex gap-1 items-center">
-                        <Label className="font-semibold">
+                        <Label className="font-semibold text-xs">
                           Họ tên bệnh nhân:
                         </Label>
-                        <Label>Nguyễn Văn A</Label>
+                        <Label className="text-xs">Nguyễn Văn A</Label>
                       </div>
                       <div className="flex gap-1 items-center">
-                        <Label className="font-semibold">Khoa:</Label>
-                        <Label>Xét nghiệm</Label>
+                        <Label className="font-semibold text-xs">Khoa:</Label>
+                        <Label className="text-xs">Xét nghiệm</Label>
                       </div>
                       <div className="flex gap-2 mt-2 items-center">
                         <Button
@@ -224,7 +226,7 @@ export default function ErmHsbaCanKy() {
                 justifyContent="Start"
                 gap={".5rem"}
                 className="flex overflow-hidden mt-4">
-                <div className="flex-1 grid grid-cols-2 md:grid-cols-5 gap-4 w-full overflow-scroll">
+                <div className="flex-1 grid grid-cols-2 md:grid-cols-5 gap-4 w-full overflow-y-scroll">
                   {[
                     1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,
                     18,
@@ -233,23 +235,25 @@ export default function ErmHsbaCanKy() {
                       key={item}
                       className="w-full p-4 bg-white border border-gray-200">
                       <div className="flex gap-1 items-center justify-between">
-                        <Label className="font-semibold text-lg">
+                        <Label className="font-semibold text-sm">
                           Phiếu kết quả xét nghiệm
                         </Label>
                       </div>
                       <div className="flex gap-1 items-center">
-                        <Label className="font-semibold">Ngày gửi:</Label>
-                        <Label>01/01/2023</Label>
+                        <Label className="font-semibold text-xs">
+                          Ngày gửi:
+                        </Label>
+                        <Label className="text-xs">01/01/2023</Label>
                       </div>
                       <div className="flex gap-1 items-center">
-                        <Label className="font-semibold">
+                        <Label className="font-semibold text-xs">
                           Họ tên bệnh nhân:
                         </Label>
-                        <Label>Nguyễn Văn A</Label>
+                        <Label className="text-xs">Nguyễn Văn A</Label>
                       </div>
                       <div className="flex gap-1 items-center">
-                        <Label className="font-semibold">Khoa:</Label>
-                        <Label>Xét nghiệm</Label>
+                        <Label className="font-semibold text-xs">Khoa:</Label>
+                        <Label className="text-xs">Xét nghiệm</Label>
                       </div>
                       <div className="flex gap-2 mt-2 items-center">
                         <Button

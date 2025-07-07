@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useEffect } from "react";
+import React from "react";
 import Header from "../../_components/header";
 import {
   Button,
@@ -24,43 +24,11 @@ import "@ui5/webcomponents-icons/dist/locked.js";
 import "@ui5/webcomponents-icons/dist/delete.js";
 import "@ui5/webcomponents-icons/dist/search.js";
 import "@ui5/webcomponents-icons-tnt/dist/user.js";
-import { iFileOfPatientData } from "@/types/patient";
-import { getFilePatientData } from "@/app/(doctor-patient)/_actions";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-import ImageGallery from "@/components/image-gallery";
-import Spinner from "@/components/spinner";
+import PdfGallery from "../../_components/pdf-gallery";
 
 export default function Content() {
-  const patient_id = "068142";
   const [openDialog, setOpenDiaglog] = React.useState<boolean>(false);
   const [openMessage, setOpenMessage] = React.useState<boolean>(false);
-  const [loading, setLoading] = React.useState<boolean>(false);
-  const [data, setData] = React.useState<iFileOfPatientData[]>([]);
-
-  const fetchData = useCallback(async () => {
-    try {
-      setLoading(true);
-
-      const filesData = await getFilePatientData(patient_id);
-
-      console.log("filesData----------- ", filesData);
-
-      setData(filesData);
-    } catch (err) {
-      console.error("Lỗi khi tải dữ liệu:", err);
-    } finally {
-      setLoading(false);
-    }
-  }, [patient_id]);
-
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
 
   return (
     <div className="flex flex-col h-screen overflow-hidden">
@@ -357,29 +325,7 @@ export default function Content() {
             </div>
           </div> */}
           <main className="gap-2 overflow-auto p-4 h-full">
-            {!loading && (
-              <Accordion
-                type="multiple"
-                defaultValue={data.map((_, i) => `item-${i}`)}>
-                {data.map((d, i) => {
-                  return (
-                    <AccordionItem
-                      value={`item-${i}`}
-                      key={`AccordionItem-${i}`}>
-                      <AccordionTrigger>Ngày {d.dateFolder}</AccordionTrigger>
-                      <AccordionContent>
-                        <ImageGallery files={d.files} />
-                      </AccordionContent>
-                    </AccordionItem>
-                  );
-                })}
-              </Accordion>
-            )}
-            {loading && (
-              <div className="w-full h-full flex justify-center items-center gap-2">
-                <Spinner /> <Label>Loading...</Label>
-              </div>
-            )}
+            <PdfGallery />
           </main>
         </Dialog>
 
