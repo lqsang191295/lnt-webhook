@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
 import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
+import DocxViewer from "./docx-viewer";
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   "pdfjs-dist/build/pdf.worker.min.mjs",
@@ -38,7 +39,6 @@ const MAX_VISIBLE = 4;
 
 export default function PdfGallery() {
   const [selected, setSelected] = useState(pdfs[0]);
-  const [numPages, setNumPages] = useState<number>();
   const [containerWidth, setContainerWidth] = useState<number>(800);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -58,7 +58,7 @@ export default function PdfGallery() {
   return (
     <div className="flex w-full h-full overflow-hidden">
       {/* Left Sidebar - Thumbnails */}
-      <div className="flex flex-col gap-2 h-full w-28 overflow-y-auto">
+      <div className="flex flex-col gap-2 h-full w-28 overflow-y-auto mt-2">
         {pdfs.slice(0, MAX_VISIBLE).map((pdf) => (
           <div
             key={pdf.id}
@@ -74,11 +74,8 @@ export default function PdfGallery() {
       </div>
 
       {/* Main PDF Viewer */}
-      <div
-        className="flex-1 ml-6 border rounded p-4 overflow-auto"
-        ref={containerRef}>
-        <div className="text-lg font-semibold mb-2">{selected.name}</div>
-        <Document
+      <div className="flex-1" ref={containerRef}>
+        {/* <Document
           file={selected.url}
           onLoadSuccess={({ numPages }) => setNumPages(numPages)}>
           {Array.from(new Array(numPages), (_, i) => (
@@ -89,7 +86,21 @@ export default function PdfGallery() {
               className="mb-4"
             />
           ))}
-        </Document>
+        </Document> */}
+        <DocxViewer
+          title="Hồ sơ bệnh án"
+          urlDocx="/hsba/hsba_trang-bia.docx"
+          data={{
+            MaBN: "BA123456",
+            Ten: "Nguyễn Văn A",
+            NgaySinh: "01/01/1990",
+            GioiTinh: "Nam",
+            SoCMND: "123456789",
+            MaBenhAn: "BA123456",
+            NgayVaoVien: "01/01/2023",
+            LoaiBenhAn: "Nội trú",
+          }}
+        />
       </div>
     </div>
   );

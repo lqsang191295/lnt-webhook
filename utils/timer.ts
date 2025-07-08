@@ -31,7 +31,7 @@ export function formatDate(input?: string): string {
 }
 
 export function formatDateTime(date: Date): string {
-  return `${formatDate(date)} ${formatTime(date)}`;
+  return `${formatDate('')} ${formatTime(date)}`;
 }
 
 export function formatDateToDDMMYYYY(dateStr: string): string {

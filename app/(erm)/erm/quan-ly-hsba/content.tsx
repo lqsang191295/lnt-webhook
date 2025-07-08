@@ -220,7 +220,7 @@ export default function Content() {
                   <span>{item.SoCMND}</span>
                 </TableCell>
                 <TableCell>
-                  <span>{formatDate(item.Ngay)}</span>
+                  <span>{item.Ngay && formatDate(item.Ngay)}</span>
                 </TableCell>
                 <TableCell>
                   <CheckBox
@@ -282,7 +282,7 @@ export default function Content() {
           onBeforeOpen={function Xs() {}}
           onClose={function Xs() {}}
           onOpen={function Xs() {}}>
-          <main className="gap-2 overflow-auto p-4 h-full">
+          <main className="gap-2 overflow-auto h-full">
             <PdfGallery />
           </main>
         </Dialog>
