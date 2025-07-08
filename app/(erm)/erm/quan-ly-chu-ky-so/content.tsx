@@ -30,7 +30,6 @@ import Ui5CustomComboBox from "@/components/custom/sap-ui5-combobox-custom";
 export default function ErmTaiKhoan() {
   const [openDialog, setOpenDiaglog] = React.useState<boolean>(false);
   const [openMessage, setOpenMessage] = React.useState<boolean>(false);
-
   const [NS_NhanVienData, setNS_NhanVienData] = React.useState([]);
 
   const fetctData = useCallback(async () => {

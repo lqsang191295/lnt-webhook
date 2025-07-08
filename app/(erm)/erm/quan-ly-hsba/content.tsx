@@ -18,6 +18,8 @@ import {
   TableHeaderCell,
   TableHeaderRow,
   TableRow,
+  FlexBoxJustifyContent,
+  CheckBox,
 } from "@ui5/webcomponents-react";
 import "@ui5/webcomponents-icons/dist/add.js";
 import "@ui5/webcomponents-icons/dist/locked.js";
@@ -25,10 +27,25 @@ import "@ui5/webcomponents-icons/dist/delete.js";
 import "@ui5/webcomponents-icons/dist/search.js";
 import "@ui5/webcomponents-icons-tnt/dist/user.js";
 import PdfGallery from "../../_components/pdf-gallery";
+import { trpc } from "@/trpc/client";
+import { formatDate } from "@/utils/timer";
 
 export default function Content() {
   const [openDialog, setOpenDiaglog] = React.useState<boolean>(false);
   const [openMessage, setOpenMessage] = React.useState<boolean>(false);
+  const [page, setPage] = React.useState(1);
+
+  const { data, isFetching } = trpc.BV_QlyCapThe.getAll.useQuery({
+    page,
+    limit: 20,
+  });
+
+  if (isFetching || !data) {
+    return <div>Loading...</div>;
+  }
+
+  const { items } = data;
+  console.log(" == data == ", data);
 
   return (
     <div className="flex flex-col h-screen overflow-hidden">
@@ -154,7 +171,7 @@ export default function Content() {
                 <span>Ngày vào viện</span>
               </TableHeaderCell>
               <TableHeaderCell>
-                <span>Trạng thái</span>
+                <span>Đối tượng</span>
               </TableHeaderCell>
               <TableHeaderCell>
                 <span>#</span>
@@ -165,61 +182,87 @@ export default function Content() {
           onMoveOver={function Xs() {}}
           onRowActionClick={function Xs() {}}
           onRowClick={function Xs() {}}>
-          {[
-            1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3,
-            4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4,
-          ].map((i, idx) => (
-            <TableRow className="border-b border-gray-200 px-4" key={idx}>
-              <TableCell className="text-center">
-                <span>{idx + 1}</span>
-              </TableCell>
-              <TableCell>
-                <span>123456</span>
-              </TableCell>
-              <TableCell>
-                <span>Nội trú</span>
-              </TableCell>
-              <TableCell>
-                <span>123456</span>
-              </TableCell>
-              <TableCell>
-                <span>123456</span>
-              </TableCell>
-              <TableCell>
-                <span>Xét nghiệm</span>
-              </TableCell>
-              <TableCell>
-                <span>Nguyễn Văn A</span>
-              </TableCell>
-              <TableCell>
-                <span>01/01/2025</span>
-              </TableCell>
-              <TableCell>
-                <span>Nam</span>
-              </TableCell>
-              <TableCell>
-                <span>099999999999</span>
-              </TableCell>
-              <TableCell>
-                <span>01/01/2025</span>
-              </TableCell>
-              <TableCell>
-                {i <= 2 ? <Icon name="accept" /> : <Icon name="decline" />}
-              </TableCell>
-              <TableCell>
-                <Button onClick={() => setOpenDiaglog(true)}>
-                  <Icon name="edit" />
-                </Button>
-                <Button onClick={() => setOpenMessage(true)}>
-                  <Icon name="delete" />
-                </Button>
-                <Button onClick={() => setOpenDiaglog(true)}>
-                  <Icon name="search" />
-                </Button>
-              </TableCell>
-            </TableRow>
-          ))}
+          {items &&
+            items.map((item, idx) => (
+              <TableRow className="border-b border-gray-200 px-4" key={idx}>
+                <TableCell className="text-center">
+                  <span>{idx + 1}</span>
+                </TableCell>
+                <TableCell>
+                  <span>{item.Ma}</span>
+                </TableCell>
+                <TableCell>
+                  <span>Nội trú</span>
+                </TableCell>
+                <TableCell>
+                  <span>{item.Ma}</span>
+                </TableCell>
+                <TableCell>
+                  <span>123456</span>
+                </TableCell>
+                <TableCell>
+                  <span>Xét nghiệm</span>
+                </TableCell>
+                <TableCell>
+                  <span>{item.Hoten}</span>
+                </TableCell>
+                <TableCell>
+                  <span>
+                    {item.Ngaysinh ? `${item.Ngaysinh}/` : ""}
+                    {item.Thangsinh ? `${item.Thangsinh}/` : ""}
+                    {item.Namsinh}
+                  </span>
+                </TableCell>
+                <TableCell>
+                  <span>{item.Gioitinh}</span>
+                </TableCell>
+                <TableCell>
+                  <span>{item.SoCMND}</span>
+                </TableCell>
+                <TableCell>
+                  <span>{formatDate(item.Ngay)}</span>
+                </TableCell>
+                <TableCell>
+                  <CheckBox
+                    text={item.Doituong || ""}
+                    valueState="None"
+                    checked={item.Doituong === "BHYT" ? true : false}
+                  />
+                </TableCell>
+                <TableCell>
+                  <Button onClick={() => setOpenDiaglog(true)}>
+                    <Icon name="edit" />
+                  </Button>
+                  <Button onClick={() => setOpenMessage(true)}>
+                    <Icon name="delete" />
+                  </Button>
+                  <Button onClick={() => setOpenDiaglog(true)}>
+                    <Icon name="search" />
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
         </Table>
+
+        <FlexBox
+          justifyContent={FlexBoxJustifyContent.Center}
+          className="p-2 gap-2 flex justify-center items-center">
+          <Button
+            className="border border-gray-200"
+            disabled={page === 1}
+            onClick={() => setPage(page - 1)}>
+            Trước
+          </Button>
+          <Label className="flex justify-center items-center px-4">
+            Trang {page} / {data?.totalPages || 1}
+          </Label>
+          <Button
+            className="border border-gray-200"
+            disabled={page === data?.totalPages || data?.totalPages === 0}
+            onClick={() => setPage(page + 1)}>
+            Sau
+          </Button>
+        </FlexBox>
 
         {/* Dialog add, edit */}
         <Dialog
@@ -239,91 +282,6 @@ export default function Content() {
           onBeforeOpen={function Xs() {}}
           onClose={function Xs() {}}
           onOpen={function Xs() {}}>
-          {/* <div className="flex flex-col gap-4 w-full">
-            <div className="flex flex-col w-full">
-              <Label>Mã nhân viên (*)</Label>
-              <Input className="w-full" type="Text" />
-            </div>
-            <div className="flex flex-row w-full gap-6">
-              <div className="flex flex-1 flex-col w-full">
-                <Label>Khoa/Phòng (*)</Label>
-                <Input className="w-full" type="Text" />
-              </div>
-              <div className="flex flex-1 flex-col w-full">
-                <Label>Chức vụ (*)</Label>
-                <Input className="w-full" type="Text" />
-              </div>
-            </div>
-            <div className="flex flex-row w-full gap-6">
-              <div className="flex flex-1 flex-col w-full">
-                <Label>Ngày hiệu lực (*)</Label>
-                <DatePicker
-                  onChange={function Xs() {}}
-                  onClose={function Xs() {}}
-                  onInput={function Xs() {}}
-                  onOpen={function Xs() {}}
-                  onValueStateChange={function Xs() {}}
-                  primaryCalendarType="Gregorian"
-                  valueState="None"
-                />
-              </div>
-              <div className="flex flex-1 flex-col w-full">
-                <Label>Ngày hết hạn (*)</Label>
-                <DatePicker
-                  onChange={function Xs() {}}
-                  onClose={function Xs() {}}
-                  onInput={function Xs() {}}
-                  onOpen={function Xs() {}}
-                  onValueStateChange={function Xs() {}}
-                  primaryCalendarType="Gregorian"
-                  valueState="None"
-                />
-              </div>
-            </div>
-            <div className="flex flex-1 flex-col w-full">
-              <Label>File chữ ký (*)</Label>
-              <div className="flex flex-col gap-2 border border-gray-200">
-                <div className="flex flex-row items-center justify-between p-2 bg-gray-100">
-                  <Button design="Emphasized" icon="add">
-                    Chọn file
-                  </Button>
-                </div>
-                <div className="p-2">
-                  <Label>CKS_Bs_Le_Van_A.txt</Label>
-                </div>
-              </div>
-            </div>
-            <div className="flex flex-1 flex-col w-full">
-              <Label>File con dấu (*)</Label>
-              <div className="flex flex-col gap-2 border border-gray-200">
-                <div className="flex flex-row items-center justify-between p-2 bg-gray-100">
-                  <Button design="Emphasized" icon="add">
-                    Chọn file
-                  </Button>
-                </div>
-                <div className="p-2">
-                  <Label>CKS_Bs_Le_Van_A.txt</Label>
-                </div>
-              </div>
-            </div>
-            <div className="flex flex-1 flex-col w-full">
-              <Label className="font-bold">Thông tin chữ ký</Label>
-              <div className="flex flex-row w-full gap-6 mt-1">
-                <div className="flex flex-1 flex-col w-full">
-                  <Label>API Key (*)</Label>
-                  <Input className="w-full" type="Text" />
-                </div>
-                <div className="flex flex-1 flex-col w-full">
-                  <Label>Mã bí mật (*)</Label>
-                  <Input className="w-full" type="Text" />
-                </div>
-              </div>
-            </div>
-            <div className="flex flex-1 flex-col w-full">
-              <Label>Uri (*)</Label>
-              <Input className="w-full" type="Text" />
-            </div>
-          </div> */}
           <main className="gap-2 overflow-auto p-4 h-full">
             <PdfGallery />
           </main>
