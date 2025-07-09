@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
 import { Calendar as CalendarIcon, FileText } from "lucide-react";
@@ -62,7 +62,6 @@ interface iData {
   TTChanDoanPhu?: { VVIET: string };
   ChandoanKhac: string;
   Ngay: string;
-  ID: string;
 }
 
 interface iDataPcdDV {
@@ -71,7 +70,7 @@ interface iDataPcdDV {
   TTBacsiKham?: { Ten: string };
   TTPhongKham?: { Ten: string };
   Chandoan: string;
-  BV_PhieuChidinhDVCT: Array<iDataPcdDVCT>;
+  BV_PhieuChidinhDVCT: iDataPcdDVCT[];
 }
 
 interface iDataPcdDVCT {
@@ -125,18 +124,107 @@ export default function ContentLichSuKham() {
   const { data, isFetching } = trpc.BV_Master.getByMaBN.useQuery(queryInput!, {
     enabled: !!queryInput, // chỉ chạy nếu có input
   });
-  const { data: dataPcdDV } = trpc.BV_PhieuChidinhDV.getByMaBN.useQuery(
+  const parsedData: iData[] = useMemo(() => {
+    if (!data) return [];
+
+    return data.map((item) => ({
+      Sovaovien: item.Sovaovien ?? "",
+      TGVao: item.TGVao ?? "",
+      TTPhongKham: item.TTPhongKham
+        ? { Ten: item.TTPhongKham.Ten ?? "" }
+        : undefined,
+      TTBacsi: item.TTBacsi ? { Ten: item.TTBacsi.Ten ?? "" } : undefined,
+      LydoVV: item.LydoVV ?? "",
+      TTChanDoanChinh: item.TTChanDoanChinh
+        ? { VVIET: item.TTChanDoanChinh.VVIET ?? "" }
+        : undefined,
+      TTChanDoanPhu: item.TTChanDoanPhu
+        ? { VVIET: item.TTChanDoanPhu.VVIET ?? "" }
+        : undefined,
+      ChandoanKhac: item.ChandoanKhac ?? "",
+      Ngay: item.Ngay ?? "",
+    }));
+  }, [data]);
+
+  const { data: rawDataPcdDV } = trpc.BV_PhieuChidinhDV.getByMaBN.useQuery(
     queryPcdDVInput!,
     {
-      enabled: !!queryPcdDVInput, // chỉ chạy nếu có input
+      enabled: !!queryPcdDVInput,
     }
   );
-  const { data: dataToaThuoc } = trpc.BV_Toathuoc.getByMaBN.useQuery(
+  const dataPcdDV: iDataPcdDV[] = useMemo(() => {
+    if (!rawDataPcdDV) return [];
+
+    return rawDataPcdDV.map((item) => ({
+      ID: item.ID ?? crypto.randomUUID(),
+      Ngay: item.Ngay ?? "",
+      TTBacsiKham: item.TTBacsiKham
+        ? { Ten: item.TTBacsiKham.Ten ?? "" }
+        : undefined,
+      TTPhongKham: item.TTPhongKham
+        ? { Ten: item.TTPhongKham.Ten ?? "" }
+        : undefined,
+      Chandoan: item.Chandoan ?? "",
+      BV_PhieuChidinhDVCT: (item.BV_PhieuChidinhDVCT ?? []).map((ct) => ({
+        ID: ct.ID ?? crypto.randomUUID(),
+        MaDV: ct.MaDV ?? "",
+        TenDV: ct.TenDV ?? "",
+        TTNguoiChiDinh: ct.TTNguoiChiDinh
+          ? { Ten: ct.TTNguoiChiDinh.Ten ?? "" }
+          : undefined,
+        TTNguoithuchien: ct.TTNguoithuchien
+          ? { Ten: ct.TTNguoithuchien.Ten ?? "" }
+          : undefined,
+        Soluong: Number(ct.Soluong ?? 0),
+        Dongia: Number(ct.Dongia ?? 0),
+        DongiaBH: Number(ct.DongiaBH ?? 0),
+        Tongchiphi: Number(ct.Tongchiphi ?? 0),
+        Ketqua: ct.Ketqua ?? "",
+        Dathuchien: Boolean(ct.Dathuchien),
+      })),
+    }));
+  }, [rawDataPcdDV]);
+
+  const { data: rawDataToaThuoc } = trpc.BV_Toathuoc.getByMaBN.useQuery(
     queryPcdDVInput!,
     {
-      enabled: !!queryPcdDVInput, // chỉ chạy nếu có input
+      enabled: !!queryPcdDVInput,
     }
   );
+
+  const dataToaThuoc: iDataToaThuoc[] = useMemo(() => {
+    if (!rawDataToaThuoc) return [];
+
+    return rawDataToaThuoc.map(
+      (item): iDataToaThuoc => ({
+        ID: item.ID ?? crypto.randomUUID(),
+        Ngay: item.Ngay ?? "",
+        TTBacsiKeToa: item.TTBacsiKeToa
+          ? { Ten: item.TTBacsiKeToa.Ten ?? "" }
+          : undefined,
+        TTPhongKham: item.TTPhongKham
+          ? { Ten: item.TTPhongKham.Ten ?? "" }
+          : undefined,
+        Ghichu: item.Ghichu ?? "",
+        BV_ToathuocCT: (item.BV_ToathuocCT ?? []).map(
+          (ct): iDataToaThuocCT => ({
+            ID: ct.ID ?? crypto.randomUUID(),
+            Ma: ct.Ma ?? "",
+            Ten: ct.Ten ?? "",
+            Hoatchat: ct.Hoatchat ?? "",
+            Hamluong: ct.Hamluong ?? "",
+            TTBsKetoa: ct.TTBsKetoa
+              ? { Ten: ct.TTBsKetoa.Ten ?? "" }
+              : undefined,
+            Soluong: Number(ct.Soluong ?? 0),
+            Dongia: Number(ct.Dongia ?? 0),
+            DongiaBH: Number(ct.DongiaBH ?? 0),
+            Ghichu: ct.Ghichu ?? "",
+          })
+        ),
+      })
+    );
+  }, [rawDataToaThuoc]);
 
   console.log("data ==== ", data);
   console.log("dataPcdDV ==== ", dataPcdDV);
@@ -254,7 +342,7 @@ export default function ContentLichSuKham() {
               <Spinner /> Loading...
             </div>
           )}
-          {!isFetching && data && data.length > 0 && (
+          {!isFetching && parsedData && parsedData.length > 0 && (
             <Table>
               <TableHeader>
                 <TableRow>
@@ -270,8 +358,8 @@ export default function ContentLichSuKham() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {data.map((item: iData) => (
-                  <TableRow key={item.ID}>
+                {parsedData.map((item: iData) => (
+                  <TableRow key={item.Sovaovien}>
                     <TableCell>{item.Sovaovien}</TableCell>
                     <TableCell>{formatDateTimeCT(item.TGVao || "")}</TableCell>
                     <TableCell>{item.TTPhongKham?.Ten}</TableCell>

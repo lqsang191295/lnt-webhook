@@ -26,16 +26,19 @@ import "@ui5/webcomponents-icons/dist/search.js";
 import "@ui5/webcomponents-icons-tnt/dist/user.js";
 import { dbService } from "@/store/db-cache";
 import Ui5CustomComboBox from "@/components/custom/sap-ui5-combobox-custom";
+import { iNS_NhanVien } from "@/store/db-cache/NS_NhanVien";
 
 export default function ErmTaiKhoan() {
   const [openDialog, setOpenDiaglog] = React.useState<boolean>(false);
   const [openMessage, setOpenMessage] = React.useState<boolean>(false);
-  const [NS_NhanVienData, setNS_NhanVienData] = React.useState([]);
+  const [NS_NhanVienData, setNS_NhanVienData] = React.useState<iNS_NhanVien[]>(
+    []
+  );
 
   const fetctData = useCallback(async () => {
     const data = await dbService.NS_NhanVien.get();
 
-    setNS_NhanVienData(data);
+    setNS_NhanVienData(data as iNS_NhanVien[]);
   }, []);
 
   useEffect(() => {
