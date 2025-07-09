@@ -10,7 +10,7 @@ export const convertHtmlToPdf = async (html: string) => {
   try {
     const browser = await puppeteer.launch({
       headless: true,
-      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+      // args: ["--no-sandbox", "--disable-setuid-sandbox"],
     });
     const page = await browser.newPage();
 
@@ -22,6 +22,8 @@ export const convertHtmlToPdf = async (html: string) => {
     });
 
     await browser.close();
+
+    console.log("PDF generated successfully", pdfBuffer);
 
     // Trả về string Base64 thay vì Response
     const zipBase64 = Buffer.from(pdfBuffer).toString("base64");

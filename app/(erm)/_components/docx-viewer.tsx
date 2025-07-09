@@ -8,6 +8,7 @@ import { saveAs } from "file-saver";
 import "@ui5/webcomponents-icons/dist/doc-attachment.js";
 import "@ui5/webcomponents-icons/dist/pdf-attachment.js";
 import { convertHtmlToPdf, convertHtmlToPdfAction } from "../_actions";
+import { ToastError } from "@/lib/toast";
 
 let PizZipUtils = null;
 if (typeof window !== "undefined") {
@@ -107,14 +108,25 @@ function DocxViewer({ title, urlDocx, data }: DocxViewerProps) {
 
   const downloadPdf = async () => {
     try {
-      const html = containerRef.current?.outerHTML || "";
-      if (!html) return alert("Không có nội dung");
+      const content = containerRef.current?.querySelector(".docx-wrapper");
 
-      const url = await convertHtmlToPdfAction(html);
-      const response = await fetch(url);
-      const blob = await response.blob();
+      if (!content) {
+        return ToastError("Không có nội dung để xuất PDF");
+      }
 
-      saveAs(blob, "exported.pdf");
+      console.log("HTML content to convert to PDF:", content);
+
+      const base64Pdf: string = await convertHtmlToPdf(content.innerHTML);
+
+      console.log("HTML content to convert to PDF: base64Pdf === ", base64Pdf);
+
+      // if (!html) return alert("Không có nội dung");
+
+      // const url = await convertHtmlToPdfAction(html);
+      // const response = await fetch(url);
+      // const blob = await response.blob();
+
+      // saveAs(blob, "exported.pdf");
     } catch (error) {
       console.error("Error exporting PDF:", error);
     } finally {
@@ -122,7 +134,7 @@ function DocxViewer({ title, urlDocx, data }: DocxViewerProps) {
   };
 
   return (
-    <div className="p-4 w-full h-full">
+    <div className="px-4 w-full h-full">
       <div className="flex items-center justify-between w-full mb-2">
         <h2 className="font-semibold text-lg mb-2">{title}</h2>
         <div className="flex gap-2">
@@ -142,7 +154,11 @@ function DocxViewer({ title, urlDocx, data }: DocxViewerProps) {
           </Button>
         </div>
       </div>
-      <div ref={containerRef} className="w-full h-full overflow-auto" />
+      <div
+        ref={containerRef}
+        id="wrap-container"
+        className="w-full h-full overflow-auto"
+      />
     </div>
   );
 }
