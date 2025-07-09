@@ -884,6 +884,7 @@ model BV_Master {
   TTPhongKham           HT_DMKhoaPhong? @relation("PhongKhamRelation", fields: [KhoaPhong], references: [Ma], onUpdate: NoAction, onDelete: NoAction)
   TTChanDoanChinh       HT_DMICD10? @relation("ChanDoanChinhRelation", fields: [ChandoanChinh], references: [CICD10], onUpdate: NoAction, onDelete: NoAction)
   TTChanDoanPhu         HT_DMICD10? @relation("ChanDoanPhuRelation", fields: [ChandoanPhu], references: [CICD10], onUpdate: NoAction, onDelete: NoAction)
+  TTQLyCapThe           BV_QLyCapThe? @relation("QLyCapTheRelation", fields: [MaBN], references: [Ma], onUpdate: NoAction, onDelete: NoAction)
 }
 
 model BV_Phacdo_Chidinh {
@@ -3003,6 +3004,8 @@ model BV_QLyCapThe {
   NoiCapCCCD          String?   @db.NVarChar(500)
 
   @@index([Ma], map: "CIX_Ma", clustered: true)
+
+  QLyCapTheInfo  BV_Master[] @relation("QLyCapTheRelation")
 }
 
 model BV_SendSMS {
