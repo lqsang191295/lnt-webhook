@@ -7,22 +7,47 @@ import { Button } from "@ui5/webcomponents-react";
 import { saveAs } from "file-saver";
 import "@ui5/webcomponents-icons/dist/doc-attachment.js";
 import "@ui5/webcomponents-icons/dist/pdf-attachment.js";
-import { convertHtmlToPdf, convertHtmlToPdfAction } from "../_actions";
+import { convertHtmlToPdf } from "../_actions";
 import { ToastError } from "@/lib/toast";
 
-let PizZipUtils = null;
+// Kiểu rõ ràng cho PizZipUtils
+let PizZipUtils: {
+  getBinaryContent: (
+    url: string,
+    callback: (error: Error | null, content: string) => void
+  ) => void;
+} | null = null;
+
 if (typeof window !== "undefined") {
-  import("pizzip/utils/index.js").then(function (r) {
-    PizZipUtils = r;
+  import("pizzip/utils/index.js").then((r) => {
+    const getBinaryContent =
+      (r as { default?: { getBinaryContent?: typeof loadFile } }).default
+        ?.getBinaryContent ||
+      (r as { getBinaryContent?: typeof loadFile }).getBinaryContent;
+
+    if (getBinaryContent) {
+      PizZipUtils = { getBinaryContent };
+    } else {
+      console.error("Cannot find getBinaryContent in pizzip/utils");
+    }
   });
 }
+
 type DocxViewerProps = {
   title: string;
-  urlDocx: string; // ví dụ: /hsba/bia.docx
-  data: Record<string, any>; // dữ liệu để đổ vào {{ }}
+  urlDocx: string;
+  data: Record<string, unknown>;
 };
 
-function loadFile(url, callback) {
+// Khai báo kiểu cho loadFile
+function loadFile(
+  url: string,
+  callback: (error: Error | null, content: string) => void
+) {
+  if (!PizZipUtils) {
+    console.error("PizZipUtils is not loaded yet.");
+    return;
+  }
   PizZipUtils.getBinaryContent(url, callback);
 }
 
@@ -32,7 +57,7 @@ function DocxViewer({ title, urlDocx, data }: DocxViewerProps) {
 
   useEffect(() => {
     const renderDocx = () => {
-      loadFile(urlDocx, async (error: any, content: any) => {
+      loadFile(urlDocx, (error, content) => {
         if (error) {
           console.error("Failed to load .docx file:", error);
           return;
@@ -44,14 +69,13 @@ function DocxViewer({ title, urlDocx, data }: DocxViewerProps) {
             linebreaks: true,
             paragraphLoop: true,
           });
-          // render the document (replace all occurences of {first_name} by John, {last_name} by Doe, ...)
+
           doc.render(data);
           const blob = doc.getZip().generate({
             type: "blob",
             mimeType:
               "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
           });
-          // Output the document using Data-URI
 
           setDocxBlob(blob);
         } catch (err) {
@@ -64,38 +88,35 @@ function DocxViewer({ title, urlDocx, data }: DocxViewerProps) {
   }, [urlDocx, data]);
 
   useEffect(() => {
+    const container = containerRef.current; // 👈 Ghi lại ref
+
     const loadDocxPreview = async () => {
-      if (docxBlob && containerRef.current) {
-        // Import động thư viện chỉ khi cần thiết và trên client
+      if (docxBlob && container) {
         const { renderAsync } = await import("docx-preview");
 
-        // Xóa nội dung cũ trong container trước khi render mới
-        containerRef.current.innerHTML = "";
+        container.innerHTML = "";
 
         try {
-          await renderAsync(docxBlob, containerRef.current, null, {
-            className: "docx-wrapper", // Thêm class cho container
-            inWrapper: true, // Bao bọc nội dung trong một div
-            ignoreWidth: false, // Tôn trọng chiều rộng của tài liệu
-            ignoreHeight: false, // Tôn trọng chiều cao của tài liệu
-            ignoreFonts: false, // Tôn trọng font của tài liệu
-            breakPages: true, // Chia trang nếu cần
-            // Các tùy chọn khác...
+          await renderAsync(docxBlob, container, undefined, {
+            className: "docx-wrapper",
+            inWrapper: true,
+            ignoreWidth: false,
+            ignoreHeight: false,
+            ignoreFonts: false,
+            breakPages: true,
           });
         } catch (error) {
           console.error("Error rendering DOCX:", error);
-          containerRef.current.innerHTML =
-            "<p>Không thể hiển thị tài liệu.</p>";
+          container.innerHTML = "<p>Không thể hiển thị tài liệu.</p>";
         }
       }
     };
 
     loadDocxPreview();
 
-    // Cleanup: Khi component unmount, xóa nội dung
     return () => {
-      if (containerRef.current) {
-        containerRef.current.innerHTML = "";
+      if (container) {
+        container.innerHTML = "";
       }
     };
   }, [docxBlob]);
@@ -108,28 +129,33 @@ function DocxViewer({ title, urlDocx, data }: DocxViewerProps) {
 
   const downloadPdf = async () => {
     try {
-      const content = containerRef.current?.querySelector(".docx-wrapper");
+      const content = containerRef.current?.querySelector(
+        ".docx-wrapper"
+      ) as HTMLElement | null;
 
       if (!content) {
         return ToastError("Không có nội dung để xuất PDF");
       }
 
-      console.log("HTML content to convert to PDF:", content);
-
       const base64Pdf: string = await convertHtmlToPdf(content.innerHTML);
+      const byteCharacters = atob(base64Pdf);
+      const byteNumbers = new Uint8Array(byteCharacters.length);
 
-      console.log("HTML content to convert to PDF: base64Pdf === ", base64Pdf);
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+      }
 
-      // if (!html) return alert("Không có nội dung");
+      const pdfBlob = new Blob([byteNumbers], { type: "application/pdf" });
+      const url = URL.createObjectURL(pdfBlob);
 
-      // const url = await convertHtmlToPdfAction(html);
-      // const response = await fetch(url);
-      // const blob = await response.blob();
-
-      // saveAs(blob, "exported.pdf");
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "export.pdf";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
     } catch (error) {
       console.error("Error exporting PDF:", error);
-    } finally {
     }
   };
 

@@ -12,13 +12,15 @@ import {
   Button,
   FlexBox,
   FlexBoxJustifyContent,
+  Ui5CustomEvent,
+  InputDomRef,
 } from "@ui5/webcomponents-react";
 import { useState, useCallback, memo } from "react";
 
 interface Ui5CustomComboBoxProps {
   header: Record<string, string>;
-  data: any[];
-  setSelected: (selected: any | null) => void;
+  data: Record<string, unknown>[];
+  setSelected: (selected: Record<string, unknown> | null) => void;
 }
 
 function Ui5CustomComboBox({
@@ -46,7 +48,7 @@ function Ui5CustomComboBox({
   );
 
   const onSelect = useCallback(
-    (item: any) => {
+    (item: Record<string, unknown>) => {
       setSelected(item);
       setSearchText(`${item.ma} - ${item.ten}`);
       setIsOpen(false);
@@ -54,7 +56,7 @@ function Ui5CustomComboBox({
     [setSelected]
   );
 
-  const onInputChange = (e: any) => {
+  const onInputChange = (e: Ui5CustomEvent<InputDomRef, never>) => {
     setSearchText(e.target.value);
     setPage(1);
     setIsOpen(true);
@@ -100,7 +102,7 @@ function Ui5CustomComboBox({
               className="cursor-pointer border-b border-gray-200 px-4">
               {keysHeader.map((key) => (
                 <TableCell key={key} horizontalAlign="Center">
-                  <Label>{item[key]}</Label>
+                  <Label>{item[key] as string}</Label>
                 </TableCell>
               ))}
             </TableRow>
