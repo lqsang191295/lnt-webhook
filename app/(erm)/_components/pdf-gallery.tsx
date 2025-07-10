@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, memo } from "react";
+import { useEffect, useRef, useState, memo, useCallback } from "react";
 import {
   // Document, Page,
   pdfjs,
@@ -76,17 +76,71 @@ function PdfGallery({ MaBN }: PdfGalleryProps) {
       { MaBN },
       { enabled: MaBN && selected.name === "HỒ SƠ BỆNH ÁN" }
     );
+  const { data: dataQLyCapTheHsba, isFetching: isFetchingQLyCapTheHsba } =
+    trpc.Hsba.getDataQLyCapTheHsba.useQuery(
+      { MaBN },
+      { enabled: MaBN && selected.name === "HỒ SƠ BỆNH ÁN" }
+    );
+
+  const handleDataHsba = useCallback(() => {
+    console.log("dataQLyCapTheHsba =========== ", dataQLyCapTheHsba);
+    if (!dataQLyCapTheHsba || isFetchingHsba || isFetchingQLyCapTheHsba) return;
+
+    setIsFetching(isFetchingHsba || isFetchingQLyCapTheHsba);
+
+    const data: Record<string, unknown> = {};
+    const dtQLyCapThe = dataQLyCapTheHsba[0];
+
+    data.MaBN = dtQLyCapThe.Ma;
+    data.Hoten = dtQLyCapThe.Hoten;
+    data.Ngaysinh = dtQLyCapThe.Ngaysinh;
+    data.Thangsinh = dtQLyCapThe.Thangsinh;
+    data.Namsinh = dtQLyCapThe.Namsinh;
+    data.SoBHYT = dtQLyCapThe.SoBHYT;
+    data.SoCMND = dtQLyCapThe.SoCMND;
+    data.Gioitinh = dtQLyCapThe.Gioitinh;
+    data.Tuoi = new Date().getFullYear() - (dtQLyCapThe.Namsinh || 0);
+    data.products = [
+      {
+        title: "Duk",
+        name: "DukSoftware",
+        reference: "DS0",
+      },
+      {
+        title: "Tingerloo",
+        name: "Tingerlee",
+        reference: "T00",
+      },
+    ];
+    data.users = [
+      {
+        name: "John",
+      },
+      {
+        name: "Mary",
+      },
+      {
+        name: "Jane",
+      },
+      {
+        name: "Sean",
+      },
+    ];
+
+    setData(data);
+
+    console.log("dataHsba ==== ", dataHsba);
+  }, [dataHsba, isFetchingHsba, dataQLyCapTheHsba, isFetchingQLyCapTheHsba]);
 
   useEffect(() => {
     switch (selected.name) {
       case "HỒ SƠ BỆNH ÁN":
-        setIsFetching(isFetchingHsba);
-        setData(dataHsba);
+        handleDataHsba();
+        break;
+      case "PHIẾU KHÁM BỆNH VÀO VIỆN":
         break;
     }
-  }, [selected, dataHsba, isFetchingHsba]);
-
-  console.log("dataHsba ==== ", dataHsba);
+  }, [selected, handleDataHsba]);
 
   return (
     <div className="flex w-full h-full overflow-hidden">

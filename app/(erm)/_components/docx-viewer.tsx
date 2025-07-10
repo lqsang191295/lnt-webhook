@@ -52,6 +52,8 @@ function loadFile(
 }
 
 function DocxViewer({ title, urlDocx, data }: DocxViewerProps) {
+  console.log("DocxViewer data =========== ", data);
+
   const containerRef = useRef<HTMLDivElement>(null);
   const [docxBlob, setDocxBlob] = useState<Blob | null>(null);
 

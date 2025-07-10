@@ -43,4 +43,29 @@ export const HsbaRouter = router({
         },
       });
     }),
+  getDataQLyCapTheHsba: procedure
+    .input(
+      z.object({
+        MaBN: z.string(),
+      })
+    )
+    .query(async ({ input }) => {
+      const where: Record<string, unknown> = {
+        Ma: input.MaBN,
+      };
+
+      return prisma.bV_QLyCapThe.findMany({
+        where,
+        select: {
+          Ma: true,
+          Hoten: true,
+          Ngaysinh: true,
+          Thangsinh: true,
+          Namsinh: true,
+          SoBHYT: true,
+          SoCMND: true,
+          Gioitinh: true,
+        },
+      });
+    }),
 });
