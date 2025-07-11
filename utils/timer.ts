@@ -15,6 +15,12 @@ export function formatTime(date: Date): string {
   });
 }
 
+export const formatDateToDDMMYYYY = (date: Date) => {
+  if (!date) return "";
+
+  return date.toLocaleDateString("vi-VN"); // dd/MM/yyyy
+};
+
 export function formatDate(input?: string): string {
   if (!input) {
     return "";
@@ -31,10 +37,10 @@ export function formatDate(input?: string): string {
 }
 
 export function formatDateTime(date: Date): string {
-  return `${formatDate('')} ${formatTime(date)}`;
+  return `${formatDate("")} ${formatTime(date)}`;
 }
 
-export function formatDateToDDMMYYYY(dateStr: string): string {
+export function formatStringDateToDDMMYYYY(dateStr: string): string {
   const date = new Date(dateStr);
   const dd = String(date.getDate()).padStart(2, "0");
   const mm = String(date.getMonth() + 1).padStart(2, "0"); // Tháng bắt đầu từ 0

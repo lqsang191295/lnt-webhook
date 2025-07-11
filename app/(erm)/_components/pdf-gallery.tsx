@@ -1,16 +1,16 @@
 "use client";
 
-import { useEffect, useRef, useState, memo, useCallback } from "react";
+import { useState, memo } from "react";
 import {
   // Document, Page,
   pdfjs,
 } from "react-pdf";
 import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
-import DocxViewer from "./docx-viewer";
+import DocViewerHsba from "./doc-viewer-hsba";
+import DocViewerPkbvv from "./doc-viewer-phieu-kham-benh-vao-vien";
+import DocViewerTomTatHsba from "./doc-viewer-tom-tat-hsba";
 import { Label } from "@ui5/webcomponents-react";
-import { trpc } from "@/trpc/client";
-import Spinner from "@/components/spinner";
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   "pdfjs-dist/build/pdf.worker.min.mjs",
@@ -47,100 +47,11 @@ const pdfs = [
 
 interface PdfGalleryProps {
   MaBN: string;
+  Sovaovien: string;
 }
 
-function PdfGallery({ MaBN }: PdfGalleryProps) {
-  const [data, setData] = useState();
-  const [isFetching, setIsFetching] = useState<boolean>(false);
+function PdfGallery({ MaBN, Sovaovien }: PdfGalleryProps) {
   const [selected, setSelected] = useState(pdfs[0]);
-  const [containerWidth, setContainerWidth] = useState<number>(800);
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  console.log("Container width:", containerWidth);
-
-  useEffect(() => {
-    const updateWidth = () => {
-      if (containerRef.current) {
-        setContainerWidth(containerRef.current.offsetWidth);
-      }
-    };
-    updateWidth();
-    window.addEventListener("resize", updateWidth);
-    return () => window.removeEventListener("resize", updateWidth);
-  }, []);
-
-  console.log("MaBN ==================== ", MaBN);
-
-  const { data: dataHsba, isFetching: isFetchingHsba } =
-    trpc.Hsba.getDataHsba.useQuery(
-      { MaBN },
-      { enabled: MaBN && selected.name === "HỒ SƠ BỆNH ÁN" }
-    );
-  const { data: dataQLyCapTheHsba, isFetching: isFetchingQLyCapTheHsba } =
-    trpc.Hsba.getDataQLyCapTheHsba.useQuery(
-      { MaBN },
-      { enabled: MaBN && selected.name === "HỒ SƠ BỆNH ÁN" }
-    );
-
-  const handleDataHsba = useCallback(() => {
-    console.log("dataQLyCapTheHsba =========== ", dataQLyCapTheHsba);
-    if (!dataQLyCapTheHsba || isFetchingHsba || isFetchingQLyCapTheHsba) return;
-
-    setIsFetching(isFetchingHsba || isFetchingQLyCapTheHsba);
-
-    const data: Record<string, unknown> = {};
-    const dtQLyCapThe = dataQLyCapTheHsba[0];
-
-    data.MaBN = dtQLyCapThe.Ma;
-    data.Hoten = dtQLyCapThe.Hoten;
-    data.Ngaysinh = dtQLyCapThe.Ngaysinh;
-    data.Thangsinh = dtQLyCapThe.Thangsinh;
-    data.Namsinh = dtQLyCapThe.Namsinh;
-    data.SoBHYT = dtQLyCapThe.SoBHYT;
-    data.SoCMND = dtQLyCapThe.SoCMND;
-    data.Gioitinh = dtQLyCapThe.Gioitinh;
-    data.Tuoi = new Date().getFullYear() - (dtQLyCapThe.Namsinh || 0);
-    data.products = [
-      {
-        title: "Duk",
-        name: "DukSoftware",
-        reference: "DS0",
-      },
-      {
-        title: "Tingerloo",
-        name: "Tingerlee",
-        reference: "T00",
-      },
-    ];
-    data.users = [
-      {
-        name: "John",
-      },
-      {
-        name: "Mary",
-      },
-      {
-        name: "Jane",
-      },
-      {
-        name: "Sean",
-      },
-    ];
-
-    setData(data);
-
-    console.log("dataHsba ==== ", dataHsba);
-  }, [dataHsba, isFetchingHsba, dataQLyCapTheHsba, isFetchingQLyCapTheHsba]);
-
-  useEffect(() => {
-    switch (selected.name) {
-      case "HỒ SƠ BỆNH ÁN":
-        handleDataHsba();
-        break;
-      case "PHIẾU KHÁM BỆNH VÀO VIỆN":
-        break;
-    }
-  }, [selected, handleDataHsba]);
 
   return (
     <div className="flex w-full h-full overflow-hidden">
@@ -161,21 +72,41 @@ function PdfGallery({ MaBN }: PdfGalleryProps) {
       </div>
 
       {/* Main PDF Viewer */}
-      <div className="flex-1" ref={containerRef}>
-        {!isFetching && data && (
-          <DocxViewer
-            title={selected.name}
-            urlDocx={selected.url}
-            data={data}
+      <div className="flex-1">
+        {selected.name === "HỒ SƠ BỆNH ÁN" && (
+          <DocViewerHsba
+            selected={selected}
+            MaBN={MaBN}
+            Sovaovien={Sovaovien}
           />
         )}
-        {isFetching && (
-          <div className="flex items-center justify-center h-full">
-            <Spinner />
-            <Label className="text-center text-xs font-semibold">
-              Đang tải dữ liệu...
-            </Label>
-          </div>
+        {selected.name === "PHIẾU KHÁM BỆNH VÀO VIỆN" && (
+          <DocViewerPkbvv
+            selected={selected}
+            MaBN={MaBN}
+            Sovaovien={Sovaovien}
+          />
+        )}
+        {selected.name === "BẢN TÓM TẮT HỒ SƠ BỆNH ÁN" && (
+          <DocViewerTomTatHsba
+            selected={selected}
+            MaBN={MaBN}
+            Sovaovien={Sovaovien}
+          />
+        )}
+        {selected.name === "PHIẾU CHỈ ĐỊNH CHUẨN ĐOÁN CLS" && (
+          <DocViewerTomTatHsba
+            selected={selected}
+            MaBN={MaBN}
+            Sovaovien={Sovaovien}
+          />
+        )}
+        {selected.name === "KẾT QUẢ XQUANG KỸ THUẬT SỐ" && (
+          <DocViewerTomTatHsba
+            selected={selected}
+            MaBN={MaBN}
+            Sovaovien={Sovaovien}
+          />
         )}
       </div>
     </div>

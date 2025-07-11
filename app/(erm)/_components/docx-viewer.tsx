@@ -9,6 +9,7 @@ import "@ui5/webcomponents-icons/dist/doc-attachment.js";
 import "@ui5/webcomponents-icons/dist/pdf-attachment.js";
 import { convertHtmlToPdf } from "../_actions";
 import { ToastError } from "@/lib/toast";
+import AngularParser from "@/constant/angular-parser";
 
 // Kiểu rõ ràng cho PizZipUtils
 let PizZipUtils: {
@@ -36,7 +37,7 @@ if (typeof window !== "undefined") {
 type DocxViewerProps = {
   title: string;
   urlDocx: string;
-  data: Record<string, unknown>;
+  data?: Record<string, unknown>;
 };
 
 // Khai báo kiểu cho loadFile
@@ -52,8 +53,6 @@ function loadFile(
 }
 
 function DocxViewer({ title, urlDocx, data }: DocxViewerProps) {
-  console.log("DocxViewer data =========== ", data);
-
   const containerRef = useRef<HTMLDivElement>(null);
   const [docxBlob, setDocxBlob] = useState<Blob | null>(null);
 
@@ -70,6 +69,7 @@ function DocxViewer({ title, urlDocx, data }: DocxViewerProps) {
           const doc = new Docxtemplater(zip, {
             linebreaks: true,
             paragraphLoop: true,
+            parser: AngularParser,
           });
 
           doc.render(data);
@@ -160,6 +160,8 @@ function DocxViewer({ title, urlDocx, data }: DocxViewerProps) {
       console.error("Error exporting PDF:", error);
     }
   };
+
+  if (!data) return;
 
   return (
     <div className="px-4 w-full h-full">

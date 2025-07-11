@@ -29,7 +29,7 @@ import {
 import { trpc } from "@/trpc/client";
 import { useParams } from "next/navigation";
 import Spinner from "@/components/spinner";
-import { formatDateTimeCT, formatDateToDDMMYYYY } from "@/utils/timer";
+import { formatDateTimeCT, formatStringDateToDDMMYYYY } from "@/utils/timer";
 import {
   Accordion,
   AccordionContent,
@@ -422,8 +422,9 @@ export default function ContentLichSuKham() {
                             Mã phiếu: {phieu.ID}
                           </span>
                           <span className="text-sm text-muted-foreground">
-                            Ngày chỉ định: {formatDateToDDMMYYYY(phieu.Ngay)} •
-                            Bác sĩ: {phieu.TTBacsiKham?.Ten} • Khoa:{" "}
+                            Ngày chỉ định:{" "}
+                            {formatStringDateToDDMMYYYY(phieu.Ngay)} • Bác sĩ:{" "}
+                            {phieu.TTBacsiKham?.Ten} • Khoa:{" "}
                             {phieu.TTPhongKham?.Ten}
                           </span>
                           <span className="text-sm text-orange-500 italic">
@@ -522,8 +523,9 @@ export default function ContentLichSuKham() {
                             Mã phiếu: {phieu.ID}
                           </span>
                           <span className="text-sm text-muted-foreground">
-                            Ngày chỉ định: {formatDateToDDMMYYYY(phieu.Ngay)} •
-                            Bác sĩ: {phieu.TTBacsiKeToa?.Ten} • Khoa:{" "}
+                            Ngày chỉ định:{" "}
+                            {formatStringDateToDDMMYYYY(phieu.Ngay)} • Bác sĩ:{" "}
+                            {phieu.TTBacsiKeToa?.Ten} • Khoa:{" "}
                             {phieu.TTPhongKham?.Ten}
                           </span>
                           <span className="text-sm text-orange-500 italic">

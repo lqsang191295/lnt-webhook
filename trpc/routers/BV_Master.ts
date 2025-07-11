@@ -30,10 +30,65 @@ export const BV_MasterRouter = router({
         where,
         include: {
           TTBacsi: true,
-          TTPhongKham: true,
+          TTPhongBan: true,
           TTChanDoanChinh: true,
           TTChanDoanPhu: true,
         },
       });
+    }),
+
+  getAllByFilter: procedure
+    .input(
+      z.object({
+        textSearch: z.string(),
+        tuNgay: z.string().datetime().optional(),
+        denNgay: z.string().datetime().optional(),
+        page: z.number().min(1).default(1),
+        limit: z.number().min(1).max(100).default(20),
+      })
+    )
+    .query(async ({ input }) => {
+      const { textSearch, page, limit, tuNgay, denNgay } = input;
+      const skip = (page - 1) * limit;
+      const whereCondition = {
+        AND: [
+          {
+            Ngay: {
+              gte: tuNgay,
+              lte: denNgay,
+            },
+          },
+          textSearch
+            ? {
+                OR: [{ MaBN: textSearch }, { Sovaovien: textSearch }],
+              }
+            : {},
+        ],
+      };
+
+      const [items, total] = await Promise.all([
+        prisma.bV_Master.findMany({
+          where: whereCondition,
+          skip,
+          take: limit,
+          include: {
+            TTBacsi: true,
+            TTPhongBan: true,
+            TTChanDoanChinh: true,
+            TTChanDoanPhu: true,
+            TTQLyCapThe: true,
+          },
+        }),
+        prisma.bV_Master.count({
+          where: whereCondition,
+        }),
+      ]);
+
+      return {
+        items,
+        total,
+        totalPages: Math.ceil(total / limit),
+        page,
+      };
     }),
 });

@@ -881,7 +881,7 @@ model BV_Master {
   isRaVien              Boolean?
   UpHD                  Boolean?
   TTBacsi               HT_DMNhanSu? @relation("BacSiRelation", fields: [BsDieutri], references: [Ma], onUpdate: NoAction, onDelete: NoAction)
-  TTPhongKham           HT_DMKhoaPhong? @relation("PhongKhamRelation", fields: [KhoaPhong], references: [Ma], onUpdate: NoAction, onDelete: NoAction)
+  TTPhongBan            HT_DMPhongBan? @relation("PhongKhamRelation", fields: [KhoaPhong], references: [Ma], onUpdate: NoAction, onDelete: NoAction)
   TTChanDoanChinh       HT_DMICD10? @relation("ChanDoanChinhRelation", fields: [ChandoanChinh], references: [CICD10], onUpdate: NoAction, onDelete: NoAction)
   TTChanDoanPhu         HT_DMICD10? @relation("ChanDoanPhuRelation", fields: [ChandoanPhu], references: [CICD10], onUpdate: NoAction, onDelete: NoAction)
   TTQLyCapThe           BV_QLyCapThe? @relation("QLyCapTheRelation", fields: [MaBN], references: [Ma], onUpdate: NoAction, onDelete: NoAction)
@@ -3003,6 +3003,8 @@ model BV_QLyCapThe {
   NgayCapCCCD         DateTime? @db.DateTime
   NoiCapCCCD          String?   @db.NVarChar(500)
 
+  TTNgheNghiep   HT_DMNgheNghiep? @relation("Ref_BV_Master_HT_DMNgheNghiep", fields: [Nghenghiep], references: [Ma], onUpdate: NoAction, onDelete: NoAction)
+
   @@index([Ma], map: "CIX_Ma", clustered: true)
 
   QLyCapTheInfo  BV_Master[] @relation("QLyCapTheRelation")
@@ -4267,7 +4269,6 @@ model HT_DMKhoaPhong {
   KhoTaiKhoa  String?  @db.NVarChar(50)
   UPDATE_DATE DateTime @default(now(), map: "DF__HT_DMKhoa__UPDAT__3FFCF760") @db.DateTime
 
-  KhoaPhongInfo  BV_Master[] @relation("PhongKhamRelation")
   PCD_KhoaPhongInfo  BV_PhieuChidinhDV[] @relation("PCD_PhongKhamRelation")
   PCD_KhoaPhongInfo_BV_Toathuoc  BV_Toathuoc[] @relation("FK_BV_ToaThuoc_HT_DMKhoaPhong_KhoaPhong")
 }
@@ -4391,6 +4392,8 @@ model HT_DMNgheNghiep {
   UPDATE_DATE DateTime @default(now(), map: "DF__HT_DMNghe__UPDAT__141E7522") @db.DateTime
   MaBHYT      String?  @db.NVarChar(50)
   NgungSuDung Boolean?
+
+  TTNgheNghiepInfo  BV_QLyCapThe[] @relation("Ref_BV_Master_HT_DMNgheNghiep")
 }
 
 model HT_DMNhaCungCap {
@@ -4640,6 +4643,8 @@ model HT_DMPhongBan {
   Noitru      Boolean?
   UPDATE_DATE DateTime @default(now(), map: "DF__HT_DMPhon__UPDAT__04A72768") @db.DateTime
   Tang        String?  @db.NVarChar(50)
+
+  KhoaPhongInfo  BV_Master[] @relation("PhongKhamRelation")
 }
 
 model HT_DMPhuongXa {
