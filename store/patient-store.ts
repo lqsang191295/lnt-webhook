@@ -1,35 +1,21 @@
 import { create } from "zustand";
 
 export type tPatient = {
-  phone: number;
+  phone: number | null;
   logged: boolean;
+  maBN: string;
 };
 
 interface PatientState {
   patient: tPatient | null;
-  setPhone: (phone: number) => void;
-  setLogged: (logged: boolean) => void;
+  setData: (patient: tPatient) => void;
 }
 
-const usePatientStore = create<PatientState>((set, get) => ({
+const usePatientStore = create<PatientState>((set) => ({
   patient: null,
-  
-  setPhone: (phone: number) => {
-    const current = get().patient;
-    if (current) {
-      set({ patient: { ...current, phone } });
-    } else {
-      set({ patient: { phone, logged: false } }); // hoặc default logged tùy ý
-    }
-  },
 
-  setLogged: (logged: boolean) => {
-    const current = get().patient;
-    if (current) {
-      set({ patient: { ...current, logged } });
-    } else {
-      set({ patient: { phone: 0, logged } }); // hoặc default phone tùy ý
-    }
+  setData: (patient) => {
+    set({ patient });
   },
 }));
 

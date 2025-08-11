@@ -33,6 +33,7 @@ import { trpc } from "@/trpc/client";
 import { formatDate, formatDateToDDMMYYYY } from "@/utils/timer";
 import Spinner from "@/components/spinner";
 import { format } from "date-fns";
+import SapUi5DatePicker from "@/components/custom/sap-ui5-date-picker";
 
 interface iSearchBoxProps {
   onSearch: () => void;
@@ -71,20 +72,7 @@ const SearchBox = ({
         gap={".5rem"}
         className="">
         <Label className="text-xs">Từ ngày</Label>
-        <DatePicker
-          onChange={(e) => {
-            const newDateStr = e.detail.value;
-            const newDate = new Date(newDateStr);
-
-            if (!isNaN(newDate.getTime())) {
-              console.log("newDate === ", newDate);
-              setTuNgay(newDate);
-            }
-          }}
-          primaryCalendarType="Gregorian"
-          valueState="None"
-          value={formatDateToDDMMYYYY(tuNgay)}
-        />
+        <SapUi5DatePicker value={tuNgay} onChange={setTuNgay} />
       </FlexBox>
       <FlexBox
         alignItems="Center"

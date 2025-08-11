@@ -1,13 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
 import MainContent from "../../_components/main-content";
 import Navbar from "../../_components/nav-bar";
+import NavbarMobile from "../../_components/nav-bar-mobile";
 import { sidebarItems } from "@/constant/nav-bar";
 import { iNavbarItemType } from "@/types/nav-bar";
-import NavbarMobile from "../../_components/nav-bar-mobile";
 import { usePatientStore } from "@/store/patient-store";
-import { useParams, useRouter } from "next/navigation";
 
 export default function Page() {
   const router = useRouter();
@@ -17,29 +17,36 @@ export default function Page() {
   const [navbarItem, setNavbarItem] = useState<iNavbarItemType>(
     sidebarItems[0]
   );
-  const tokenPatient = localStorage.getItem("token-patient");
 
-  if (tokenPatient) {
-    try {
-      const parsedToken = JSON.parse(atob(tokenPatient));
-      if (parsedToken && parsedToken.phone) {
-        usePatientStore.getState().setPhone(parsedToken.phone);
-        usePatientStore.getState().setLogged(true);
+  const logged = usePatientStore((state) => state.patient?.logged);
+  const setData = usePatientStore((state) => state.setData);
+
+  console.log("logged === ", logged);
+
+  useEffect(() => {
+    const tokenPatient = localStorage.getItem("token-patient");
+
+    if (tokenPatient) {
+      try {
+        const parsedToken = JSON.parse(atob(tokenPatient));
+        if (parsedToken?.phone) {
+          setData({ maBN, phone: parsedToken.phone, logged: true });
+        }
+      } catch {
+        setData({ maBN, phone: null, logged: false });
       }
-    } catch (error) {
-      console.error("Error parsing token-patient:", error);
-      localStorage.removeItem("token-patient");
+    } else {
+      setData({ maBN, phone: null, logged: false });
+    }
+  }, [maBN, setData]);
+
+  useEffect(() => {
+    if (logged === false) {
       router.push(`/patient/login?id=${maBN}`);
     }
-  }
-  console.log("tokenPatient === ", tokenPatient);
-  const { patient: patientData } = usePatientStore();
+  }, [logged, maBN, router]);
 
-  console.log("patientData === ", patientData);
-
-  if (!patientData || !patientData.logged) {
-    router.push(`/patient/login?id=${maBN}`);
-  }
+  if (!logged) return;
 
   return (
     <div className="flex h-screen flex-col md:flex-row">
@@ -53,7 +60,6 @@ export default function Page() {
         navbarItem={navbarItem}
         onClick={setNavbarItem}
       />
-
       <MainContent navbarItem={navbarItem} />
     </div>
   );

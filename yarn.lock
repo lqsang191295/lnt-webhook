@@ -2623,7 +2623,7 @@
     "@typescript-eslint/types" "8.26.1"
     eslint-visitor-keys "^4.2.0"
 
-"@ui5/webcomponents-base@2.12.0":
+"@ui5/webcomponents-base@2.12.0", "@ui5/webcomponents-base@^2.12.0":
   version "2.12.0"
   resolved "https://registry.yarnpkg.com/@ui5/webcomponents-base/-/webcomponents-base-2.12.0.tgz#8bbc838e5c69e2e81bed25175501a05127cb38dc"
   integrity sha512-pZI4StSoG7sLyiXvMz5oBogEywtB80qaxTN8R+hOMZjJkzIk5SJZ9ff7+sDAdptmJS89YjoCmLPzg4vLpZIyEw==
@@ -2663,7 +2663,7 @@
   dependencies:
     "@ui5/webcomponents-base" "2.12.0"
 
-"@ui5/webcomponents-localization@2.12.0":
+"@ui5/webcomponents-localization@2.12.0", "@ui5/webcomponents-localization@^2.12.0":
   version "2.12.0"
   resolved "https://registry.yarnpkg.com/@ui5/webcomponents-localization/-/webcomponents-localization-2.12.0.tgz#a569c0f4b900ce93d0057c3ff5547e2bec112212"
   integrity sha512-0dPj6v/y+sUx197+9cLu1MChsnGcWjHyLKU8vtKawlVibYpgEo9OHTH2ixXgMd5gyZ0VNJ9kKl7gLljR7WCwMA==
