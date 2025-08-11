@@ -25,6 +25,6 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/((?!api|_next|static|hsba|icons|imgs|favicon.ico|login|access-device|wait-access-device|patient|doctor|waiting-screen|waiting-screen/room|erm).*)",
+    "/((?!api|_next|static|icons|imgs|favicon.ico|login|access-device|wait-access-device|patient|doctor|waiting-screen|waiting-screen/room|erm|patient-portal/nondicom-viewer).*)",
   ],
 };
