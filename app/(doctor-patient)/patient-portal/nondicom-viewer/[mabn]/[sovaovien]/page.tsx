@@ -2,42 +2,55 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { trpc } from '@/trpc/client';
-import { useRouter } from 'next/router';
-// Icons (ví dụ, bạn có thể cần cài thêm react-icons hoặc lucide-react)
 import { FolderOpen, Calendar, User, VenusAndMars } from "lucide-react";
 import { useParams } from "next/navigation";
+import Image from "next/image";
+import { useEffect, useState } from "react";
+import { getPhieuSieuAm } from "@/actions/bv_phieusieuam";
+import { formatDateToDDMMYYYY } from "@/utils/timer";
+import Lightbox from "yet-another-react-lightbox";
+import "yet-another-react-lightbox/styles.css";
+import { Download, Zoom } from "yet-another-react-lightbox/plugins";
 
 export default function MedicalImagePage() {
   const params = useParams();
   const { mabn, sovaovien } = params;
-  const { data: phieuSieuam, isLoading, isError, error } = trpc.bV_PhieuSieuam.getBy_MaBN_SoVaoVien.useQuery({
-    MaBN: mabn,
-    SoVaoVien: sovaovien,
-  });
+  const [data, setData] = useState();
+  const [lightboxOpen, setLightboxOpen] = useState(false);
 
-  console.log('zzzzzzzzzzzzzzzzzzzzzzzzzz ', params, phieuSieuam)
+  const getData = async () => {
+    try {
+      if(!mabn || !sovaovien) return;
 
-  const patient = {
-    maBenhNhan: "727131",
-    hoVaTen: "BEAN KIMSRENG",
-    ngaySinh: "1/1/1969",
-    gioiTinh: "Nam",
-  };
+      const {data} = await getPhieuSieuAm(mabn, sovaovien);
 
-  const images = [
-    {
-      type: "Siêu âm",
-      date: "25/7/2025",
-      src: "https://via.placeholder.com/400x300.png?text=Ultrasound+Image+1", // Thay bằng URL ảnh thực tế
-    },
-    {
-      type: "Siêu âm",
-      date: "25/7/2025",
-      src: "https://via.placeholder.com/400x300.png?text=Ultrasound+Image+2", // Thay bằng URL ảnh thực tế
-    },
-  ];
+      console.log('aaaaaaaaaaaa ', data)
+      setData(data);
+    } catch(ex) {
+      console.log(ex)
+    }
+  }
 
+  const getLoai = () => {
+    if(!data) return;
+    switch (data.Phanloai) {
+      case 'Siêu_âm':
+        return "Siêu âm";
+      case 'SoiCTC':
+        return "Soi cổ tử cung";
+      case 'SoiCTC':
+        return "Soi cổ tử cung";
+    }
+  }
+
+  useEffect(() => {
+    getData();
+  }, []);
+
+  if(!data) return;
+
+  const images = data.DsHinh ? JSON.parse(data.DsHinh) : [];
+  console.log(' images ==== ', images)
   return (
     <div className="container mx-auto p-4">
       {/* Header */}
@@ -66,7 +79,7 @@ export default function MedicalImagePage() {
               </Avatar>
               <div className="flex flex-col">
                 <Label className="text-xs text-gray-500">Mã bệnh nhân</Label>
-                <span className="font-medium">{patient.maBenhNhan}</span>
+                <span className="font-medium">{data.MaBN}</span>
               </div>
             </div>
             {/* ...Các trường thông tin khác tương tự... */}
@@ -78,7 +91,7 @@ export default function MedicalImagePage() {
               </Avatar>
               <div className="flex flex-col">
                 <Label className="text-xs text-gray-500">Họ và tên</Label>
-                <span className="font-medium">{patient.hoVaTen}</span>
+                <span className="font-medium">{data.Hoten}</span>
               </div>
             </div>
             <div className="flex items-center space-x-2">
@@ -89,7 +102,7 @@ export default function MedicalImagePage() {
               </Avatar>
               <div className="flex flex-col">
                 <Label className="text-xs text-gray-500">Ngày sinh</Label>
-                <span className="font-medium">{patient.ngaySinh}</span>
+                <span className="font-medium">{data.TgSinhFull}</span>
               </div>
             </div>
             <div className="flex items-center space-x-2">
@@ -100,7 +113,7 @@ export default function MedicalImagePage() {
               </Avatar>
               <div className="flex flex-col">
                 <Label className="text-xs text-gray-500">Giới tính</Label>
-                <span className="font-medium">{patient.gioiTinh}</span>
+                <span className="font-medium">{data.Gioitinh}</span>
               </div>
             </div>
           </div>
@@ -119,22 +132,39 @@ export default function MedicalImagePage() {
         </CardHeader>
         <CardContent className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {images.map((image, index) => (
-            <div key={index} className="flex flex-col items-center">
-              <div className="relative border rounded-lg overflow-hidden">
-                <img
-                  src={image.src}
+            (image && <div key={index} className="flex flex-col items-center">
+              <div
+                className="relative border rounded-lg overflow-hidden w-full"
+                onClick={() => {
+                  setLightboxOpen(true);
+                }}
+              >
+                <Image
+                  src={`/api/images/${image.Path}`}
                   alt={`${image.type} - ${image.date}`}
-                  className="w-full h-auto object-cover"
+                  width={300} // Thay đổi thành chiều rộng mong muốn
+                  height={200} // Thay đổi thành chiều cao mong muốn
+                  className="object-cover w-full h-auto cursor-pointer"
                 />
               </div>
               <div className="text-center mt-2">
-                <p className="font-medium">{image.type}</p>
-                <p className="text-sm text-gray-500">{image.date}</p>
+                <p className="font-medium">{getLoai()}</p>
+                <p className="text-sm text-gray-500">{formatDateToDDMMYYYY(data.Ngay)}</p>
               </div>
-            </div>
+            </div>)
           ))}
         </CardContent>
       </Card>
+
+      {lightboxOpen && (
+        <Lightbox
+          open={lightboxOpen}
+          close={() => setLightboxOpen(false)}
+          slides={images.map(img => ({ src: `/api/images/${img.Path}` }))}
+          plugins={[Download, Zoom]}
+          styles={{ container: { backgroundColor: "rgba(0, 0, 0, .8)" } }}
+        />
+      )}
     </div>
   );
 }
