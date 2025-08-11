@@ -11,46 +11,70 @@ import { formatDateToDDMMYYYY } from "@/utils/timer";
 import Lightbox from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
 import { Download, Zoom } from "yet-another-react-lightbox/plugins";
+import { MedicalImageSkeleton } from "./skeleton";
+
+// Giả định kiểu dữ liệu của ảnh
+interface ImageItem {
+  Path: string;
+  type?: string;
+  date?: string;
+}
+
+// Giả định kiểu dữ liệu của API trả về
+interface PhieuSieuAmData {
+  MaBN: string;
+  Hoten: string;
+  TgSinhFull: string;
+  Gioitinh: string;
+  Phanloai: string;
+  Ngay: string;
+  DsHinh: string; // JSON string
+}
 
 export default function MedicalImagePage() {
   const params = useParams();
   const { mabn, sovaovien } = params;
-  const [data, setData] = useState();
+  const [data, setData] = useState<PhieuSieuAmData | null>(null);
   const [lightboxOpen, setLightboxOpen] = useState(false);
-
+  const [photoIndex, setPhotoIndex] = useState(0); // Thêm state để quản lý index của ảnh
+  const maBenhNhan = Array.isArray(mabn) ? mabn[0] : mabn;
+  const soVaoVien = Array.isArray(sovaovien) ? sovaovien[0] : sovaovien;
   const getData = async () => {
     try {
       if(!mabn || !sovaovien) return;
 
-      const {data} = await getPhieuSieuAm(mabn, sovaovien);
-
-      console.log('aaaaaaaaaaaa ', data)
-      setData(data);
+      const res = await getPhieuSieuAm(maBenhNhan || '', soVaoVien || '');
+      // Giả định getPhieuSieuAm trả về một object có thuộc tính data
+      if (res && res.data) {
+        setData(res.data);
+      }
     } catch(ex) {
-      console.log(ex)
+      console.error(ex);
     }
   }
 
   const getLoai = () => {
-    if(!data) return;
+    if(!data) return "N/A";
     switch (data.Phanloai) {
       case 'Siêu_âm':
         return "Siêu âm";
       case 'SoiCTC':
         return "Soi cổ tử cung";
-      case 'SoiCTC':
-        return "Soi cổ tử cung";
+      default:
+        return data.Phanloai;
     }
   }
 
   useEffect(() => {
     getData();
-  }, []);
+  }, [mabn, sovaovien]);
 
-  if(!data) return;
+  if(!data) {
+    return <MedicalImageSkeleton />;
+  }
 
-  const images = data.DsHinh ? JSON.parse(data.DsHinh) : [];
-  console.log(' images ==== ', images)
+  const images: ImageItem[] = data.DsHinh ? JSON.parse(data.DsHinh) : [];
+
   return (
     <div className="container mx-auto p-4">
       {/* Header */}
@@ -71,50 +95,22 @@ export default function MedicalImagePage() {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-gray-700">
+            {/* Các trường thông tin bệnh nhân */}
             <div className="flex items-center space-x-2">
-              <Avatar className="h-8 w-8">
-                <AvatarFallback className="bg-gray-200">
-                  <User className="h-5 w-5 text-gray-500" />
-                </AvatarFallback>
-              </Avatar>
-              <div className="flex flex-col">
-                <Label className="text-xs text-gray-500">Mã bệnh nhân</Label>
-                <span className="font-medium">{data.MaBN}</span>
-              </div>
-            </div>
-            {/* ...Các trường thông tin khác tương tự... */}
-            <div className="flex items-center space-x-2">
-              <Avatar className="h-8 w-8">
-                <AvatarFallback className="bg-gray-200">
-                  <User className="h-5 w-5 text-gray-500" />
-                </AvatarFallback>
-              </Avatar>
-              <div className="flex flex-col">
-                <Label className="text-xs text-gray-500">Họ và tên</Label>
-                <span className="font-medium">{data.Hoten}</span>
-              </div>
+              <Avatar className="h-8 w-8"><AvatarFallback className="bg-gray-200"><User className="h-5 w-5 text-gray-500" /></AvatarFallback></Avatar>
+              <div className="flex flex-col"><Label className="text-xs text-gray-500">Mã bệnh nhân</Label><span className="font-medium">{data.MaBN}</span></div>
             </div>
             <div className="flex items-center space-x-2">
-              <Avatar className="h-8 w-8">
-                <AvatarFallback className="bg-gray-200">
-                  <Calendar className="h-5 w-5 text-gray-500" />
-                </AvatarFallback>
-              </Avatar>
-              <div className="flex flex-col">
-                <Label className="text-xs text-gray-500">Ngày sinh</Label>
-                <span className="font-medium">{data.TgSinhFull}</span>
-              </div>
+              <Avatar className="h-8 w-8"><AvatarFallback className="bg-gray-200"><User className="h-5 w-5 text-gray-500" /></AvatarFallback></Avatar>
+              <div className="flex flex-col"><Label className="text-xs text-gray-500">Họ và tên</Label><span className="font-medium">{data.Hoten}</span></div>
             </div>
             <div className="flex items-center space-x-2">
-              <Avatar className="h-8 w-8">
-                <AvatarFallback className="bg-gray-200">
-                  <VenusAndMars className="h-5 w-5 text-gray-500" />
-                </AvatarFallback>
-              </Avatar>
-              <div className="flex flex-col">
-                <Label className="text-xs text-gray-500">Giới tính</Label>
-                <span className="font-medium">{data.Gioitinh}</span>
-              </div>
+              <Avatar className="h-8 w-8"><AvatarFallback className="bg-gray-200"><Calendar className="h-5 w-5 text-gray-500" /></AvatarFallback></Avatar>
+              <div className="flex flex-col"><Label className="text-xs text-gray-500">Ngày sinh</Label><span className="font-medium">{data.TgSinhFull}</span></div>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Avatar className="h-8 w-8"><AvatarFallback className="bg-gray-200"><VenusAndMars className="h-5 w-5 text-gray-500" /></AvatarFallback></Avatar>
+              <div className="flex flex-col"><Label className="text-xs text-gray-500">Giới tính</Label><span className="font-medium">{data.Gioitinh}</span></div>
             </div>
           </div>
         </CardContent>
@@ -132,26 +128,27 @@ export default function MedicalImagePage() {
         </CardHeader>
         <CardContent className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {images.map((image, index) => (
-            (image && <div key={index} className="flex flex-col items-center">
+            image && <div key={index} className="flex flex-col items-center">
               <div
-                className="relative border rounded-lg overflow-hidden w-full"
+                className="relative border rounded-lg overflow-hidden w-full cursor-pointer"
                 onClick={() => {
                   setLightboxOpen(true);
+                  setPhotoIndex(index);
                 }}
               >
                 <Image
-                  src={`/api/images/${image.Path}`}
-                  alt={`${image.type} - ${image.date}`}
-                  width={300} // Thay đổi thành chiều rộng mong muốn
-                  height={200} // Thay đổi thành chiều cao mong muốn
-                  className="object-cover w-full h-auto cursor-pointer"
+                  src={`/api/images/${encodeURIComponent(image.Path)}`}
+                  alt={`${getLoai()} - ${formatDateToDDMMYYYY(data.Ngay)}`}
+                  width={300}
+                  height={200}
+                  className="object-cover w-full h-auto"
                 />
               </div>
               <div className="text-center mt-2">
                 <p className="font-medium">{getLoai()}</p>
                 <p className="text-sm text-gray-500">{formatDateToDDMMYYYY(data.Ngay)}</p>
               </div>
-            </div>)
+            </div>
           ))}
         </CardContent>
       </Card>
@@ -160,8 +157,9 @@ export default function MedicalImagePage() {
         <Lightbox
           open={lightboxOpen}
           close={() => setLightboxOpen(false)}
-          slides={images.map(img => ({ src: `/api/images/${img.Path}` }))}
+          slides={images.map(img => ({ src: `/api/images/${encodeURIComponent(img.Path)}` }))}
           plugins={[Download, Zoom]}
+          index={photoIndex} // Truyền index của ảnh đang xem
           styles={{ container: { backgroundColor: "rgba(0, 0, 0, .8)" } }}
         />
       )}
