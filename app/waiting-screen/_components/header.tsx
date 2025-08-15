@@ -8,11 +8,11 @@ interface HeaderProps {
 }
 
 const Header = ({ room, activePatient }: HeaderProps) => {
-    return   <div className="grid grid-cols-1 lg:grid-cols-12 min-h-[60px] sm:min-h-[80px] lg:h-32 xl:h-30 border-b border-green-600 text-green-900 flex-shrink-0">
-    <div className="lg:col-span-6 flex items-center justify-center border-b lg:border-b-0 lg:border-r border-green-600 py-2 sm:py-3 lg:py-4 font-extrabold text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl uppercase px-2">
+    return   <div className="grid grid-cols-12 min-h-[60px] sm:min-h-[80px] h-32 xl:h-30 border-b border-green-600 text-green-900 flex-shrink-0">
+    <div className="col-span-6 flex items-center justify-center border-b border-b-0 border-r border-green-600 py-2 sm:py-3 lg:py-4 font-extrabold text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl uppercase px-2">
       PHÒNG {room?.name}
     </div>
-    <div className="lg:col-span-6 flex flex-col justify-center lg:border-l border-green-600 py-2 sm:py-3 lg:py-4 font-extrabold text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl uppercase leading-tight text-center px-2">
+    <div className="col-span-6 flex flex-col justify-center border-l border-green-600 py-2 sm:py-3 lg:py-4 font-extrabold text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl uppercase leading-tight text-center px-2">
       {activePatient ? (
         <>
           <span className="text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl">BỆNH NHÂN ĐANG KHÁM:</span>

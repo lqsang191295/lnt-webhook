@@ -10,6 +10,13 @@ const compat = new FlatCompat({
 });
 
 const eslintConfig = [
+   {
+    ignores: [
+      "lib/generated/",
+      "lib/generated/prisma/",
+      "prisma/", // nếu muốn ignore toàn bộ thư mục prisma
+    ],
+  },
   ...compat.extends("next/core-web-vitals", "next/typescript"),
 ];
 

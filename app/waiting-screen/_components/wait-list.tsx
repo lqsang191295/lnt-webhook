@@ -9,7 +9,7 @@ interface WaitListProps {
 
 const WaitList = ({ patients }: WaitListProps) => {
 
-    return     <Card className="w-full lg:w-2/5 rounded-none shadow-none border-green-600 lg:border-l flex flex-col overflow-auto max-h-[35vh] sm:max-h-[40vh] lg:max-h-none min-w-0">
+    return     <Card className="w-full lg:w-6/10 rounded-none shadow-none border-green-600 lg:border-l flex flex-col overflow-auto max-h-[70vh] sm:max-h-[70vh] lg:max-h-none min-w-0">
     <CardHeader className="border-b border-green-600 py-1 sm:py-2 lg:py-3 px-2">
       <CardTitle className="text-green-900 font-extrabold text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl text-center tracking-wide">
         BỆNH NHÂN TIẾP THEO
