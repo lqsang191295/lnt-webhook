@@ -9,7 +9,7 @@ import Image from 'next/image';
 
 const Banner = () => {
 
-    return     <Card className="flex-grow min-w-0 rounded-none shadow-none border-b-2 lg:border-b-0 lg:border-r-2 border-green-600 flex flex-col">
+    return     <Card className="flex-grow w-8/10 min-w-0 rounded-none shadow-none border-b-2 lg:border-b-0 lg:border-r-2 border-green-600 flex flex-col">
     <CardHeader className="flex-shrink-0 flex-basis-1/3 border-b-2 border-green-600 pb-2 sm:pb-3 lg:pb-4 px-3 sm:px-4 lg:px-6 from-green-50">
     <CardTitle className="text-center font-black">
       <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3 lg:gap-4 mb-2">
@@ -24,7 +24,7 @@ const Banner = () => {
         </div>
         <div className="text-center sm:text-left text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl 2xl:text-3xl leading-tight">
           <span className="text-blue-800 font-extrabold">BỆNH VIỆN ĐA KHOA </span>
-          <span className="text-red-700 font-extrabold">LÊ NGỌC TÙNG</span>
+           <span className="block lg:inline text-center text-red-700 font-extrabold">LÊ NGỌC TÙNG</span>
         </div>
       </div>
     </CardTitle>
@@ -52,7 +52,7 @@ const Banner = () => {
               alt="Hospital QRCODE"
               width={500}
               height={500}
-              className="w-24 h-24 sm:w-24 sm:h-24 md:w-28 md:h-28 lg:w-36 lg:h-36 xl:w-50 xl:h-50 2xl:w-70 2xl:h-70 border-3 border-gray-400 object-contain max-w-full max-h-full rounded-lg shadow-lg bg-white p-2"
+              className="w-24 h-24 sm:w-24 sm:h-24 md:w-36 md:h-36 lg:w-36 lg:h-36 xl:w-50 xl:h-50 2xl:w-70 2xl:h-70 border-3 border-gray-400 object-contain max-w-full max-h-full rounded-lg shadow-lg bg-white p-2"
             />
             <div className="absolute inset-0 border-2 border-green-500 rounded-lg animate-pulse opacity-30"></div>
           </div>
@@ -62,7 +62,7 @@ const Banner = () => {
       {/* Features section - Enhanced with better visual design */}
       <div className="flex-1 order-1 lg:order-2 flex flex-col justify-center relative min-w-0">
         <div className="relative">
-          <p className="absolute -top-3 sm:-top-4 lg:-top-0 left-1/2 transform -translate-x-1/2 z-10 text-center font-black text-red-700 text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl 2xl:text-2xl">
+          <p className="absolute -top-3 sm:-top-0 lg:-top-0 left-1/2 transform -translate-x-1/2 z-10 text-center font-black text-red-700 text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl 2xl:text-2xl">
             <span className="bg-white border-2 border-green-600 px-3 py-2 rounded-lg shadow-lg">TÍNH NĂNG</span>
           </p>
           <div className="border-2 border-green-600 p-3 sm:p-4 lg:p-5 mt-4 sm:mt-5 lg:mt-6 pt-3 sm:pt-4 lg:pt-5 bg-gradient-to-br from-blue-50 to-green-50 rounded-lg shadow-md">
