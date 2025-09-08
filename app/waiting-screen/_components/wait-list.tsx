@@ -24,8 +24,8 @@ const WaitList = ({ title, patients }: WaitListProps) => {
         </CardTitle>
       </CardHeader>
 
-      <CardContent className="overflow-auto p-0 flex-grow min-h-0">
-        <div className="overflow-x-auto">
+      <CardContent className="overflow-hidden p-0 flex-grow min-h-0">
+        <div className="overflow-hidden">
           <Table className="w-full min-w-0 text-green-800 text-xs sm:text-sm md:text-base lg:text-lg font-semibold leading-relaxed sm:min-w-[300px]">
             <TableHeader>
               <TableRow className="border-b-2 border-green-400 bg-green-100">

@@ -156,7 +156,7 @@ function XQuangContent() {
         {/* Left Column - Banner */}
         <Banner />
         {/* Right Column - Patient Info */}
-        <WaitList patients={waitingList} />
+        <WaitList patients={waitingList} title="" />
       </div>
 
       {/* Footer */}
