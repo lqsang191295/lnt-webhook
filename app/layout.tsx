@@ -1,21 +1,21 @@
 "use client";
 
 // import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
-import MainLayout from "./_components/main-layout";
-import StoreProvider from "@/store/provider";
-import GlobalVariablesProvider from "@/components/global-variables";
 import { GloabalAlertDialogProvider } from "@/components/global-alert-dialog";
-import { Toaster } from "sonner";
 import GlobalLoading from "@/components/global-loading";
-import { usePathname } from "next/navigation";
+import GlobalVariablesProvider from "@/components/global-variables";
+import StoreProvider from "@/store/provider";
 import { useZaloData } from "@/store/zalo-data-store";
-import { memo, useCallback, useEffect, useState } from "react";
-import { getZaloDsTemplate, getZaloToken } from "./(zalo)/token/_actions";
-import { httpBatchLink } from '@trpc/client'
-import { QueryClient } from '@tanstack/react-query'
 import { trpc } from "@/trpc/client";
+import { QueryClient } from "@tanstack/react-query";
+import { httpBatchLink } from "@trpc/client";
+import { Geist, Geist_Mono } from "next/font/google";
+import { usePathname } from "next/navigation";
+import { memo, useCallback, useEffect, useState } from "react";
+import { Toaster } from "sonner";
+import { getZaloDsTemplate, getZaloToken } from "./(zalo)/token/_actions";
+import MainLayout from "./_components/main-layout";
+import "./globals.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -37,7 +37,6 @@ const RootLayout = ({
 }: Readonly<{
   children: React.ReactNode;
 }>) => {
-
   const pathname = usePathname();
   const pathnameNotUseLayout = [
     "/login",
@@ -73,12 +72,12 @@ const RootLayout = ({
     });
   }, [setAccessToken, setDsTempalte, setRefreshToken]);
 
-  const [queryClient] = useState(() => new QueryClient())
+  const [queryClient] = useState(() => new QueryClient());
   const [trpcClient] = useState(() =>
     trpc.createClient({
-      links: [httpBatchLink({ url: '/api/trpc' })],
+      links: [httpBatchLink({ url: "/api/trpc" })],
     })
-  )
+  );
 
   useEffect(() => {
     loadZaloDataAsync();
