@@ -42,6 +42,36 @@ function PageContent() {
     return eTrangthai[eTrangthai.Đang_thực_hiện];
   }
 
+  function transform(data: iClsData[]): iClsGroupData[] {
+    const grouped = new Map<string, iClsData[]>();
+
+    // Nhóm theo MaBN
+    for (const row of data) {
+      if (!grouped.has(row.MaBN)) grouped.set(row.MaBN, []);
+      grouped.get(row.MaBN)!.push(row);
+    }
+
+    // Tính trạng thái ưu tiên và thêm STT
+    const result: iClsGroupData[] = [];
+    let stt = 1;
+
+    for (const [maBN, group] of grouped) {
+      const hoten = group[0].Hoten;
+      const namsinh = group[0].Namsinh;
+      const trangThais = group.map((r) => r.TrangThaiKham);
+
+      result.push({
+        STT: stt++,
+        MaBN: maBN,
+        TrangThaiKham: getTrangThaiKham(trangThais),
+        Hoten: hoten,
+        Namsinh: namsinh,
+      });
+    }
+
+    return result;
+  }
+
   function groupAndTransform(data: iClsData[]): iClsGroupData[] {
     const grouped = new Map<string, iClsData[]>();
 
@@ -144,6 +174,7 @@ function PageContent() {
     return;
   }
 
+  const dataAll = transform(data);
   const dataGroup = groupAndTransform(data);
   const curPhieu = getCurPhieu(dataGroup);
   const waitingList = getWaitingList(dataGroup, curPhieu);
@@ -233,7 +264,7 @@ function PageContent() {
           <WaitList patients={waitingList} title="Danh sách chờ" />
         </div>
         <div className="flex-1">
-          <WaitList patients={dataGroup} title="Danh sách tiếp nhận" />
+          <WaitList patients={dataAll} title="Danh sách tiếp nhận" />
         </div>
       </div>
 
