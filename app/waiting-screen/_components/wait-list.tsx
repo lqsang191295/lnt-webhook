@@ -13,11 +13,13 @@ import { memo } from "react";
 interface WaitListProps {
   patients: iClsGroupData[];
   title: string;
+  className: string;
 }
 
-const WaitList = ({ title, patients }: WaitListProps) => {
+const WaitList = ({ title, patients, className }: WaitListProps) => {
   return (
-    <Card className="w-full h-full rounded-none shadow-none border-green-600 lg:border-l flex flex-col overflow-auto p-0 gap-0">
+    <Card
+      className={`w-full h-full rounded-none shadow-none flex flex-col overflow-auto p-0 gap-0 ${className}`}>
       <CardHeader className="p-0 gap-0">
         <CardTitle className="border-b border-green-600 text-green-900 font-extrabold text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl text-center tracking-wide py-1 sm:py-2 lg:py-3">
           {title}
