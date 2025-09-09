@@ -1,12 +1,23 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Fullscreen } from 'lucide-react'
 
 export default function FullscreenToggle() {
     const [hidden, setHidden] = useState<boolean>(false);
     const divRef = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    const handler = () => {
+      if (document.documentElement.requestFullscreen) {
+        document.documentElement.requestFullscreen();
+        setHidden(true)
+      }
+      document.removeEventListener("click", handler);
+    };
 
+    document.addEventListener("click", handler);
+    return () => document.removeEventListener("click", handler);
+  }, []);
     const enterFullscreen = () => {
         if (divRef.current?.requestFullscreen) {
             divRef.current.requestFullscreen()
