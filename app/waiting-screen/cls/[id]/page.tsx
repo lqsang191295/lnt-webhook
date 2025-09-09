@@ -68,7 +68,9 @@ function PageContent() {
       });
     }
 
-    return result;
+    return result
+      .filter((i) => i.TrangThaiKham === eTrangthai[eTrangthai.Đã_thực_hiện])
+      .sort((a, b) => b.STT - a.STT);
   }
 
   function groupAndTransform(data: iClsData[]): iClsGroupData[] {
@@ -193,7 +195,7 @@ function PageContent() {
           <div className="flex items-center justify-center border-b-2 border-green-600 font-extrabold text-2xl sm:text-2xl py-2 uppercase">
             PHÒNG {getRoom()?.name}
           </div>
-          <div className="flex-1 text-[#c10007]">
+          <div className="flex-1 text-[#c10007] py-2">
             {curPhieu ? (
               <div className="flex flex-col justify-center h-full font-extrabold text-red-500">
                 <span className="text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl text-center">
