@@ -8,7 +8,7 @@ import { memo } from "react";
 
 const Banner = () => {
   return (
-    <div className=" from-green-50 pb-1">
+    <div className=" from-green-50">
       <div className="text-center font-black">
         <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3 lg:gap-4">
           <div className="relative">
@@ -21,25 +21,25 @@ const Banner = () => {
             />
           </div>
           <div>
-            <div className="flex text-base sm:text-lg md:text-xl leading-tight gap-1">
+            <div className="flex text-base leading-tight">
               <span className="text-blue-800 font-extrabold">
-                BỆNH VIỆN ĐA KHOA
+                BỆNH VIỆN ĐA KHOA&nbsp;
               </span>
               <span className="block lg:inline text-center text-red-700 font-extrabold">
                 LÊ NGỌC TÙNG
               </span>
             </div>
-            <h2 className="font-black text-green-800 text-xs leading-tight rounded-lg">
+            <h2 className="font-black text-green-800 text-[10px] leading-tight rounded-lg">
               CỔNG THÔNG TIN ĐIỆN TỬ BVĐK LÊ NGỌC TÙNG TRÊN ZALO
             </h2>
           </div>
         </div>
       </div>
 
-      <p className="text-center text-xs text-green-700 bg-gradient-to-r from-green-200 to-blue-200 rounded-lg px-3 py-1 font-bold border border-green-300 shadow-sm mx-4 mt-1">
+      {/* <p className="text-center text-xs text-green-700 bg-gradient-to-r from-green-200 to-blue-200 rounded-lg px-3 py-1 font-bold border border-green-300 shadow-sm mx-4 mt-1">
         Công cụ hỗ trợ đắc lực trong việc chăm sóc sức khỏe bản thân &amp; gia
         đình
-      </p>
+      </p> */}
     </div>
   );
 };

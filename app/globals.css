@@ -214,3 +214,20 @@
   position: absolute;
   width: 100%;
 }
+
+@keyframes blinkMove {
+  0%,
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  50% {
+    opacity: 0.95;
+    transform: translateX(6px);
+  }
+}
+
+.blink-move {
+  animation: blinkMove 1.5s infinite;
+}

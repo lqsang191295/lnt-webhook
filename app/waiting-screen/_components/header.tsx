@@ -12,12 +12,12 @@ const Header = () => {
           alt="Hospital QRCODE"
           width={500}
           height={500}
-          className="h-28 w-28 p-1.5"
+          className="h-28 w-28"
         />
       </div>
       <div className="flex flex-col flex-1 ">
         <Banner />
-        <div className="flex flex-row gap-1 items-center font-bold text-red-500 ml-2">
+        <div className="flex flex-row flex-1 gap-1 items-center font-bold text-[#c10007] ml-2 blink-move">
           <ArrowBigLeftDash />
           <span className="text-xs leading-tight">
             Quét QRcode xem lịch sử kết quả khám chữa bệnh

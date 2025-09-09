@@ -190,12 +190,12 @@ function PageContent() {
         <Header />
         {/* Banner */}
         <div className="flex flex-1 flex-col text-green-900 flex-shrink-0 border-l-2 border-green-600 ">
-          <div className="flex items-center justify-center border-b-2 border-green-600 font-extrabold text-lg py-2 sm:text-xl uppercase">
+          <div className="flex items-center justify-center border-b-2 border-green-600 font-extrabold text-2xl sm:text-2xl py-2 uppercase">
             PHÒNG {getRoom()?.name}
           </div>
-          <div className="flex-1">
+          <div className="flex-1 text-[#c10007]">
             {curPhieu ? (
-              <div className="flex flex-col justify-center h-full font-extrabold">
+              <div className="flex flex-col justify-center h-full font-extrabold text-red-500">
                 <span className="text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl text-center">
                   BỆNH NHÂN ĐANG KHÁM:
                 </span>
@@ -204,7 +204,7 @@ function PageContent() {
                 </span>
               </div>
             ) : (
-              <div className="text-center text-gray-500 flex flex-col justify-center h-full">
+              <div className="text-center flex flex-col justify-center h-full ">
                 <Clock className="w-6 h-6 sm:w-8 sm:h-8 mx-auto mb-1 lg:mb-2 opacity-50" />
                 <p className="text-xs sm:text-sm md:text-base lg:text-lg">
                   Chưa có bệnh nhân
@@ -221,6 +221,7 @@ function PageContent() {
             patients={waitingList}
             title="Danh sách chờ"
             className="border-0 border-r-1 border-b-1 border-green-600"
+            classText="text-green-500"
           />
         </div>
         <div className="flex-1">
@@ -228,6 +229,7 @@ function PageContent() {
             patients={dataAll}
             title="Danh sách tiếp nhận"
             className="border-0 border-l-1 border-b-1 border-green-600"
+            classText="text-[#193cb8]"
           />
         </div>
       </div>
