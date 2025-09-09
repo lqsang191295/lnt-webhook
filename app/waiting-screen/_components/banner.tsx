@@ -20,7 +20,7 @@ const Banner = () => {
               className="w-4 h-4 sm:w-8 sm:h-8 md:w-12 md:h-12 lg:w-14 lg:h-14 flex-shrink-0 rounded-lg"
             />
           </div>
-          <div>
+          <div className="text-left">
             <div className="flex text-base leading-tight">
               <span className="text-blue-800 font-extrabold">
                 BỆNH VIỆN ĐA KHOA&nbsp;
@@ -29,8 +29,8 @@ const Banner = () => {
                 LÊ NGỌC TÙNG
               </span>
             </div>
-            <h2 className="font-black text-green-800 text-[10px] leading-tight rounded-lg">
-              CỔNG THÔNG TIN ĐIỆN TỬ BVĐK LÊ NGỌC TÙNG TRÊN ZALO
+            <h2 className="font-black text-green-800 text-xs leading-tight rounded-lg">
+              Chăm Sóc Cho Bạn, Hạnh Phúc Chúng Tôi
             </h2>
           </div>
         </div>
