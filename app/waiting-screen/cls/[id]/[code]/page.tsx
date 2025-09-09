@@ -150,13 +150,13 @@ function XQuangContent() {
   return (
     <div className="w-screen h-screen bg-[#e6f3f1] border border-green-600 rounded-md flex flex-col select-none overflow-hidden">
       {/* Header */}
-      <Header room={getRoom()} activePatient={curPhieu} />
+      <Header />
 
       <div className="flex flex-col lg:flex-row flex-grow overflow-hidden min-h-0">
         {/* Left Column - Banner */}
         <Banner />
         {/* Right Column - Patient Info */}
-        <WaitList patients={waitingList} title="" />
+        <WaitList patients={waitingList} title="" className="" />
       </div>
 
       {/* Footer */}
