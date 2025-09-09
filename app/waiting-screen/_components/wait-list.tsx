@@ -29,14 +29,14 @@ const WaitList = ({
       <CardHeader className="p-0 gap-0">
         <CardTitle
           className={`border-b border-green-600 font-extrabold text-xs sm:text-sm md:text-base 
-        lg:text-lg xl:text-xl text-center tracking-wide py-1 sm:py-2 lg:py-3 uppercase ${classText}`}>
+        lg:text-lg text-center tracking-wide py-1 sm:py-2 lg:py-3 uppercase ${classText}`}>
           {title}
         </CardTitle>
       </CardHeader>
 
       <CardContent className="overflow-hidden p-0 flex-grow min-h-0">
         <div className="overflow-hidden">
-          <Table className="w-full min-w-0 text-sm sm:text-base md:text-lg font-semibold leading-relaxed">
+          <Table className="w-full min-w-0 text-xl font-semibold leading-relaxed">
             <TableHeader>
               <TableRow className="border-b-2 border-green-400 ">
                 <TableHead
